@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Simple Cloud Music Player</title>
+	<!-- for-mobile-apps -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="Music Profile Widget Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<link rel="shortcut icon" href="./public/music/css/svg/headset.svg">
+	<!-- css -->
+	<link href="./public/music/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="./public/music/css/add.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="./public/music/css/pogo-slider.min.css" rel="stylesheet" type="text/css" />
+	<link href="./public/music/css/jplayer.blue.monday.min.css" rel="stylesheet" type="text/css" />
+	<link href="./public/common/css/notice.css" rel="stylesheet" type="text/css" media="all" />
+	<!-- js -->
+	<script src="./public/common/js/jquery-1.11.1.min.js"></script>
+	<script src="./public/common/js/notice.js"></script>
+	<script type="text/javascript" src="./public/music/js/jquery.jplayer.min.js"></script>
+	<script type="text/javascript" src="./public/music/js/jplayer.playlist.min.js"></script>
+	<script type="text/javascript" src="./public/music/js/jquery.pogo-slider.min.js"></script>
+	<script type="text/javascript" src="./public/music/js/main.js"></script>
+</head>
+
+<body>
+	<!-- main -->
+	<div class="audio-main w3ls">
+		<h1>Simple Cloud Music Player</h1>
+
+		<div class="audio-record-list animation" data-transition="flipY">
+			<div class="profile">
+				<div class="add-music" role="button" tabindex="0"></div>
+				<div class="profile-top wthree">
+					<div class="pic-sec">
+						<div class="pic">
+							<img id="poster" src="./public/music/images/disc.png" alt="" />
+						</div>
+						<div class="pic_info">
+							<input type="hidden" id="song-id">
+							<h2 class="song-title">七里香</h2>
+							<h3><a href="#" class="artist">周杰伦</a></h3>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="media">
+						<div class="follow">
+							<h4 class="listen">158</h4>
+						</div>
+						<div class="tweet">
+							<h4 class="thumbs-up">2,501</h4>
+						</div>
+						<div class="follow2">
+							<h4 class="share">8,848</h4>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</div>
+			<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+			<div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
+				<div class="jp-type-playlist">
+					<div class="jp-gui jp-interface">
+						<div class="jp-controls">
+							<button class="music-list" role="button" tabindex="0">music-list</button>
+							<button class="previous-song" role="button" tabindex="0">previous</button>
+							<button class="jp-play" role="button" tabindex="0">play</button>
+							<button class="next-song" role="button" tabindex="0">next</button>
+							<button id="play-mode" class="cycle-mode" role="button" tabindex="0" value="0">mode</button>
+							<play-one theme="outline" size="32" fill="#5a5656" :strokeWidth="3"></play-one>
+							<input id="search" type="search" placeholder="Search">
+						</div>
+						<div class="jp-progress">
+							<div class="jp-seek-bar">
+								<div class="jp-play-bar"></div>
+							</div>
+						</div>
+						<!-- <div class="jp-volume-controls">
+							<button class="jp-mute" role="button" tabindex="0">mute</button>
+							<button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+							<div class="jp-volume-bar">
+								<div class="jp-volume-bar-value"></div>
+							</div>
+						</div> -->
+						<div class="jp-time-holder" style="display: none;">
+							<div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+							<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
+						</div>
+
+					</div>
+					<div class="jp-playlist hide">
+						<ul>
+							<li>&nbsp;</li>
+						</ul>
+					</div>
+					<div class="jp-no-solution">
+						<span>Update Required</span>
+						To play the media you will need to either update your browser to a recent version or update your
+						<a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="add animation hide" data-transition="flipY">
+			<div class="content">
+				<div class="back" role="button" tabindex="0"></div>
+				<h2>请愿单</h2>
+				<form>
+					<input type="text" id="notice" name="notice" value="你申请，我找歌" disabled="disabled">
+					<input type="text" id="title" name="title" value="歌名(必填)" onfocus="if (this.value == '歌名(必填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '歌名(必填)';}">
+					<input type="text" id="artist" name="artist" value="歌手(必填)" onfocus="if (this.value == '歌手(必填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '歌手(必填)';}">
+					<input type="text" id="remark" name="remark" value="备注(选填)" onfocus="if (this.value == '备注(选填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '备注(选填)';}">
+					<input type="button" id="submit" class="register" value="呈上">
+				</form>
+			</div>
+			<div class="clear"></div>
+		</div>
+
+
+		<div class="footer agile">
+			<div class="copy-right">
+				<p> &copy; Simple Cloud Music Player. All Rights Reserved | Design by <a
+						href="http://346129023@qq.com/">346129023@qq.com</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="mask hide">
+		<div class="prompt_box">
+			<div class="prompt_title">
+				<h3 class="notice-title">系统提示</h3>
+				<span class="prompt_cancel"></span>
+			</div>
+			<div class="prompt_cont">
+				<p class="prompt_text">输入有误，请重新输入！</p>
+				<span class="prompt_sure">确定</span>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
