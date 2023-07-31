@@ -473,7 +473,6 @@ input::-webkit-search-cancel-button {
 input[type=search] {
 	background: url('../css/svg/search.svg') no-repeat 9px center;
 	border: solid 0px #ccc;
-	width: 0px;
 	height: 48px;
 	padding-left: 32px;
 	cursor: pointer;
@@ -486,11 +485,11 @@ input[type=search] {
 	-moz-transition: all .5s;
 	transition: all .5s;
 }
-input[type=search]:focus {
-	width: 45px;
+
+.search {
+	width: 82%;
 	background-color: #fff;
 	border-color: #6dcff6;
-	
 	-webkit-box-shadow: 0 0 3px rgba(109,207,246,.5);
 	-moz-box-shadow: 0 0 3px rgba(109,207,246,.5);
 	box-shadow: 0 0 3px rgba(109,207,246,.5);

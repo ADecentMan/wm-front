@@ -54,7 +54,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<h4 class="thumbs-up">2,501</h4>
 						</div>
 						<div class="follow2">
-							<h4 class="share">8,848</h4>
+							<h4 class="collect favourite">&nbsp;</h4>
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -63,21 +63,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div id="jquery_jplayer_1" class="jp-jplayer"></div>
 			<div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
 				<div class="jp-type-playlist">
-					<div class="jp-gui jp-interface">
+					<div class="jp-gui jp-interface" id="music-controller"  data-transition="flipX">
 						<div class="jp-controls">
-							<button class="music-list" role="button" tabindex="0">music-list</button>
-							<button class="previous-song" role="button" tabindex="0">previous</button>
-							<button class="jp-play" role="button" tabindex="0">play</button>
-							<button class="next-song" role="button" tabindex="0">next</button>
-							<button id="play-mode" class="cycle-mode" role="button" tabindex="0" value="0">mode</button>
+							<button class="music-list music-list-active" role="button" tabindex="0" title="播放列表">music-list</button>
+							<button class="previous-song" role="button" tabindex="0"  title="上一首">previous</button>
+							<button class="jp-play" role="button" tabindex="0" title="播放/暂停">play</button>
+							<button class="next-song" role="button" tabindex="0" title="下一首">next</button>
+							<button id="play-mode" class="cycle-mode" role="button" tabindex="0" value="0"  title="循环播放">mode</button>
+							<button class="search-icon" role="button" tabindex="0" value="0"  title="搜索">Search</button>
+							<button class="favourite-list" role="button" tabindex="0" value="0"  title="收藏列表">Search</button>
 							<play-one theme="outline" size="32" fill="#5a5656" :strokeWidth="3"></play-one>
-							<input id="search" type="search" placeholder="Search">
 						</div>
 						<div class="jp-progress">
 							<div class="jp-seek-bar">
 								<div class="jp-play-bar"></div>
 							</div>
 						</div>
+						<!-- 音量调节 -->
 						<!-- <div class="jp-volume-controls">
 							<button class="jp-mute" role="button" tabindex="0">mute</button>
 							<button class="jp-volume-max" role="button" tabindex="0">max volume</button>
@@ -89,7 +91,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
 							<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
 						</div>
-
+					</div>
+					<!-- 搜索框 -->
+					<div class="jp-interface hide" id="music-searcher" data-transition="flipX">
+						<div class="jp-controls">
+							<input id="search" class="search" type="search" placeholder="Search">
+						</div>
+						<div class="jp-progress">
+							<div class="jp-seek-bar">
+								<div class="jp-play-bar"></div>
+							</div>
+						</div>
 					</div>
 					<div class="jp-playlist hide">
 						<ul>
@@ -105,15 +117,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			</div>
 		</div>
 
+		<!-- 请愿单 -->
 		<div class="add animation hide" data-transition="flipY">
 			<div class="content">
 				<div class="back" role="button" tabindex="0"></div>
 				<h2>请愿单</h2>
 				<form>
 					<input type="text" id="notice" name="notice" value="你申请，我找歌" disabled="disabled">
-					<input type="text" id="title" name="title" value="歌名(必填)" onfocus="if (this.value == '歌名(必填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '歌名(必填)';}">
-					<input type="text" id="artist" name="artist" value="歌手(必填)" onfocus="if (this.value == '歌手(必填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '歌手(必填)';}">
-					<input type="text" id="remark" name="remark" value="备注(选填)" onfocus="if (this.value == '备注(选填)') {this.value = '';}" onblur="if (this.value == '') {this.value = '备注(选填)';}">
+					<input type="text" id="title" name="title" value="歌名(必填)" onfocus="if (this.value === '歌名(必填)') {this.value = '';}" onblur="if (this.value === '') {this.value = '歌名(必填)';}">
+					<input type="text" id="artist" name="artist" value="歌手(必填)" onfocus="if (this.value === '歌手(必填)') {this.value = '';}" onblur="if (this.value === '') {this.value = '歌手(必填)';}">
+					<input type="text" id="remark" name="remark" value="备注(选填)" onfocus="if (this.value === '备注(选填)') {this.value = '';}" onblur="if (this.value === '') {this.value = '备注(选填)';}">
 					<input type="button" id="submit" class="register" value="呈上">
 				</form>
 			</div>
@@ -130,6 +143,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 	</div>
 
+	<!-- 提示框 -->
 	<div class="mask hide">
 		<div class="prompt_box">
 			<div class="prompt_title">

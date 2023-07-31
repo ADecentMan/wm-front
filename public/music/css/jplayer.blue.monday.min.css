@@ -121,7 +121,7 @@
 
 .jp-audio .jp-controls {
 	width: 100%;
-	padding: 15px 20px 0
+	padding: 15px 0px 0
 }
 
 .jp-audio-stream .jp-controls {
@@ -158,6 +158,8 @@
 .thumbs-up,
 .thumbs-up-done,
 .listen,
+.favourite,
+.favourited,
 .share {
 	width: 48px;
 	padding-left: 40px;
@@ -166,16 +168,26 @@
 .thumbs-up,
 .thumbs-up-done,
 .listen,
+.favourite,
+.favourited,
 .share:hover {
 	cursor: pointer;
 }
 
 .thumbs-up {
 	background: url(../css/svg/thumbs-up.svg) no-repeat;
+	position: relative;
+	width: 1px;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .thumbs-up-done {
 	background: url(../css/svg/thumbs-up-done.svg) no-repeat;
+	position: relative;
+	width: 1px;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .listen {
@@ -186,15 +198,29 @@
 	background: url(../css/svg/share.svg) no-repeat;
 }
 
+.favourite {
+	background: url(../css/svg/favourite.svg) no-repeat;
+	width: 1px;
+	float: right;
+}
+
+.favourited {
+	background: url(../css/svg/favourited.svg) no-repeat;
+	width: 1px;
+	float: right;
+}
+
 .music-list,
+.favourite-list,
 .jp-play,
 .previous-song,
 .next-song,
 .jp-shuffle,
+.search-icon,
 .random-mode,
 .cycle-mode,
 .one-loop-mode {
-	width: 48px;
+	width: 46px;
 	height: 48px;
 }
 
@@ -205,6 +231,36 @@
 
 .music-list:hover {
 	background: url(../css/svg/music-list-hover.svg) no-repeat;
+	background-position: center;
+}
+
+.music-list-active {
+	background: url(../css/svg/music-list-hover.svg) no-repeat;
+	background-position: center;
+}
+
+.favourite-list {
+	background: url(../css/svg/favourite-list.svg) no-repeat;
+	background-position: center;
+}
+
+.favourite-list:hover {
+	background: url(../css/svg/favourite-list-hover.svg) no-repeat;
+	background-position: center;
+}
+
+.favourite-list-active {
+	background: url(../css/svg/favourite-list-hover.svg) no-repeat;
+	background-position: center;
+}
+
+.search-icon {
+	background: url(../css/svg/search.svg) no-repeat;
+	background-position: center;
+}
+
+.search-icon:hover {
+	background: url(../css/svg/search-hover.svg) no-repeat;
 	background-position: center;
 }
 
@@ -720,7 +776,7 @@ div.jp-type-playlist div.jp-playlist a:hover {
 	}
 
 	.jp-audio .jp-controls {
-		padding: 11px 11px 0;
+		padding: 11px 0px 0;
 	}
 
 	.jp-audio .jp-type-playlist .jp-time-holder {
@@ -774,7 +830,7 @@ div.jp-type-playlist div.jp-playlist a:hover {
 
 	.jp-audio .jp-controls {
 		width: 100%;
-		padding: 11px 11px 0;
+		padding: 11px 0px 0;
 	}
 }
 

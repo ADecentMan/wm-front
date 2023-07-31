@@ -1,10 +1,12 @@
 let myPlaylist;
 let playlist;
-// 本地
-let serverHost = "http://192.168.2.2:8080";
 let frontHost = "http://192.168.2.2:8081";
+// let frontHost = "http://61.183.42.66:53924";
 let whiteName = true;
 let blackNameMsg = "";
+let searchType = "all";
+// 本地
+let serverHost = "http://192.168.2.2:8080";
 // 镇江
 // let serverHost = "http://cn-js-zz.starryfrp.com:50337";
 // 广东
@@ -15,12 +17,17 @@ let current = 0;
 let keyword = "";
 
 let playModeClassList = ["cycle-mode", "random-mode", "one-loop-mode"];
+let playModeTitleList = ["循环播放", "随机播放", "单曲循环"];
 
 let cssSelector = {
     jPlayer: "#jquery_jplayer_1",
     cssSelectorAncestor: "#jp_container_1"
 };
-let token = window.localStorage.getItem("WM-ENTERTAINMENT-TOKEN");
+
+let token = getParam("token");
+if (null == token || "" == token) {
+    token = window.localStorage.getItem("token");
+}
 
 $.ajax({
     type: "GET",
@@ -29,8 +36,7 @@ $.ajax({
     async: false,
     success: function (data) {
         if ('-2' == data.code) {
-            let currentUrl = window.location.href;
-            window.location.href = frontHost + "/login?targetUrl=" + currentUrl;
+            jumpToLogin();
         } else {
             playlist = data;
         }
@@ -85,8 +91,8 @@ $(document).ready(function () {
     togglePlayMode();
     // 点赞
     like();
-    // 分享
-    share();
+    // 收藏
+    favourite();
     // 通知事件
     closeNotice();
     // 添加歌曲
@@ -113,6 +119,10 @@ function keyboardListen() {
     $(document).keyup(function (e) {
         switch (e.keyCode) {
             case 13:
+                $("#music-searcher").hide();
+                $("#music-controller").show();
+                // 添加切换动画
+                addAnimation($("#music-controller"));
                 resetList();
                 return;
         }
@@ -120,11 +130,20 @@ function keyboardListen() {
 }
 
 function searchList() {
-    $("#search").blur(function () {
-        resetList();
-
+    $(".search-icon").click(function () {
+        $("#music-controller").hide();
+        $("#music-searcher").show();
+        // 添加切换动画
+        addAnimation($("#music-searcher"));
+        $("#search").focus();
     });
-
+    $("#search").blur(function () {
+        $("#music-searcher").hide();
+        $("#music-controller").show();
+        // 添加切换动画
+        addAnimation($("#music-controller"));
+        resetList();
+    });
 }
 
 function resetList() {
@@ -138,8 +157,7 @@ function resetList() {
             async: false,
             success: function (data) {
                 if ('-2' == data.code) {
-                    let currentUrl = window.location.href;
-                    window.location.href = frontHost + "/login?targetUrl=" + currentUrl;
+                    jumpToLogin();
                 } else if ('-1' == data.code) {
                     notice("温馨提示", data.msg);
                 } else {
@@ -155,9 +173,56 @@ function resetList() {
     }
 }
 
+function resetFavouriteList() {
+    $.ajax({
+        type: "GET",
+        url: serverHost + "/entertainment/music/queryFavouriteList/500/1?keyword=&token=" + token,
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            if ('-2' == data.code) {
+                jumpToLogin();
+            } else if ('-1' == data.code) {
+                notice("温馨提示", data.msg);
+            } else {
+                playlist = data;
+                myPlaylist.setPlaylist(playlist);
+                initSongInfo(playlist[0]);
+            }
+        },
+        error: function (data) {
+            console.log(data)
+        }
+    });
+}
+
 function toggleMusicList() {
     $(".music-list").click(function () {
-        $(".jp-playlist").slideToggle(1000);
+        $(".favourite-list").removeClass("favourite-list-active");
+        $(".music-list").addClass("music-list-active");
+        if (searchType == "favourite") {
+            searchType = "all";
+            keyword = "!@#%&@#";
+            resetList();
+            if($(".jp-playlist").css("display") == 'none') {
+                $(".jp-playlist").slideDown(1000);
+            }
+        } else {
+            $(".jp-playlist").slideToggle(1000);
+        }
+    });
+    $(".favourite-list").click(function () {
+        $(".music-list").removeClass("music-list-active");
+        $(".favourite-list").addClass("favourite-list-active");
+        if (searchType == "all") {
+            searchType = "favourite";
+            resetFavouriteList();
+            if($(".jp-playlist").css("display") == 'none') {
+                $(".jp-playlist").slideDown(1000);
+            }
+        } else {
+            $(".jp-playlist").slideToggle(1000);
+        }
     });
 
 }
@@ -170,11 +235,15 @@ function submitMusic() {
                 url: serverHost + "/entertainment/music/addWish?token=" + token,
                 contentType: "application/json",
                 async: true,
-                data: JSON.stringify({ "title": $("#title").val(), "artist": $("#artist").val(), "url": $("#url").val(), "remark": $("#remark").val() }),
+                data: JSON.stringify({
+                    "title": $("#title").val(),
+                    "artist": $("#artist").val(),
+                    "url": $("#url").val(),
+                    "remark": $("#remark").val()
+                }),
                 success: function (data) {
                     if ('-2' == data.code) {
-                        let currentUrl = window.location.href;
-                        window.location.href = frontHost + "/login?targetUrl=" + currentUrl;
+                        jumpToLogin();
                     } else if ("0" == data.code) {
                         clearAddForm();
                         notice("温馨提示", "你的请愿，朕收到了，退下吧！");
@@ -193,12 +262,12 @@ function submitMusic() {
 
 function checkRequired() {
     let title = $("#title").val();
-    if ('' === title || '歌名(必填)' == title) {
+    if ('' == title || '歌名(必填)' == title) {
         notice("眼瞎提示", "你瞎吗？歌名必填你看不到吗？？？");
         return false;
     }
     let artist = $("#artist").val();
-    if ('' === artist || '歌手(必填)' == artist) {
+    if ('' == artist || '歌手(必填)' == artist) {
         notice("眼瞎提示", "你瞎吗？歌手必填你看不到吗？？？");
         return false;
     }
@@ -230,12 +299,7 @@ function togglePlayMode() {
     $("#play-mode").click(function () {
         $("#play-mode").val(($("#play-mode").val() + 1) % 3);
         $("#play-mode").attr("class", playModeClassList[$("#play-mode").val()]);
-    });
-}
-
-function share() {
-    $(".share").click(function () {
-        notice("温馨提示", "想peach呢，不好好上班，还分享？");
+        $("#play-mode").attr("title", playModeTitleList[$("#play-mode").val()]);
     });
 }
 
@@ -257,6 +321,48 @@ function initSongInfo(songInfo) {
     displayPlaylist(songInfo.id, "likeCount");
     // 收听数量
     displayPlaylist(songInfo.id, "listenCount");
+    // 是否收藏
+    displayPlaylist(songInfo.id, "isFavourite");
+}
+
+function favourite() {
+    $(".collect").click(function () {
+        let $this = $(this);
+        if ($this.hasClass("favourite")) {
+            $.ajax({
+                type: "GET",
+                url: serverHost + "/entertainment/music/favourite?type=add&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+                contentType: "application/json",
+                async: true,
+                success: function (data) {
+                    if ('-2' == data.code) {
+                        jumpToLogin();
+                    }
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        } else {
+            $.ajax({
+                type: "GET",
+                url: serverHost + "/entertainment/music/favourite?type=remove&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+                contentType: "application/json",
+                async: true,
+                success: function (data) {
+                    if ('-2' == data.code) {
+                        jumpToLogin();
+                    }
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        updatePlaylist($("#song-id").val(), 'isFavourite');
+    });
 }
 
 function like() {
@@ -264,10 +370,13 @@ function like() {
         updatePlaylist($("#song-id").val(), 'likeCount');
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/extAdd?type=like&id=" + $("#song-id").val() + "&token=" + token,
+            url: serverHost + "/entertainment/music/extAdd?type=like&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
             contentType: "application/json",
             async: true,
             success: function (data) {
+                if ('-2' == data.code) {
+                    jumpToLogin();
+                }
                 console.log(data);
             },
             error: function (data) {
@@ -281,10 +390,13 @@ function listen(id) {
     updatePlaylist(id, 'listenCount');
     $.ajax({
         type: "GET",
-        url: serverHost + "/entertainment/music/extAdd?type=listen&id=" + $("#song-id").val() + "&token=" + token,
+        url: serverHost + "/entertainment/music/extAdd?type=listen&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
         contentType: "application/json",
         async: true,
         success: function (data) {
+            if ('-2' == data.code) {
+                jumpToLogin();
+            }
             console.log(data);
         },
         error: function (data) {
@@ -304,6 +416,17 @@ function updatePlaylist(id, field) {
                 playlist[i].likeCount = playlist[i].likeCount + 1;
                 $(".thumbs-up").html(playlist[i].likeCount);
             }
+            if (field == 'isFavourite') {
+                if (playlist[i].isFavourite == 1) {
+                    playlist[i].isFavourite = 0
+                    $(".collect").removeClass("favourited");
+                    $(".collect").addClass("favourite");
+                } else {
+                    playlist[i].isFavourite = 1
+                    $(".collect").removeClass("favourite");
+                    $(".collect").addClass("favourited");
+                }
+            }
         }
     }
 }
@@ -316,6 +439,15 @@ function displayPlaylist(id, field) {
             }
             if (field == 'likeCount') {
                 $(".thumbs-up").html(playlist[i].likeCount);
+            }
+            if (field == 'isFavourite') {
+                if (playlist[i].isFavourite == 1) {
+                    $(".collect").removeClass("favourite");
+                    $(".collect").addClass("favourited");
+                } else {
+                    $(".collect").removeClass("favourited");
+                    $(".collect").addClass("favourite");
+                }
             }
         }
     }
@@ -386,4 +518,9 @@ function addAnimation($selector) {
             return (classNames.match(/pogoSlider-animation-[a-zA-Z1-9]+/ig) || []).join(' ');
         });
     }, 1050);
+}
+
+function jumpToLogin() {
+    let currentUrl = window.location.origin + window.location.pathname;
+    window.location.href = frontHost + "/login?targetUrl=" + currentUrl;
 }

@@ -29,12 +29,12 @@ function closeNotice() {
 function submit() {
     $("#submit").click(function () {
         let username = $("#username").val();
-        if (username == '') {
+        if (username === '') {
             notice("眼瞎提示", "你瞎吗？不知道登陆要输入账户？？？");
             return;
         }
         let password = $("#password").val();
-        if (password == '') {
+        if (password === '') {
             notice("眼瞎提示", "你瞎吗？不知道登陆要输入密码？？？");
             return;
         }
@@ -44,15 +44,15 @@ function submit() {
             contentType: "application/json",
             dataType: "json",
             async: true,
-            data: JSON.stringify({ "username": username, "password": password }),
+            data: JSON.stringify({"username": username, "password": password}),
             success: function (data) {
-                if ('0' == data.code) {
+                if ('0' === data.code) {
                     window.localStorage.setItem("WM-ENTERTAINMENT-TOKEN", data.msg);
                     let targetUrl = getParam("targetUrl");
-                    if ("" != targetUrl) {
-                        window.location.href = targetUrl;
+                    if ("" !== targetUrl) {
+                        window.location.href = targetUrl + "?token=" + data.msg;
                     } else {
-                        window.location.href = window.location.origin + "/music-online";
+                        window.location.href = window.location.origin + "/music-online?token=" + data.msg;
                     }
                 } else {
                     notice("温馨提示", data.msg);
@@ -69,7 +69,7 @@ function submit() {
 function initHeader() {
     width = window.innerWidth;
     height = window.innerHeight;
-    target = { x: width / 2, y: height / 2 };
+    target = {x: width / 2, y: height / 2};
 
     largeHeader = document.getElementById('large-header');
     largeHeader.style.height = height + 'px';
@@ -85,7 +85,7 @@ function initHeader() {
         for (var y = 0; y < height; y = y + height / 20) {
             var px = x + Math.random() * width / 20;
             var py = y + Math.random() * height / 20;
-            var p = { x: px, originX: px, y: py, originY: py };
+            var p = {x: px, originX: px, y: py, originY: py};
             points.push(p);
         }
     }
@@ -141,8 +141,7 @@ function mouseMove(e) {
     if (e.pageX || e.pageY) {
         posx = e.pageX;
         posy = e.pageY;
-    }
-    else if (e.clientX || e.clientY) {
+    } else if (e.clientX || e.clientY) {
         posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
         posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
     }
