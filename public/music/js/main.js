@@ -1,18 +1,18 @@
 let myPlaylist;
 let playlist;
-let frontHost = "http://192.168.2.2:8081";
-// let frontHost = "http://61.183.42.66:53924";
+// let frontHost = "http://192.168.2.2:8081";
+let frontHost = "http://61.183.42.66:53924";
 let whiteName = true;
 let blackNameMsg = "";
 let searchType = "all";
 // 本地
-let serverHost = "http://192.168.2.2:8080";
+// let serverHost = "http://192.168.2.2:8080";
+// 湖北
+let serverHost = "http://cn-hb-sy-1.xkfrp.top:45818";
 // 镇江
 // let serverHost = "http://cn-js-zz.starryfrp.com:50337";
 // 广东
 // let serverHost = "http://cn-gd-sz-2.starryfrp.com:12400";
-// 湖北
-// let serverHost = "http://cn-hb-sy-1.xkfrp.top:45818";
 let current = 0;
 let keyword = "";
 
