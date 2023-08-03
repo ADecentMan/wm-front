@@ -11,8 +11,25 @@ $(document).ready(function () {
     // 通知事件
     closeNotice();
     // 键盘监听事件
-    submit();
+    submitAction();
+
 });
+
+function submitAction() {
+    $(document).keyup(function (e) {
+        switch (e.keyCode) {
+            case 13:
+                // 提交
+                submit();
+                return;
+        }
+    });
+
+    $("#submit").click(function () {
+        // 提交
+        submit();
+    });
+}
 
 function closeNotice() {
     $('.prompt_sure,.prompt_cancel').click(function () {
@@ -21,42 +38,40 @@ function closeNotice() {
 }
 
 function submit() {
-    $("#submit").click(function () {
-        let username = $("#username").val();
-        if (username === '') {
-            notice("眼瞎提示", "你瞎吗？不知道登陆要输入账户？？？");
-            return;
-        }
-        let password = $("#password").val();
-        if (password === '') {
-            notice("眼瞎提示", "你瞎吗？不知道登陆要输入密码？？？");
-            return;
-        }
-        $.ajax({
-            type: "post",
-            url: serverHost + "/entertainment/user/login",
-            contentType: "application/json",
-            dataType: "json",
-            async: true,
-            data: JSON.stringify({"username": username, "password": password}),
-            success: function (data) {
-                if ('0' === data.code) {
-                    window.localStorage.setItem("WM-ENTERTAINMENT-TOKEN", data.msg);
-                    let targetUrl = getParam("targetUrl");
-                    if ("" !== targetUrl) {
-                        window.location.href = targetUrl + "?token=" + data.msg;
-                    } else {
-                        window.location.href = window.location.origin + "/music-online?token=" + data.msg;
-                    }
+    let username = $("#username").val();
+    if (username === '') {
+        notice("眼瞎提示", "你瞎吗？不知道登陆要输入账户？？？");
+        return;
+    }
+    let password = $("#password").val();
+    if (password === '') {
+        notice("眼瞎提示", "你瞎吗？不知道登陆要输入密码？？？");
+        return;
+    }
+    $.ajax({
+        type: "post",
+        url: serverHost + "/entertainment/user/login",
+        contentType: "application/json",
+        dataType: "json",
+        async: true,
+        data: JSON.stringify({"username": username, "password": password}),
+        success: function (data) {
+            if ('0' === data.code) {
+                window.localStorage.setItem("WM-ENTERTAINMENT-TOKEN", data.msg);
+                let targetUrl = getParam("targetUrl");
+                if ("" !== targetUrl) {
+                    window.location.href = targetUrl + "?token=" + data.msg;
                 } else {
-                    notice("温馨提示", data.msg);
+                    window.location.href = window.location.origin + "/music-online?token=" + data.msg;
                 }
-            },
-            error: function (data) {
-                console.log(data);
+            } else {
                 notice("温馨提示", data.msg);
             }
-        });
+        },
+        error: function (data) {
+            console.log(data);
+            notice("温馨提示", data.msg);
+        }
     });
 }
 
