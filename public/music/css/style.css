@@ -472,6 +472,7 @@ input::-webkit-search-cancel-button {
 /* search input field */
 input[type=search] {
 	background: url('../css/svg/search.svg') no-repeat 9px center;
+	margin-left: 10px;
 	border: solid 0px #ccc;
 	height: 48px;
 	padding-left: 32px;

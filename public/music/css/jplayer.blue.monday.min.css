@@ -218,6 +218,7 @@
 .jp-shuffle,
 .search-icon,
 .random-mode,
+.cloud-random,
 .cycle-mode,
 .one-loop-mode {
 	width: 46px;
@@ -271,6 +272,16 @@
 
 .random-mode:hover {
 	background: url(../css/svg/play-random-hover.svg) no-repeat;
+	background-position: center;
+}
+
+.cloud-random {
+	background: url(../css/svg/cloud-random.svg) no-repeat;
+	background-position: center;
+}
+
+.cloud-random:hover {
+	background: url(../css/svg/cloud-random-hover.svg) no-repeat;
 	background-position: center;
 }
 

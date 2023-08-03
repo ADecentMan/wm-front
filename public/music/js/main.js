@@ -1,23 +1,16 @@
+let env = "dev"
 let myPlaylist;
 let playlist;
-// let frontHost = "http://192.168.2.2:8081";
-let frontHost = "http://61.183.42.66:53924";
+let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://61.183.42.66:53924";
+let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://cn-hb-sy-1.xkfrp.top:45818";
 let whiteName = true;
 let blackNameMsg = "";
 let searchType = "all";
-// 本地
-// let serverHost = "http://192.168.2.2:8080";
-// 湖北
-let serverHost = "http://cn-hb-sy-1.xkfrp.top:45818";
-// 镇江
-// let serverHost = "http://cn-js-zz.starryfrp.com:50337";
-// 广东
-// let serverHost = "http://cn-gd-sz-2.starryfrp.com:12400";
 let current = 0;
 let keyword = "";
 
-let playModeClassList = ["cycle-mode", "random-mode", "one-loop-mode"];
-let playModeTitleList = ["循环播放", "随机播放", "单曲循环"];
+let playModeClassList = ["cycle-mode", "random-mode", "one-loop-mode", "cloud-random"];
+let playModeTitleList = ["循环播放", "随机播放", "单曲循环", "云端随机"];
 
 let cssSelector = {
     jPlayer: "#jquery_jplayer_1",
@@ -167,11 +160,38 @@ function resetList() {
                 }
             },
             error: function (data) {
-                console.log(data)
+                console.log(data);
             }
         });
     }
 }
+
+function cloudRandom() {
+    $.ajax({
+        type: "GET",
+        url: serverHost + "/entertainment/music/cloudRandom?token=" + token,
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            if ('-2' == data.code) {
+                jumpToLogin();
+            } else if ('-1' == data.code) {
+                notice("温馨提示", data.msg);
+            } else {
+                playlist = data;
+                myPlaylist.setPlaylist(playlist);
+                initSongInfo(playlist[0]);
+                setTimeout(function () {
+                    myPlaylist.play();
+                }, 1000)
+            }
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+}
+
 
 function resetFavouriteList() {
     $.ajax({
@@ -191,7 +211,7 @@ function resetFavouriteList() {
             }
         },
         error: function (data) {
-            console.log(data)
+            console.log(data);
         }
     });
 }
@@ -204,7 +224,7 @@ function toggleMusicList() {
             searchType = "all";
             keyword = "!@#%&@#";
             resetList();
-            if($(".jp-playlist").css("display") == 'none') {
+            if ($(".jp-playlist").css("display") == 'none') {
                 $(".jp-playlist").slideDown(1000);
             }
         } else {
@@ -217,7 +237,7 @@ function toggleMusicList() {
         if (searchType == "all") {
             searchType = "favourite";
             resetFavouriteList();
-            if($(".jp-playlist").css("display") == 'none') {
+            if ($(".jp-playlist").css("display") == 'none') {
                 $(".jp-playlist").slideDown(1000);
             }
         } else {
@@ -297,9 +317,10 @@ function addMusicToggle() {
 
 function togglePlayMode() {
     $("#play-mode").click(function () {
-        $("#play-mode").val(($("#play-mode").val() + 1) % 3);
-        $("#play-mode").attr("class", playModeClassList[$("#play-mode").val()]);
-        $("#play-mode").attr("title", playModeTitleList[$("#play-mode").val()]);
+        let nextValue = (parseInt($("#play-mode").val()) + 1) % 4;
+        $("#play-mode").val(nextValue);
+        $("#play-mode").attr("class", playModeClassList[nextValue]);
+        $("#play-mode").attr("title", playModeTitleList[nextValue]);
     });
 }
 
@@ -477,10 +498,13 @@ function nextSong() {
         let nextOrder = Math.floor(Math.random() * playlist.length + 1);
         myPlaylist.select(nextOrder);
         myPlaylist.play();
-    } else {
+    } else if (2 == playMode) {
         // 单曲循环
         myPlaylist.select(current);
         myPlaylist.play();
+    } else {
+        // 云端随机
+        cloudRandom();
     }
 }
 

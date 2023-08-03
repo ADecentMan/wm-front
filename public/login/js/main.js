@@ -1,10 +1,6 @@
-// let serverHost = "http://192.168.2.2:8080";
-// 湖北
-let serverHost = "http://cn-hb-sy-1.xkfrp.top:45818";
-// 镇江
-// let serverHost = "http://cn-js-zz.starryfrp.com:50337";
-// 广东
-// let serverHost = "http://cn-gd-sz-2.starryfrp.com:12400";
+let env = "dev"
+let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://cn-hb-sy-1.xkfrp.top:45818";
+
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
 
 $(document).ready(function () {
@@ -16,8 +12,6 @@ $(document).ready(function () {
     closeNotice();
     // 键盘监听事件
     submit();
-
-
 });
 
 function closeNotice() {
