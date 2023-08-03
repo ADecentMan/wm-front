@@ -41,7 +41,9 @@ $.ajax({
 
 let options = {
     ready: function () {
-        myPlaylist.play();
+        setTimeout(function () {
+            myPlaylist.play();
+        }, 1000)
     },
     error: function (event) {
         myPlaylist.next();
@@ -220,7 +222,7 @@ function toggleMusicList() {
     $(".music-list").click(function () {
         $(".favourite-list").removeClass("favourite-list-active");
         $(".music-list").addClass("music-list-active");
-        if (searchType == "favourite") {
+        if (searchType != "all") {
             searchType = "all";
             keyword = "!@#%&@#";
             resetList();
@@ -234,7 +236,7 @@ function toggleMusicList() {
     $(".favourite-list").click(function () {
         $(".music-list").removeClass("music-list-active");
         $(".favourite-list").addClass("favourite-list-active");
-        if (searchType == "all") {
+        if (searchType != "favourite") {
             searchType = "favourite";
             resetFavouriteList();
             if ($(".jp-playlist").css("display") == 'none') {
@@ -503,6 +505,8 @@ function nextSong() {
         myPlaylist.select(current);
         myPlaylist.play();
     } else {
+        searchType = "cloudRandom";
+        keyword = "!@#%&@#";
         // 云端随机
         cloudRandom();
     }
@@ -523,10 +527,15 @@ function previousSong() {
         let nextOrder = Math.floor(Math.random() * playlist.length + 1);
         myPlaylist.select(nextOrder);
         myPlaylist.play();
-    } else {
+    } else if (2 == playMode) {
         // 单曲循环
         myPlaylist.select(current);
         myPlaylist.play();
+    } else {
+        searchType = "cloudRandom";
+        keyword = "!@#%&@#";
+        // 云端随机
+        cloudRandom();
     }
 }
 
