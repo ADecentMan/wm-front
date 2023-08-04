@@ -183,6 +183,10 @@ function cloudRandom() {
                 playlist = data;
                 myPlaylist.setPlaylist(playlist);
                 initSongInfo(playlist[0]);
+                $(".music-list").removeClass("music-list-active");
+                $(".favourite-list").removeClass("favourite-list-active");
+                $(".cloud-random").addClass("cloud-random-active");
+                $(".jp-playlist").slideUp(1000);
                 setTimeout(function () {
                     myPlaylist.play();
                 }, 1000)
@@ -221,6 +225,7 @@ function resetFavouriteList() {
 function toggleMusicList() {
     $(".music-list").click(function () {
         $(".favourite-list").removeClass("favourite-list-active");
+        $(".cloud-random").removeClass("cloud-random-active");
         $(".music-list").addClass("music-list-active");
         if (searchType != "all") {
             searchType = "all";
@@ -235,6 +240,7 @@ function toggleMusicList() {
     });
     $(".favourite-list").click(function () {
         $(".music-list").removeClass("music-list-active");
+        $(".cloud-random").removeClass("cloud-random-active");
         $(".favourite-list").addClass("favourite-list-active");
         if (searchType != "favourite") {
             searchType = "favourite";
