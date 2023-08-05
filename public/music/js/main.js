@@ -43,7 +43,7 @@ let options = {
     ready: function () {
         setTimeout(function () {
             myPlaylist.play();
-        }, 1000)
+        }, 1000);
     },
     error: function (event) {
         myPlaylist.next();
