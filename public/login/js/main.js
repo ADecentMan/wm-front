@@ -1,4 +1,4 @@
-let env = "dev"
+let env = "pro"
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://cn-hb-sy-1.xkfrp.top:45818";
 
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;

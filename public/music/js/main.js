@@ -1,4 +1,4 @@
-let env = "dev"
+let env = "pro"
 let myPlaylist;
 let playlist;
 let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://61.183.42.66:53924";
