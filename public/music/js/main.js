@@ -155,6 +155,12 @@ function resetList() {
                     jumpToLogin();
                 } else if ('-1' == data.code) {
                     notice("温馨提示", data.msg);
+                    $("#search").val("");
+                    keyword = "";
+                } else if (0 == data.length){
+                    notice("温馨提示", "哦豁！没有搜到，赶紧登记吧！");
+                    $("#search").val("");
+                    keyword = "";
                 } else {
                     playlist = data;
                     myPlaylist.setPlaylist(playlist);
