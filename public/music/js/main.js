@@ -1,7 +1,7 @@
 let env = "pro"
 let myPlaylist;
 let playlist;
-let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://cn-cd-txy-1.starryfrp.com:42876";
+let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://cn-cd.396pay.cn:42876";
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://cn-cd.396pay.cn:19526";
 let whiteName = true;
 let blackNameMsg = "";
