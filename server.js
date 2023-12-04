@@ -11,6 +11,10 @@ app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "login.html");
 });
 
+app.get('/chickenQuestion', function (req, res) {
+    res.sendFile(__dirname + "/" + "chickenQuestion.html");
+});
+
 app.use(express.json());
 
 var server = app.listen(8081, function () {
