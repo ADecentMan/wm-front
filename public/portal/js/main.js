@@ -29,6 +29,24 @@ $(document).ready(function () {
     $("#gotoAnswer").click(function () {
         window.location.href = frontHost + "/chickenQuestion?token=" + token;
     });
+    $("#initList").click(function () {
+        $.ajax({
+            type: "GET",
+            url: serverHost + "/entertainment/music/initList?token=" + token,
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if ('-2' == data.code) {
+                    jumpToLogin();
+                } else {
+                    notice("温馨提示", data.msg);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
 });
 
 

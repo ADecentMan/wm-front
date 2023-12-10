@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" type="text/css" href="./public/portal/css/css.css">
+    <link href="./public/common/css/notice.css" rel="stylesheet" type="text/css" media="all" />
     <script src="./public/common/js/jquery-1.11.1.min.js"></script>
     <script src="./public/common/js/notice.js"></script>
     <script type="text/javascript" src="./public/portal/js/main.js"></script>
@@ -21,12 +22,26 @@
     <div class="main">
         <ul>
             <li class="border" id="gotoMusic"><a><P><img src="./public/portal/images/icon_music.jpg"/><span>正经音乐</span></P></a></li>
-            <li class="border" id="gotoAnswer"><a href="/chickenQuestion"><P><img src="./public/portal/images/icon_1_05.png"/><span>答案维护</span></P></a></li>
-            <li class="border_bottom"><a href="http://222.211.75.240:19526/entertainment/music/initList"><P><img src="./public/portal/images/icon_1_13.png"/><span>构建列表</span></P></a></li>
+            <li class="border" id="gotoAnswer"><a><P><img src="./public/portal/images/icon_1_05.png"/><span>答案维护</span></P></a></li>
+            <li class="border_bottom" id="initList"><a><P><img src="./public/portal/images/icon_1_13.png"/><span>构建列表</span></P></a></li>
             <li class="border_right"><a href=""><P><img src="./public/portal/images/icon_1_07.png"/><span>掌上医保</span></P></a></li>
             <li class="border_right"><a href=""><P><img src="./public/portal/images/icon_1_15.png"/><span>社会保障卡</span></P></a></li>
             <li><a href=""><P><img src="./public/portal/images/icon_1_17.png"/><span>身份验证</span></P></a></li>
         </ul>
+    </div>
+
+    <!-- link标签引入另一个HTML页面 -->
+    <div class="mask hide">
+        <div class="prompt_box">
+            <div class="prompt_title">
+                <h3 class="notice-title">系统提示</h3>
+                <span class="prompt_cancel"></span>
+            </div>
+            <div class="prompt_cont">
+                <p class="prompt_text">输入有误，请重新输入！</p>
+                <span class="prompt_sure">确定</span>
+            </div>
+        </div>
     </div>
 </body>
 </html>
