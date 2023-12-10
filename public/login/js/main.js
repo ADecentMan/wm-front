@@ -1,4 +1,5 @@
-let env = "pro"
+let host = window.location.hostname;
+let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.211.75.240:19526";
 
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
