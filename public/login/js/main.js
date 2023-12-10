@@ -1,5 +1,5 @@
 let env = "pro"
-let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://cn-cd.396pay.cn:19526";
+let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.211.75.240:19526";
 
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
 
