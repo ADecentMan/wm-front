@@ -7,6 +7,10 @@ app.get('/music-online', function (req, res) {
     res.sendFile(__dirname + "/" + "music.html");
 });
 
+app.get('/index', function (req, res) {
+    res.sendFile(__dirname + "/" + "index.html");
+});
+
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "login.html");
 });
