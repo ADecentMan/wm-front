@@ -1,5 +1,5 @@
 let env = "pro"
-let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://www.cnwm.online:42876";
+let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.211.75.240:42876";
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.211.75.240:19526";
 let token = getParam("token");
 if (null == token || "" == token) {
