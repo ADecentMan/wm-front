@@ -174,10 +174,10 @@ function resetList() {
     }
 }
 
-function cloudRandom() {
+function cloudRandom(type) {
     $.ajax({
         type: "GET",
-        url: serverHost + "/entertainment/music/cloudRandom?token=" + token,
+        url: serverHost + "/entertainment/music/cloudRandom?type=" + type +"&token=" + token,
         dataType: "json",
         async: false,
         success: function (data) {
@@ -520,7 +520,7 @@ function nextSong() {
         searchType = "cloudRandom";
         keyword = "!@#%&@#";
         // 云端随机
-        cloudRandom();
+        cloudRandom("next");
     }
 }
 
@@ -547,7 +547,7 @@ function previousSong() {
         searchType = "cloudRandom";
         keyword = "!@#%&@#";
         // 云端随机
-        cloudRandom();
+        cloudRandom("previous");
     }
 }
 
