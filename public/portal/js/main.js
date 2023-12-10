@@ -23,6 +23,9 @@ $.ajax({
 });
 
 $(document).ready(function () {
+    $('.prompt_sure,.prompt_cancel').click(function () {
+        $('.mask').addClass('hide');
+    })
     $("#gotoMusic").click(function () {
         window.location.href = frontHost + "/music-online?token=" + token;
     });
@@ -32,7 +35,7 @@ $(document).ready(function () {
     $("#initList").click(function () {
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/initList?token=" + token,
+            url: serverHost + "/entertainment/music/initList?keyword=&token=" + token,
             dataType: "json",
             async: false,
             success: function (data) {
