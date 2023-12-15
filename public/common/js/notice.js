@@ -15,3 +15,7 @@ function getParam(name) {
     var r = location.search.substr(1).match(reg);
     return (r != null) ? decodeURI(decodeURI(r[2])).toString() : "";
 }
+
+function goBack() {
+    window.history.back();
+}

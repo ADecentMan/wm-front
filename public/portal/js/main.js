@@ -1,11 +1,11 @@
 let host = window.location.hostname;
 let env = (host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2") ? "dev" : "pro"
-let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.211.75.240:42876";
-let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.211.75.240:19526";
+let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.186.134.207:42876";
+let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.186.134.207:19526";
 
 let token = getParam("token");
-if (null == token || "" == token) {
-    token = window.localStorage.getItem("token");
+if (null == token || "" === token) {
+    token = window.localStorage.getItem("WM-ENTERTAINMENT-TOKEN");
 }
 $.ajax({
     type: "POST",
@@ -27,10 +27,10 @@ $(document).ready(function () {
         $('.mask').addClass('hide');
     })
     $("#gotoMusic").click(function () {
-        window.location.href = frontHost + "/music-online?token=" + token;
+        window.location.href = frontHost + "/music-online";
     });
     $("#gotoAnswer").click(function () {
-        window.location.href = frontHost + "/chickenQuestion?token=" + token;
+        window.location.href = frontHost + "/chickenQuestion";
     });
     $("#initList").click(function () {
         $.ajax({

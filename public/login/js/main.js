@@ -1,6 +1,6 @@
 let host = window.location.hostname;
 let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
-let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.211.75.240:19526";
+let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.186.134.207:19526";
 
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
 
@@ -61,9 +61,9 @@ function submit() {
                 window.localStorage.setItem("WM-ENTERTAINMENT-TOKEN", data.msg);
                 let targetUrl = getParam("targetUrl");
                 if ("" !== targetUrl) {
-                    window.location.href = targetUrl + "?token=" + data.msg;
+                    window.location.href = targetUrl;
                 } else {
-                    window.location.href = window.location.origin + "/music-online?token=" + data.msg;
+                    window.location.href = window.location.origin + "/index";
                 }
             } else {
                 notice("温馨提示", data.msg);
