@@ -18,15 +18,12 @@ let cssSelector = {
     cssSelectorAncestor: "#jp_container_1"
 };
 
-let token = getParam("token");
-if (null == token || "" == token) {
-    token = window.localStorage.getItem("WM-ENTERTAINMENT-TOKEN");
-}
 $.ajax({
     type: "GET",
-    url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword + "&token=" + token,
+    url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword,
     dataType: "json",
     async: false,
+    xhrFields: { withCredentials: true },
     success: function (data) {
         if ('-2' == data.code) {
             jumpToLogin();
@@ -147,9 +144,10 @@ function resetList() {
         keyword = newKeyword;
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword + "&token=" + token,
+            url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword,
             dataType: "json",
             async: false,
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 if ('-2' == data.code) {
                     jumpToLogin();
@@ -177,9 +175,10 @@ function resetList() {
 function cloudRandom(type) {
     $.ajax({
         type: "GET",
-        url: serverHost + "/entertainment/music/cloudRandom?type=" + type +"&token=" + token,
+        url: serverHost + "/entertainment/music/cloudRandom?type=" + type,
         dataType: "json",
         async: false,
+        xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
                 jumpToLogin();
@@ -208,9 +207,10 @@ function cloudRandom(type) {
 function resetFavouriteList() {
     $.ajax({
         type: "GET",
-        url: serverHost + "/entertainment/music/queryFavouriteList/500/1?keyword=&token=" + token,
+        url: serverHost + "/entertainment/music/queryFavouriteList/500/1?keyword=",
         dataType: "json",
         async: false,
+        xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
                 jumpToLogin();
@@ -266,9 +266,10 @@ function submitMusic() {
         if (checkRequired()) {
             $.ajax({
                 type: "post",
-                url: serverHost + "/entertainment/music/addWish?token=" + token,
+                url: serverHost + "/entertainment/music/addWish",
                 contentType: "application/json",
                 async: true,
+                xhrFields: { withCredentials: true },
                 data: JSON.stringify({
                     "title": $("#title").val(),
                     "artist": $("#artist").val(),
@@ -366,9 +367,10 @@ function favourite() {
         if ($this.hasClass("favourite")) {
             $.ajax({
                 type: "GET",
-                url: serverHost + "/entertainment/music/favourite?type=add&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+                url: serverHost + "/entertainment/music/favourite?type=add&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
                 contentType: "application/json",
                 async: true,
+                xhrFields: { withCredentials: true },
                 success: function (data) {
                     if ('-2' == data.code) {
                         jumpToLogin();
@@ -382,9 +384,10 @@ function favourite() {
         } else {
             $.ajax({
                 type: "GET",
-                url: serverHost + "/entertainment/music/favourite?type=remove&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+                url: serverHost + "/entertainment/music/favourite?type=remove&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
                 contentType: "application/json",
                 async: true,
+                xhrFields: { withCredentials: true },
                 success: function (data) {
                     if ('-2' == data.code) {
                         jumpToLogin();
@@ -405,9 +408,10 @@ function like() {
         updatePlaylist($("#song-id").val(), 'likeCount');
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/extAdd?type=like&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+            url: serverHost + "/entertainment/music/extAdd?type=like&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
             contentType: "application/json",
             async: true,
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 if ('-2' == data.code) {
                     jumpToLogin();
@@ -425,9 +429,10 @@ function listen(id) {
     updatePlaylist(id, 'listenCount');
     $.ajax({
         type: "GET",
-        url: serverHost + "/entertainment/music/extAdd?type=listen&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html() + "&token=" + token,
+        url: serverHost + "/entertainment/music/extAdd?type=listen&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
         contentType: "application/json",
         async: true,
+        xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
                 jumpToLogin();

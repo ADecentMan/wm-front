@@ -3,15 +3,12 @@ let env = (host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2") 
 let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.186.134.207:42876";
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.186.134.207:19526";
 
-let token = getParam("token");
-if (null == token || "" === token) {
-    token = window.localStorage.getItem("WM-ENTERTAINMENT-TOKEN");
-}
 $.ajax({
     type: "POST",
-    url: serverHost + "/entertainment/user/checkStatus?token=" + token,
+    url: serverHost + "/entertainment/user/checkStatus",
     dataType: "json",
     async: false,
+    xhrFields: { withCredentials: true },
     success: function (data) {
         if ('-2' == data.code) {
             jumpToLogin();
@@ -35,9 +32,10 @@ $(document).ready(function () {
     $("#initList").click(function () {
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/initList?keyword=&token=" + token,
+            url: serverHost + "/entertainment/music/initList?keyword=",
             dataType: "json",
             async: false,
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 if ('-2' == data.code) {
                     jumpToLogin();

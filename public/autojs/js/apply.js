@@ -2,13 +2,8 @@ let host = window.location.hostname;
 let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
 let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.186.134.207:42876";
 let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.186.134.207:19526";
-let token = getParam("token");
-if (null == token || "" === token) {
-    token = window.localStorage.getItem("WM-ENTERTAINMENT-TOKEN");
-}
 
 var apply = apply || {};
-
 
 //选择银行模块
 //流畅滚动模拟组件
@@ -61,8 +56,9 @@ apply.submit = function () {
         }
         $.ajax({
             type: "POST",
-            url: serverHost + "/entertainment/alipay/chickenAnswer/submit?token=" + token,
+            url: serverHost + "/entertainment/alipay/chickenAnswer/submit",
             contentType: "application/json",
+            xhrFields: { withCredentials: true },
             data: JSON.stringify({
                     "date": $("#date").val(),
                     "answerList": answerList

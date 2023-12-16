@@ -59,6 +59,7 @@ function submit() {
         success: function (data) {
             if ('0' === data.code) {
                 window.localStorage.setItem("WM-ENTERTAINMENT-TOKEN", data.msg);
+                setCookie("WM-ENTERTAINMENT-TOKEN", data.msg, 1);
                 let targetUrl = getParam("targetUrl");
                 if ("" !== targetUrl) {
                     window.location.href = targetUrl;
