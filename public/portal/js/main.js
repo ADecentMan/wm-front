@@ -1,7 +1,7 @@
 let host = window.location.hostname;
 let env = (host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2") ? "dev" : "pro"
-let frontHost = env == "dev" ? "http://192.168.2.2:8081" : "http://222.186.134.207:42876";
-let serverHost = env == "dev" ? "http://192.168.2.2:8080" : "http://222.186.134.207:19526";
+let frontHost = env == "dev" ? "http://127.0.0.1:8081" : "http://220.231.145.108:42876";
+let serverHost = env == "dev" ? "http://127.0.0.1:8080" : "http://220.231.145.108:19526";
 
 $.ajax({
     type: "POST",
