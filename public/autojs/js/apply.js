@@ -107,6 +107,14 @@ $(document).ready(
     }
 )
 
+// 键盘事件
+$(document).keyup(function (e) {
+    switch (e.keyCode) {
+        case 13:
+            apply.submit();
+    }
+});
+
 function jumpToLogin() {
     let currentUrl = window.location.origin + window.location.pathname;
     window.location.href = frontHost + "/login?targetUrl=" + currentUrl;

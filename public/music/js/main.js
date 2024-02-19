@@ -97,6 +97,8 @@ $(document).ready(function () {
     toggleMusicList();
     // 歌曲查询
     searchList();
+    // 歌手点击查询
+    searchArtist();
     // 键盘监听事件
     keyboardListen();
 });
@@ -137,6 +139,19 @@ function searchList() {
         resetList();
     });
 }
+
+function searchArtist() {
+    $(".artist").click(function () {
+        // 将歌手名作为搜索项
+        $("#search").val($(".artist").html());
+        // 搜索
+        resetList();
+        if ($(".jp-playlist").css("display") == 'none') {
+            $(".jp-playlist").slideDown(1000);
+        }
+    });
+}
+
 
 function resetList() {
     let newKeyword = $("#search").val();
