@@ -346,12 +346,23 @@ function addMusicToggle() {
 }
 
 function togglePlayMode() {
+    // 缓存模式
+    let cachePlayMode = window.localStorage.getItem("WM-MUSIC-PLAY-MODE");
+    if (null != cachePlayMode && "" != cachePlayMode) {
+        assemblePlayMode(parseInt(cachePlayMode))
+    }
+    // 切换模式
     $("#play-mode").click(function () {
         let nextValue = (parseInt($("#play-mode").val()) + 1) % 4;
-        $("#play-mode").val(nextValue);
-        $("#play-mode").attr("class", playModeClassList[nextValue]);
-        $("#play-mode").attr("title", playModeTitleList[nextValue]);
+        assemblePlayMode(nextValue)
+        window.localStorage.setItem("WM-MUSIC-PLAY-MODE", nextValue.toString());
     });
+}
+
+function assemblePlayMode(playMode) {
+    $("#play-mode").val(playMode);
+    $("#play-mode").attr("class", playModeClassList[playMode]);
+    $("#play-mode").attr("title", playModeTitleList[playMode]);
 }
 
 function initSongInfo(songInfo) {
