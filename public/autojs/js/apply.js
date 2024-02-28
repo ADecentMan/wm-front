@@ -42,45 +42,44 @@ var apply = apply || {};
 })()
 
 apply.submit = function () {
-    $("#submit").on("click", function () {
-        let answerList = [];
-        if ($("#answer1").val().trim() !== '') {
-            answerList.push($("#answer1").val());
-        }
-        if ($("#answer2").val().trim() !== '') {
-            answerList.push($("#answer2").val());
-        }
-        if (0 === answerList.length) {
-            notice("眼瞎提示", "你瞎吗？不填答案就提交？？？");
-            return;
-        }
-        $.ajax({
-            type: "POST",
-            url: serverHost + "/entertainment/alipay/chickenAnswer/submit",
-            contentType: "application/json",
-            xhrFields: { withCredentials: true },
-            data: JSON.stringify({
-                    "date": $("#date").val(),
-                    "answerList": answerList
-                }
-            ),
-            success: function (data) {
-                if ('-2' == data.code) {
-                    jumpToLogin();
-                } else if ("0" == data.code) {
-                    $("#answer1").val("");
-                    $("#answer2").val("");
-                    notice("温馨提示", "提交成功！");
-                } else {
-                    notice("温馨提示", data.msg);
-                }
-            },
-            error: function (data) {
-                console.log(data);
+    let answerList = [];
+    if ($("#answer1").val().trim() !== '') {
+        answerList.push($("#answer1").val());
+    }
+    if ($("#answer2").val().trim() !== '') {
+        answerList.push($("#answer2").val());
+    }
+    if (0 === answerList.length) {
+        notice("眼瞎提示", "你瞎吗？不填答案就提交？？？");
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: serverHost + "/entertainment/alipay/chickenAnswer/submit",
+        contentType: "application/json",
+        xhrFields: {withCredentials: true},
+        data: JSON.stringify({
+                "date": $("#date").val(),
+                "answerList": answerList
             }
-        });
-    })
+        ),
+        success: function (data) {
+            if ('-2' == data.code) {
+                jumpToLogin();
+            } else if ("0" == data.code) {
+                $("#answer1").val("");
+                $("#answer2").val("");
+                notice("温馨提示", "提交成功！");
+            } else {
+                notice("温馨提示", data.msg);
+            }
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
+
 apply.initDate = function () {
     let date = new Date();
     let dateValue = date.getDate();
@@ -103,7 +102,9 @@ $(document).ready(
     function () {
         apply.initDate();
         apply.closeNotice();
-        apply.submit();
+        $("#submit").on("click", function () {
+            apply.submit();
+        })
     }
 )
 
