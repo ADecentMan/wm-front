@@ -2,7 +2,7 @@ function notice(title, msg) {
     $('.notice-title').text(title);
     $('.prompt_text').text(msg);
     $('.mask').removeClass('hide');
-};
+}
 
 /**
  * 获取指定参数值
@@ -10,9 +10,9 @@ function notice(title, msg) {
  * @returns 参数值
  */
 function getParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     //search,查询？后面的参数，并匹配正则
-    var r = location.search.substr(1).match(reg);
+    let r = location.search.substr(1).match(reg);
     return (r != null) ? decodeURI(decodeURI(r[2])).toString() : "";
 }
 
@@ -21,9 +21,9 @@ function goBack() {
 }
 
 function setCookie(name, value, days) {
-    var expires = "";
+    let expires = "";
     if (days) {
-        var date = new Date();
+        let date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }

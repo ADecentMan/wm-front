@@ -4,8 +4,6 @@ let myPlaylist;
 let playlist;
 let frontHost = env == "dev" ? "http://127.0.0.1:8081" : "http://220.231.145.108:42876";
 let serverHost = env == "dev" ? "http://127.0.0.1:8080" : "http://220.231.145.108:19526";
-let whiteName = true;
-let blackNameMsg = "";
 let searchType = "all";
 let current = 0;
 let keyword = "";
@@ -71,11 +69,6 @@ let options = {
 
 
 $(document).ready(function () {
-    if (whiteName == false) {
-        $('.prompt_sure,.prompt_cancel,.audio-main').hide();
-        notice("温馨提示", blackNameMsg);
-        return;
-    }
     myPlaylist = new jPlayerPlaylist(cssSelector, [], options);
     myPlaylist.setPlaylist(playlist);
     initSongInfo(playlist[0]);
@@ -174,6 +167,7 @@ function resetList() {
                     notice("温馨提示", "哦豁！没有搜到，赶紧登记吧！");
                     $("#search").val("");
                     keyword = "";
+                    $(".add-music").click();
                 } else {
                     playlist = data;
                     myPlaylist.setPlaylist(playlist);

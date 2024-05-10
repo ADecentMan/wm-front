@@ -249,6 +249,7 @@ p {
 }
 
 .pic {
+	user-select: none;
 	float: left;
 	width: 25%;
 }
@@ -307,6 +308,7 @@ p {
 }
 
 .tweet {
+	user-select: none;
 	width: 33.3%;
 	float: left;
 }
@@ -328,11 +330,13 @@ p {
 }
 
 .follow {
+	user-select: none;
 	width: 33.3%;
 	float: left;
 }
 
 .follow2 {
+	user-select: none;
 	width: 33.3%;
 	float: left;
 }
