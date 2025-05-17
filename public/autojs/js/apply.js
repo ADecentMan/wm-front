@@ -1,7 +1,7 @@
 let host = window.location.hostname;
 let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
-let frontHost = env == "dev" ? "http://127.0.0.1:8081" : "http://220.231.145.108:42876";
-let serverHost = env == "dev" ? "http://127.0.0.1:8080" : "http://220.231.145.108:19526";
+let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://43.157.13.112:36816";
+let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://43.157.13.112:40254";
 
 var apply = apply || {};
 
@@ -56,6 +56,7 @@ apply.submit = function () {
     $.ajax({
         type: "POST",
         url: serverHost + "/entertainment/alipay/chickenAnswer/submit",
+        headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
         contentType: "application/json",
         xhrFields: {withCredentials: true},
         data: JSON.stringify({

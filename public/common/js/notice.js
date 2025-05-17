@@ -29,3 +29,15 @@ function setCookie(name, value, days) {
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
+
+function getCookieValue(cookieName) {
+    let name = cookieName + "=";
+    let cookieArray = document.cookie.split(';');
+    for(let i = 0; i < cookieArray.length; i++) {
+        let currentCookie = cookieArray[i].trim();
+        if (currentCookie.indexOf(name) === 0) {
+            return currentCookie.substring(name.length, currentCookie.length);
+        }
+    }
+    return "";
+}

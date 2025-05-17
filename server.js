@@ -3,16 +3,20 @@ var app = express();
 
 app.use('/public', express.static('public'));
 
-app.get('/music-online', function (req, res) {
-    res.sendFile(__dirname + "/" + "music.html");
-});
-
 app.get('/index', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
 });
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "login.html");
+});
+
+app.get('/music-online', function (req, res) {
+    res.sendFile(__dirname + "/" + "music.html");
+});
+
+app.get('/story-online', function (req, res) {
+    res.sendFile(__dirname + "/" + "story.html");
 });
 
 app.get('/chickenQuestion', function (req, res) {

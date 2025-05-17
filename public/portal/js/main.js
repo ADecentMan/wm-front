@@ -1,11 +1,12 @@
 let host = window.location.hostname;
 let env = (host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2") ? "dev" : "pro"
-let frontHost = env == "dev" ? "http://127.0.0.1:8081" : "http://220.231.145.108:42876";
-let serverHost = env == "dev" ? "http://127.0.0.1:8080" : "http://220.231.145.108:19526";
+let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://43.157.13.112:36816";
+let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://43.157.13.112:40254";
 
 $.ajax({
     type: "POST",
     url: serverHost + "/entertainment/user/checkStatus",
+    headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
     dataType: "json",
     async: false,
     xhrFields: { withCredentials: true },
@@ -29,10 +30,31 @@ $(document).ready(function () {
     $("#gotoAnswer").click(function () {
         window.location.href = frontHost + "/chickenQuestion";
     });
-    $("#initList").click(function () {
+    $("#initMusicList").click(function () {
         $.ajax({
             type: "GET",
             url: serverHost + "/entertainment/music/initList?keyword=",
+            headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
+            dataType: "json",
+            async: false,
+            xhrFields: { withCredentials: true },
+            success: function (data) {
+                if ('-2' == data.code) {
+                    jumpToLogin();
+                } else {
+                    notice("温馨提示", data.msg);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+    $("#initStoryList").click(function () {
+        $.ajax({
+            type: "GET",
+            url: serverHost + "/entertainment/story/initList?keyword=",
+            headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
             dataType: "json",
             async: false,
             xhrFields: { withCredentials: true },

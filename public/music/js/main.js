@@ -2,8 +2,8 @@ let host = window.location.hostname;
 let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
 let myPlaylist;
 let playlist;
-let frontHost = env == "dev" ? "http://127.0.0.1:8081" : "http://220.231.145.108:42876";
-let serverHost = env == "dev" ? "http://127.0.0.1:8080" : "http://220.231.145.108:19526";
+let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://43.157.13.112:36816";
+let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://43.157.13.112:40254";
 let searchType = "all";
 let current = 0;
 let keyword = "";
@@ -15,10 +15,10 @@ let cssSelector = {
     jPlayer: "#jquery_jplayer_1",
     cssSelectorAncestor: "#jp_container_1"
 };
-
 $.ajax({
     type: "GET",
-    url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword,
+    url: serverHost + "/entertainment/music/queryList/3000/1?keyword=" + keyword,
+    headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
     dataType: "json",
     async: false,
     xhrFields: { withCredentials: true },
@@ -152,7 +152,8 @@ function resetList() {
         keyword = newKeyword;
         $.ajax({
             type: "GET",
-            url: serverHost + "/entertainment/music/queryList/800/1?keyword=" + keyword,
+            url: serverHost + "/entertainment/music/queryList/3000/1?keyword=" + keyword,
+            headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
             dataType: "json",
             async: false,
             xhrFields: { withCredentials: true },
@@ -185,6 +186,7 @@ function cloudRandom(type) {
     $.ajax({
         type: "GET",
         url: serverHost + "/entertainment/music/cloudRandom?type=" + type,
+        headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
         dataType: "json",
         async: false,
         xhrFields: { withCredentials: true },
@@ -217,6 +219,7 @@ function resetFavouriteList() {
     $.ajax({
         type: "GET",
         url: serverHost + "/entertainment/music/queryFavouriteList/500/1?keyword=",
+        headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
         dataType: "json",
         async: false,
         xhrFields: { withCredentials: true },
@@ -276,6 +279,7 @@ function submitMusic() {
             $.ajax({
                 type: "post",
                 url: serverHost + "/entertainment/music/addWish",
+                headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
                 contentType: "application/json",
                 async: true,
                 xhrFields: { withCredentials: true },
@@ -388,6 +392,7 @@ function favourite() {
             $.ajax({
                 type: "GET",
                 url: serverHost + "/entertainment/music/favourite?type=add&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
+                headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
                 contentType: "application/json",
                 async: true,
                 xhrFields: { withCredentials: true },
@@ -405,6 +410,7 @@ function favourite() {
             $.ajax({
                 type: "GET",
                 url: serverHost + "/entertainment/music/favourite?type=remove&musicId=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
+                headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
                 contentType: "application/json",
                 async: true,
                 xhrFields: { withCredentials: true },
@@ -429,6 +435,7 @@ function like() {
         $.ajax({
             type: "GET",
             url: serverHost + "/entertainment/music/extAdd?type=like&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
+            headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
             contentType: "application/json",
             async: true,
             xhrFields: { withCredentials: true },
@@ -450,6 +457,7 @@ function listen(id) {
     $.ajax({
         type: "GET",
         url: serverHost + "/entertainment/music/extAdd?type=listen&id=" + $("#song-id").val() + "&musicTitle=" + $(".song-title").html(),
+        headers:{"WM-ENTERTAINMENT-TOKEN":getCookieValue("WM-ENTERTAINMENT-TOKEN")},
         contentType: "application/json",
         async: true,
         xhrFields: { withCredentials: true },
