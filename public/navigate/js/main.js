@@ -22,15 +22,24 @@ const app = createApp({
 
         // 从 localStorage 加载数据
         const loadCategories = () => {
-            const saved = localStorage.getItem('navigateData');
-            if (saved) {
-                categories.value = JSON.parse(saved);
+            try {
+                const saved = localStorage.getItem('navigateData');
+                if (saved) {
+                    categories.value = JSON.parse(saved);
+                }
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                categories.value = [];
             }
         };
 
         // 保存数据到 localStorage
         const saveCategories = () => {
-            localStorage.setItem('navigateData', JSON.stringify(categories.value));
+            try {
+                localStorage.setItem('navigateData', JSON.stringify(categories.value));
+            } catch (error) {
+                console.error('保存数据失败:', error);
+            }
         };
 
         // 生成唯一ID
@@ -82,38 +91,42 @@ const app = createApp({
 
         // 确认对话框
         const confirmDialog = () => {
-            if (dialogType.value === 'category') {
-                if (currentCategoryForm.value.name.trim()) {
-                    categories.value.push({
-                        id: generateId(),
-                        name: currentCategoryForm.value.name.trim(),
-                        items: []
-                    });
-                    saveCategories();
-                    dialogVisible.value = false;
-                }
-            } else if (dialogType.value === 'item') {
-                if (currentItemForm.value.name.trim() && currentItemForm.value.url.trim()) {
-                    if (editingItem.value) {
-                        // 编辑现有项目
-                        Object.assign(editingItem.value, {
-                            name: currentItemForm.value.name.trim(),
-                            url: currentItemForm.value.url.trim(),
-                            icon: currentItemForm.value.icon.trim() || 'el-icon-link'
-                        });
-                        editingItem.value = null;
-                    } else if (currentCategory.value) {
-                        // 添加新项目
-                        currentCategory.value.items.push({
+            try {
+                if (dialogType.value === 'category') {
+                    if (currentCategoryForm.value.name.trim()) {
+                        categories.value.push({
                             id: generateId(),
-                            name: currentItemForm.value.name.trim(),
-                            url: currentItemForm.value.url.trim(),
-                            icon: currentItemForm.value.icon.trim() || 'el-icon-link'
+                            name: currentCategoryForm.value.name.trim(),
+                            items: []
                         });
+                        saveCategories();
+                        dialogVisible.value = false;
                     }
-                    saveCategories();
-                    dialogVisible.value = false;
+                } else if (dialogType.value === 'item') {
+                    if (currentItemForm.value.name.trim() && currentItemForm.value.url.trim()) {
+                        if (editingItem.value) {
+                            // 编辑现有项目
+                            Object.assign(editingItem.value, {
+                                name: currentItemForm.value.name.trim(),
+                                url: currentItemForm.value.url.trim(),
+                                icon: currentItemForm.value.icon.trim() || 'el-icon-link'
+                            });
+                            editingItem.value = null;
+                        } else if (currentCategory.value) {
+                            // 添加新项目
+                            currentCategory.value.items.push({
+                                id: generateId(),
+                                name: currentItemForm.value.name.trim(),
+                                url: currentItemForm.value.url.trim(),
+                                icon: currentItemForm.value.icon.trim() || 'el-icon-link'
+                            });
+                        }
+                        saveCategories();
+                        dialogVisible.value = false;
+                    }
                 }
+            } catch (error) {
+                console.error('确认对话框错误:', error);
             }
         };
 
@@ -205,11 +218,6 @@ const app = createApp({
         };
     }
 });
-
-// 注册 Element Plus 图标
-for (const [key, component] of Object.entries(ElementPlus.icons)) {
-    app.component(key, component);
-}
 
 // 挂载应用
 app.use(ElementPlus);
