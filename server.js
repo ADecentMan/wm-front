@@ -24,6 +24,10 @@ app.get('/chickenQuestion', function (req, res) {
     res.sendFile(__dirname + "/" + "chickenQuestion.html");
 });
 
+app.get('/navigate', function (req, res) {
+    res.sendFile(__dirname + "/" + "navigate.html");
+});
+
 // 动态路径代理
 app.get('/proxy/:path(*)', async (req, res) => {
     try {
