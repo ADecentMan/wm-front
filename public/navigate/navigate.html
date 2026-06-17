@@ -4,22 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>导航页面</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/element-plus@2.4.4/dist/index.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>导航页面</h1>
-        <nav class="navigation">
-            <ul class="nav-list">
-                <li><a href="#home">首页</a></li>
-                <li><a href="#music">音乐</a></li>
-                <li><a href="#story">故事</a></li>
-                <li><a href="#entertainment">娱乐</a></li>
-                <li><a href="#login">登录</a></li>
-            </ul>
-        </nav>
+    <div id="app">
+        <!-- 页面内容将在这里动态生成 -->
     </div>
-    <script src="main.js"></script>
+    
+    <!-- 引入必要的库 -->
+    <script src="./lib/vue.global.js"></script>
+    <script src="./lib/element-plus.min.js"></script>
+    <script src="./lib/sortable.min.js"></script>
+    <script src="./js/main.js"></script>
 </body>
 </html>
