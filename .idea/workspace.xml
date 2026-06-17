@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BookmarksViewState">
+    <option name="rewriteBookmarkType" value="true" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="[author]346129023@qq.com&#10;[description]内网更新" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;15152373096&quot;
+  }
+}</component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/15152373096/music-online.git&quot;,
+    &quot;accountId&quot;: &quot;8b8a1830-b64a-4528-a271-89460e617cfb&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="D:\Maven\apache-maven-3.5.2" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="D:\Maven\apache-maven-3.5.2\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2T71XtHDMtFFkn0Ygtp6mJW1l7N" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="flattenPackages" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Workspaces/NodejsProjects/wm-front&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Workspaces\NodejsProjects\wm-front\public\story" />
+      <recent name="D:\Workspaces\NodejsProjects\wm-front" />
+      <recent name="D:\Workspaces\NodejsProjects\wm-front\public\portal\css\svg" />
+      <recent name="D:\Workspaces\NodejsProjects\wm-front\public\portal" />
+      <recent name="D:\Workspaces\NodejsProjects\music-online\public" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Workspaces\NodejsProjects\wm-front" />
+      <recent name="D:\Workspaces\NodejsProjects\wm-front\public\portal\images" />
+      <recent name="D:\Workspaces\NodejsProjects\music-online" />
+      <recent name="D:\Workspaces\NodejsProjects\music-online\public\login" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="" />
+      <created>1690379349669</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1690379349669</updated>
+      <workItem from="1690379350934" duration="4029000" />
+      <workItem from="1690632006760" duration="21013000" />
+      <workItem from="1690802875417" duration="5022000" />
+      <workItem from="1691071999043" duration="7165000" />
+      <workItem from="1691157145548" duration="1331000" />
+      <workItem from="1691205302333" duration="2554000" />
+      <workItem from="1691216644308" duration="2700000" />
+      <workItem from="1691258950515" duration="1096000" />
+      <workItem from="1691941193141" duration="1205000" />
+      <workItem from="1692790753330" duration="1282000" />
+      <workItem from="1692802968375" duration="313000" />
+      <workItem from="1697820481361" duration="112000" />
+      <workItem from="1698590736389" duration="876000" />
+      <workItem from="1699796280357" duration="98000" />
+      <workItem from="1701535798597" duration="55000" />
+      <workItem from="1701609517452" duration="11000" />
+      <workItem from="1701691592456" duration="9961000" />
+      <workItem from="1701866952603" duration="609000" />
+      <workItem from="1702180961703" duration="299000" />
+      <workItem from="1702181301593" duration="10557000" />
+      <workItem from="1702303505280" duration="99000" />
+      <workItem from="1702653155990" duration="7762000" />
+      <workItem from="1702664067758" duration="3912000" />
+      <workItem from="1702699297655" duration="325000" />
+      <workItem from="1702700760680" duration="3000" />
+      <workItem from="1702829905365" duration="329000" />
+      <workItem from="1703001535915" duration="812000" />
+      <workItem from="1703343313846" duration="62000" />
+      <workItem from="1703773362644" duration="391000" />
+      <workItem from="1704286920538" duration="634000" />
+      <workItem from="1705807143752" duration="857000" />
+      <workItem from="1706976413159" duration="107000" />
+      <workItem from="1706980561409" duration="2144000" />
+      <workItem from="1707143347324" duration="102000" />
+      <workItem from="1708356376422" duration="2213000" />
+      <workItem from="1708522733962" duration="124000" />
+      <workItem from="1709048422393" duration="2169000" />
+      <workItem from="1709051597463" duration="751000" />
+      <workItem from="1709125336153" duration="629000" />
+      <workItem from="1711551461469" duration="625000" />
+      <workItem from="1714488794824" duration="1596000" />
+      <workItem from="1715353618802" duration="1308000" />
+      <workItem from="1718718670939" duration="1361000" />
+      <workItem from="1719336991374" duration="279000" />
+      <workItem from="1726589111598" duration="556000" />
+      <workItem from="1726887361247" duration="1041000" />
+      <workItem from="1727187687765" duration="595000" />
+      <workItem from="1727193202178" duration="827000" />
+      <workItem from="1728815338917" duration="7982000" />
+      <workItem from="1730638855827" duration="2647000" />
+      <workItem from="1730647880927" duration="629000" />
+      <workItem from="1732364494529" duration="2426000" />
+      <workItem from="1742394638368" duration="4735000" />
+      <workItem from="1743092110549" duration="2039000" />
+      <workItem from="1744203851489" duration="1573000" />
+      <workItem from="1747148360557" duration="1648000" />
+      <workItem from="1747233335807" duration="7000" />
+      <workItem from="1747475191320" duration="14922000" />
+      <workItem from="1747664566231" duration="2534000" />
+      <workItem from="1747674915517" duration="648000" />
+      <workItem from="1748011561893" duration="10589000" />
+      <workItem from="1749226096481" duration="62000" />
+      <workItem from="1755531413854" duration="389000" />
+      <workItem from="1755873690127" duration="251000" />
+      <workItem from="1764517692440" duration="321000" />
+      <workItem from="1765034979817" duration="52000" />
+      <workItem from="1767627838799" duration="705000" />
+      <workItem from="1769781937173" duration="10000" />
+      <workItem from="1781707940161" duration="2386000" />
+    </task>
+    <task id="LOCAL-00001" summary="[author]346129023@qq.com&#10;[description]前台项目初始化">
+      <created>1690379452081</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1690379452081</updated>
+    </task>
+    <task id="LOCAL-00002" summary="[author]346129023@qq.com&#10;[description]优化动画效果">
+      <created>1690804791590</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1690804791590</updated>
+    </task>
+    <task id="LOCAL-00003" summary="[author]346129023@qq.com&#10;[description]优化动画效果">
+      <created>1690804835252</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1690804835252</updated>
+    </task>
+    <task id="LOCAL-00004" summary="[author]346129023@qq.com&#10;[description]优化动画效果">
+      <created>1691081301376</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1691081301376</updated>
+    </task>
+    <task id="LOCAL-00005" summary="[author]346129023@qq.com&#10;[description]提交">
+      <created>1691081720742</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1691081720742</updated>
+    </task>
+    <task id="LOCAL-00006" summary="[author]346129023@qq.com&#10;[description]初始化播放">
+      <created>1691082105048</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1691082105048</updated>
+    </task>
+    <task id="LOCAL-00007" summary="[author]346129023@qq.com&#10;[description]初始化播放">
+      <created>1691220437562</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1691220437562</updated>
+    </task>
+    <task id="LOCAL-00008" summary="[author]346129023@qq.com&#10;[description]更新中台包">
+      <created>1691259049652</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1691259049652</updated>
+    </task>
+    <task id="LOCAL-00009" summary="[author]346129023@qq.com&#10;[description]更新中台包">
+      <created>1691941235088</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1691941235088</updated>
+    </task>
+    <task id="LOCAL-00010" summary="[author]346129023@qq.com&#10;[description]更新中台包">
+      <created>1698590964826</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1698590964826</updated>
+    </task>
+    <task id="LOCAL-00011" summary="[author]346129023@qq.com&#10;[description]添加庄园小课堂答案维护页面">
+      <created>1701701042470</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1701701042470</updated>
+    </task>
+    <task id="LOCAL-00012" summary="[author]346129023@qq.com&#10;[description]添加庄园小课堂答案维护页面">
+      <created>1702181515353</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1702181515353</updated>
+    </task>
+    <task id="LOCAL-00013" summary="[author]346129023@qq.com&#10;[description]IP访问">
+      <created>1702183493468</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1702183493468</updated>
+    </task>
+    <task id="LOCAL-00014" summary="[author]346129023@qq.com&#10;[description]优化云端随机">
+      <created>1702192859746</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1702192859746</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[author]346129023@qq.com&#10;[description]动态环境">
+      <created>1702193474713</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1702193474713</updated>
+    </task>
+    <task id="LOCAL-00016" summary="[author]346129023@qq.com&#10;[description]portal添加">
+      <created>1702195597141</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1702195597141</updated>
+    </task>
+    <task id="LOCAL-00017" summary="[author]346129023@qq.com&#10;[description]portal添加">
+      <created>1702196982216</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1702196982216</updated>
+    </task>
+    <task id="LOCAL-00018" summary="[author]346129023@qq.com&#10;[description]优化">
+      <created>1702197850045</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1702197850045</updated>
+    </task>
+    <task id="LOCAL-00019" summary="[author]346129023@qq.com&#10;[description]优化">
+      <created>1702198190425</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1702198190425</updated>
+    </task>
+    <task id="LOCAL-00020" summary="[author]346129023@qq.com&#10;[description]去除URL显式token">
+      <created>1702662476975</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1702662476975</updated>
+    </task>
+    <task id="LOCAL-00021" summary="[author]346129023@qq.com&#10;[description]去除显式token参数">
+      <created>1702697712778</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1702697712778</updated>
+    </task>
+    <task id="LOCAL-00022" summary="[author]346129023@qq.com&#10;[description]视频图标提交">
+      <created>1702699088847</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1702699088847</updated>
+    </task>
+    <task id="LOCAL-00023" summary="[author]346129023@qq.com&#10;[description]视频图标提交">
+      <created>1702699566915</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1702699566915</updated>
+    </task>
+    <task id="LOCAL-00024" summary="[author]346129023@qq.com&#10;[description]添加本地环境">
+      <created>1706981038703</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1706981038703</updated>
+    </task>
+    <task id="LOCAL-00025" summary="[author]346129023@qq.com&#10;[description]添加本地环境">
+      <created>1706981141878</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1706981141878</updated>
+    </task>
+    <task id="LOCAL-00026" summary="[author]346129023@qq.com&#10;[description]添加本地环境">
+      <created>1706982246739</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1706982246739</updated>
+    </task>
+    <task id="LOCAL-00027" summary="[author]346129023@qq.com&#10;[description]添加本地环境">
+      <created>1708358008668</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1708358008668</updated>
+    </task>
+    <task id="LOCAL-00028" summary="[author]346129023@qq.com&#10;[description]添加播放模式缓存">
+      <created>1709051216888</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1709051216888</updated>
+    </task>
+    <task id="LOCAL-00029" summary="[author]346129023@qq.com&#10;[description]添加播放模式缓存">
+      <created>1709126592727</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1709126592727</updated>
+    </task>
+    <task id="LOCAL-00030" summary="[author]346129023@qq.com&#10;[description]CSS调整">
+      <created>1715353665737</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1715353665737</updated>
+    </task>
+    <task id="LOCAL-00031" summary="[author]346129023@qq.com&#10;[description]内网更新">
+      <created>1747475268081</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1747475268081</updated>
+    </task>
+    <task id="LOCAL-00032" summary="[author]346129023@qq.com&#10;[description]内网更新">
+      <option name="closed" value="true" />
+      <created>1781709337563</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1781709337563</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]前台项目初始化" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]优化动画效果" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]提交" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]初始化播放" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]更新中台包" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]添加庄园小课堂答案维护页面" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]IP访问" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]优化云端随机" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]动态环境" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]portal添加" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]优化" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]去除URL显式token" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]去除显式token参数" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]视频图标提交" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]添加本地环境" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]添加播放模式缓存" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]CSS调整" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]内网更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="[author]346129023@qq.com&#10;[description]内网更新" />
+  </component>
+</project>
