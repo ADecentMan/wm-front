@@ -1,9 +1,9 @@
 let host = window.location.hostname;
-let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2")? "dev" : "pro"
+let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2" || host == "192.168.2.36")? "dev" : "pro"
 let myPlaylist;
 let playlist;
-let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://43.157.13.112:36816";
-let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://43.157.13.112:40254";
+let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://101.126.83.165:8081";
+let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://101.126.83.165:8080";
 let searchType = "all";
 let current = 0;
 let keyword = "";
