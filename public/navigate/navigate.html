@@ -13,8 +13,10 @@
             
             <div class="navigation">
                 <div class="controls">
-                    <el-button type="primary" @click="addCategory">添加分类</el-button>
+                    <el-button type="primary" @click="showAddCategoryDialog">添加分类</el-button>
                     <el-button type="success" @click="saveAll">保存所有</el-button>
+                    <el-button type="info" @click="exportData">导出数据</el-button>
+                    <el-button type="warning" @click="showImportDialog">导入数据</el-button>
                 </div>
                 
                 <div v-for="(category, categoryIndex) in categories" :key="category.id" class="category-section">

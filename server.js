@@ -25,7 +25,15 @@ app.get('/chickenQuestion', function (req, res) {
 });
 
 app.get('/navigate', function (req, res) {
-    res.sendFile(__dirname + "/" + "navigate.html");
+    res.sendFile(__dirname + "/public/navigate/navigate.html");
+});
+
+app.get('/test', function (req, res) {
+    res.sendFile(__dirname + "/test.html");
+});
+
+app.get('/test-navigate', function (req, res) {
+    res.sendFile(__dirname + "/test-navigate.html");
 });
 
 // 动态路径代理

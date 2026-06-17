@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航管理功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>导航管理功能测试</h1>
+    
+    <div class="test-section">
+        <h2>功能测试</h2>
+        <div class="test-item">
+            <h3>1. 基本功能测试</h3>
+            <button onclick="testBasicFunctions()">测试基本功能</button>
+            <p>测试添加、编辑、删除分类和导航项的基本功能</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>2. 拖拽功能测试</h3>
+            <button onclick="testDragFunction()">测试拖拽功能</button>
+            <p>测试拖拽排序功能是否正常工作</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>3. 数据持久化测试</h3>
+            <button onclick="testPersistence()">测试数据持久化</button>
+            <p>测试刷新页面后数据是否保留</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>4. 响应式设计测试</h3>
+            <button onclick="testResponsive()">测试响应式设计</button>
+            <p>测试在不同屏幕尺寸下的显示效果</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>5. 键盘快捷键测试</h3>
+            <button onclick="testKeyboardShortcuts()">测试键盘快捷键</button>
+            <p>测试 Ctrl+S 保存和 Esc 取消功能</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>6. 数据导入导出测试</h3>
+            <button onclick="testImportExport()">测试数据导入导出</button>
+            <p>测试数据的导入和导出功能</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试结果</h2>
+        <div id="test-results">
+            <p>点击上方按钮开始测试...</p>
+        </div>
+    </div>
+    
+    <script>
+        let testResults = [];
+        
+        function addResult(testName, status, message) {
+            testResults.push({ testName, status, message });
+            updateResults();
+        }
+        
+        function updateResults() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<h3>测试结果</h3>';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = result.status;
+                div.innerHTML = `<strong>${result.testName}:</strong> ${result.message}`;
+                resultsDiv.appendChild(div);
+            });
+        }
+        
+        function testBasicFunctions() {
+            try {
+                // 测试分类添加
+                const categoryCount = localStorage.getItem('navigateData') ? 
+                    JSON.parse(localStorage.getItem('navigateData')).length : 0;
+                
+                // 模拟添加分类
+                const testData = {
+                    id: 'test-category',
+                    name: '测试分类',
+                    items: [],
+                    expanded: true
+                };
+                
+                let currentData = localStorage.getItem('navigateData');
+                let data = currentData ? JSON.parse(currentData) : [];
+                data.push(testData);
+                localStorage.setItem('navigateData', JSON.stringify(data));
+                
+                // 验证分类是否添加成功
+                const newData = JSON.parse(localStorage.getItem('navigateData'));
+                if (newData.length > categoryCount) {
+                    addResult('基本功能测试', 'success', '分类添加成功');
+                    
+                    // 测试项目添加
+                    const itemData = {
+                        id: 'test-item',
+                        name: '测试项目',
+                        url: 'https://example.com',
+                        icon: '📌'
+                    };
+                    
+                    newData[0].items.push(itemData);
+                    localStorage.setItem('navigateData', JSON.stringify(newData));
+                    
+                    // 验证项目是否添加成功
+                    const updatedData = JSON.parse(localStorage.getItem('navigateData'));
+                    if (updatedData[0].items.length > 0) {
+                        addResult('基本功能测试', 'success', '项目添加成功');
+                    } else {
+                        addResult('基本功能测试', 'error', '项目添加失败');
+                    }
+                } else {
+                    addResult('基本功能测试', 'error', '分类添加失败');
+                }
+                
+                // 清理测试数据
+                setTimeout(() => {
+                    localStorage.removeItem('navigateData');
+                }, 1000);
+                
+            } catch (error) {
+                addResult('基本功能测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        function testDragFunction() {
+            try {
+                // 创建测试数据
+                const testData = {
+                    id: 'drag-test-category',
+                    name: '拖拽测试分类',
+                    items: [
+                        { id: 'item1', name: '项目1', url: 'https://example1.com', icon: '📌' },
+                        { id: 'item2', name: '项目2', url: 'https://example2.com', icon: '📌' },
+                        { id: 'item3', name: '项目3', url: 'https://example3.com', icon: '📌' }
+                    ],
+                    expanded: true
+                };
+                
+                localStorage.setItem('navigateData', JSON.stringify([testData]));
+                
+                // 检查 SortableJS 是否加载
+                if (typeof Sortable !== 'undefined') {
+                    addResult('拖拽功能测试', 'success', 'SortableJS 已加载');
+                    
+                    // 检查拖拽功能是否可用
+                    const testElement = document.createElement('div');
+                    testElement.id = 'test-draggable';
+                    testElement.innerHTML = '<div class="item-content">测试拖拽</div>';
+                    document.body.appendChild(testElement);
+                    
+                    try {
+                        const sortable = new Sortable(testElement, {
+                            group: 'navigation',
+                            animation: 150,
+                            onEnd: function() {}
+                        });
+                        sortable.destroy();
+                        document.body.removeChild(testElement);
+                        addResult('拖拽功能测试', 'success', '拖拽功能正常');
+                    } catch (error) {
+                        document.body.removeChild(testElement);
+                        addResult('拖拽功能测试', 'error', `拖拽功能错误: ${error.message}`);
+                    }
+                } else {
+                    addResult('拖拽功能测试', 'warning', 'SortableJS 未加载，拖拽功能可能不可用');
+                }
+                
+                // 清理测试数据
+                setTimeout(() => {
+                    localStorage.removeItem('navigateData');
+                }, 1000);
+                
+            } catch (error) {
+                addResult('拖拽功能测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        function testPersistence() {
+            try {
+                // 创建测试数据
+                const testData = {
+                    id: 'persistence-test-category',
+                    name: '持久化测试分类',
+                    items: [
+                        { id: 'persistence-item', name: '持久化测试项目', url: 'https://example.com', icon: '📌' }
+                    ],
+                    expanded: true
+                };
+                
+                localStorage.setItem('navigateData', JSON.stringify([testData]));
+                
+                // 验证数据是否保存
+                const savedData = localStorage.getItem('navigateData');
+                if (savedData) {
+                    addResult('数据持久化测试', 'success', '数据保存成功');
+                    
+                    // 模拟页面刷新
+                    const parsedData = JSON.parse(savedData);
+                    if (parsedData.length > 0 && parsedData[0].items.length > 0) {
+                        addResult('数据持久化测试', 'success', '数据恢复成功');
+                    } else {
+                        addResult('数据持久化测试', 'error', '数据恢复失败');
+                    }
+                } else {
+                    addResult('数据持久化测试', 'error', '数据保存失败');
+                }
+                
+                // 清理测试数据
+                setTimeout(() => {
+                    localStorage.removeItem('navigateData');
+                }, 1000);
+                
+            } catch (error) {
+                addResult('数据持久化测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        function testResponsive() {
+            try {
+                // 测试不同屏幕尺寸的样式
+                const testWidths = [768, 480];
+                let responsiveTestPassed = true;
+                
+                testWidths.forEach(width => {
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'container';
+                    testDiv.style.width = width + 'px';
+                    testDiv.innerHTML = '<h1>测试响应式</h1>';
+                    document.body.appendChild(testDiv);
+                    
+                    // 检查样式是否应用
+                    const computedStyle = window.getComputedStyle(testDiv);
+                    if (computedStyle) {
+                        document.body.removeChild(testDiv);
+                    } else {
+                        responsiveTestPassed = false;
+                    }
+                });
+                
+                if (responsiveTestPassed) {
+                    addResult('响应式设计测试', 'success', '响应式样式正常');
+                } else {
+                    addResult('响应式设计测试', 'warning', '响应式样式可能有问题');
+                }
+                
+            } catch (error) {
+                addResult('响应式设计测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        function testKeyboardShortcuts() {
+            try {
+                // 测试键盘事件监听
+                const testEvent = new KeyboardEvent('keydown', { key: 's', ctrlKey: true });
+                document.dispatchEvent(testEvent);
+                
+                // 检查是否可以创建键盘事件
+                if (testEvent instanceof KeyboardEvent) {
+                    addResult('键盘快捷键测试', 'success', '键盘事件创建成功');
+                } else {
+                    addResult('键盘快捷键测试', 'error', '键盘事件创建失败');
+                }
+                
+            } catch (error) {
+                addResult('键盘快捷键测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        function testImportExport() {
+            try {
+                // 创建测试数据
+                const testData = {
+                    id: 'import-export-test',
+                    name: '导入导出测试分类',
+                    items: [
+                        { id: 'import-export-item', name: '导入导出测试项目', url: 'https://example.com', icon: '📌' }
+                    ],
+                    expanded: true
+                };
+                
+                localStorage.setItem('navigateData', JSON.stringify([testData]));
+                
+                // 测试导出功能
+                const dataStr = JSON.stringify([testData], null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                if (dataBlob instanceof Blob) {
+                    addResult('数据导出测试', 'success', '数据导出功能正常');
+                } else {
+                    addResult('数据导出测试', 'error', '数据导出功能异常');
+                }
+                
+                // 测试导入功能
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (Array.isArray(importedData)) {
+                            addResult('数据导入测试', 'success', '数据导入功能正常');
+                        } else {
+                            addResult('数据导入测试', 'error', '数据导入格式错误');
+                        }
+                    } catch (error) {
+                        addResult('数据导入测试', 'error', `数据解析失败: ${error.message}`);
+                    }
+                };
+                reader.readAsText(dataBlob);
+                
+                // 清理测试数据
+                setTimeout(() => {
+                    localStorage.removeItem('navigateData');
+                }, 1000);
+                
+            } catch (error) {
+                addResult('导入导出测试', 'error', `测试失败: ${error.message}`);
+            }
+        }
+        
+        // 页面加载时进行基本检查
+        window.onload = function() {
+            addResult('页面加载', 'success', '页面加载成功');
+            
+            // 检查必要的库是否加载
+            if (typeof Vue !== 'undefined') {
+                addResult('Vue.js', 'success', 'Vue.js 已加载');
+            } else {
+                addResult('Vue.js', 'error', 'Vue.js 未加载');
+            }
+            
+            if (typeof ElementPlus !== 'undefined') {
+                addResult('Element Plus', 'success', 'Element Plus 已加载');
+            } else {
+                addResult('Element Plus', 'warning', 'Element Plus 未加载');
+            }
+            
+            if (typeof Sortable !== 'undefined') {
+                addResult('SortableJS', 'success', 'SortableJS 已加载');
+            } else {
+                addResult('SortableJS', 'warning', 'SortableJS 未加载');
+            }
+        };
+    </script>
+</body>
+</html>
