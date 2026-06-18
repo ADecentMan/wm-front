@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云音乐播放器</title>
+
+    <!-- Favicon - 与页面左上角图标一致 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23c62f2f'/%3E%3Cpath d='M50 20 L50 65 C50 75 35 75 35 65 C35 55 50 55 50 65 L50 35 C65 35 65 50 65 50' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="./public/music/pc/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <!-- 顶部区域：左侧导航 + 中间播放列表 -->
+    <div class="top-section">
+        <!-- 左侧边栏 - 导航菜单 -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <span>云音乐</span>
+            </div>
+
+            <!-- 菜单导航 -->
+            <div class="menu">
+                <div class="menu-item active">
+                    <i class="fas fa-home"></i>
+                    <span>发现音乐</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-cloud"></i>
+                    <span>音韵随心</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    <span>我的收藏</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>播放历史</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区 - 播放列表 -->
+        <div class="main-content">
+            <!-- 搜索栏 -->
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索音乐、歌手" autocomplete="off">
+            </div>
+
+            <!-- 音乐列表 -->
+            <div class="content-area">
+                <div class="music-list" id="musicList">
+                    <!-- 音乐列表项将通过JavaScript动态生成 -->
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination" id="pagination">
+                    <button class="page-btn" id="prevPage"><i class="fas fa-chevron-left"></i></button>
+                    <span class="page-info">第 <span id="currentPage">1</span> 页</span>
+                    <button class="page-btn" id="nextPage"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 播放器控制栏 -->
+    <div class="player-bar">
+        <!-- 当前播放信息 -->
+        <div class="player-info">
+            <div class="player-poster" id="playerPoster">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%23ddd' width='60' height='60'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-size='20'%3E🎵%3C/text%3E%3C/svg%3E" alt="专辑封面">
+            </div>
+            <div class="player-song-info">
+                <div class="song-title" id="songTitle">未选择歌曲</div>
+                <div class="song-artist" id="songArtist">--</div>
+            </div>
+            <div class="like-btn" id="likeBtn">
+                <i class="far fa-heart"></i>
+            </div>
+        </div>
+
+        <!-- 播放控制 -->
+        <div class="player-controls">
+            <div class="control-buttons">
+                <button class="control-btn" id="playMode" title="播放模式">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="control-btn" id="prevSong" title="上一首">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-btn" id="playPause" title="播放/暂停">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" id="nextSong" title="下一首">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="progress-container">
+                <span class="time-current" id="currentTime">00:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                    <div class="progress-handle" id="progressHandle"></div>
+                </div>
+                <span class="time-total" id="totalTime">00:00</span>
+            </div>
+        </div>
+
+        <!-- 音量控制 -->
+        <div class="player-volume">
+            <button class="volume-btn" id="volumeBtn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="volume-slider">
+                <div class="volume-bar" id="volumeBar">
+                    <div class="volume-level" id="volumeLevel"></div>
+                    <div class="volume-handle" id="volumeHandle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 音频元素 -->
+<audio id="audioPlayer"></audio>
+
+<script src="./public/music/pc/app.js"></script>
+</body>
+</html>

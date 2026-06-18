@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>正经导航</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23a8d8c8'/%3E%3Cpath d='M32 12L36 28H52L38 36L42 52L32 42L22 52L26 36L12 28H28Z' fill='%23ffffff' stroke='%237cc4ad' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <!-- Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <!-- Element Plus CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+  <!-- Element Plus JS -->
+  <script src="https://unpkg.com/element-plus"></script>
+  <!-- Element Plus Icons -->
+  <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+  <!-- Element Plus 中文语言包 -->
+  <script src="https://unpkg.com/element-plus/dist/locale/zh-cn.min.js"></script>
+  <!-- SortableJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+        'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+        sans-serif;
+      background: #fafafa;
+      min-height: 100vh;
+      padding: 24px 20px;
+    }
+
+    #app { max-width: 1400px; margin: 0 auto; }
+
+    /* ========== 分类区域 ========== */
+    .category-section {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #eaeaea;
+      position: relative;
+    }
+
+    .category-section:last-of-type {
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 4px;
+      margin-bottom: 8px;
+      cursor: grab;
+    }
+
+    .category-header:active {
+      cursor: grabbing;
+    }
+
+    .category-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-actions {
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .category-header:hover .category-actions {
+      opacity: 1;
+    }
+
+    .category-actions .action-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      border: none;
+      background: transparent;
+      color: #909399;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .category-actions .action-btn:hover {
+      color: #409eff;
+      background: #ecf5ff;
+    }
+
+    .category-actions .action-btn.delete-btn:hover {
+      color: #f56c6c;
+      background: #fef0f0;
+    }
+
+    /* ========== 导航项网格 ========== */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 16px;
+      padding: 8px 0;
+      min-height: 80px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 20px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    .nav-item-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: #5a9e8f;
+      background: #ffffff;
+      border: 1.5px solid #a8d8c8;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover .nav-item-icon {
+      transform: scale(1.05);
+      border-color: #7cc4ad;
+      background: #f5fcf9;
+    }
+
+    .nav-item-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    /* 导航项操作按钮（修改/删除） */
+    .nav-item-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      width: 52px;
+      height: 18px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-item:hover .nav-item-actions {
+      opacity: 1;
+    }
+
+    .nav-item-actions .action-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #b0b8c4;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item-actions .action-icon:hover {
+      color: #409eff;
+      background: #ecf5ff;
+    }
+
+    .nav-item-actions .action-icon.delete-icon:hover {
+      color: #f56c6c;
+      background: #fef0f0;
+    }
+
+    .nav-item-name {
+      font-size: 13px;
+      color: #606266;
+      text-align: center;
+      word-break: break-all;
+      line-height: 1.4;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover .nav-item-name {
+      color: #2c3e50;
+    }
+
+    /* 添加导航图标（+） */
+    .nav-add-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .nav-add-item:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    .nav-add-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #8ec5b5;
+      background: #ffffff;
+      border: 2px dashed #a8d8c8;
+      transition: all 0.25s ease;
+    }
+
+    .nav-add-item:hover .nav-add-icon {
+      color: #5a9e8f;
+      background: #f5fcf9;
+      border-color: #7cc4ad;
+    }
+
+    .nav-add-name {
+      font-size: 13px;
+      color: #b0b8c4;
+      text-align: center;
+    }
+
+    .nav-add-item:hover .nav-add-name {
+      color: #5a9e8f;
+    }
+
+    /* ========== 拖拽样式 ========== */
+    .sortable-ghost {
+      opacity: 0.3;
+    }
+
+    .sortable-chosen {
+      opacity: 0.7;
+    }
+
+    .sortable-drag {
+      opacity: 0.9;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .category-sortable-ghost {
+      opacity: 0.3;
+      border: 1px dashed #a8d8c8;
+    }
+
+    /* ========== 分割线上的新增分类按钮 ========== */
+    .add-category-on-line {
+      position: absolute;
+      bottom: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .add-category-on-line .line-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid #dcdfe6;
+      background: #fff;
+      color: #c0c4cc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-size: 14px;
+    }
+
+    .add-category-on-line .line-btn:hover {
+      color: #2c3e50;
+      border-color: #8e99a4;
+      background: #f0f0f0;
+      transform: scale(1.15);
+    }
+
+    /* ========== 空状态 ========== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #909399;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 64px;
+      color: #c0c4cc;
+      margin-bottom: 16px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* ========== 回到顶部 ========== */
+    .back-to-top {
+      position: fixed;
+      right: 32px;
+      bottom: 32px;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top .top-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #dcdfe6;
+      background: #fff;
+      color: #909399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.25s ease;
+    }
+
+    .back-to-top .top-btn:hover {
+      color: #2c3e50;
+      border-color: #8e99a4;
+      background: #f5f5f5;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ========== 对话框 ========== */
+    .el-dialog__header {
+      text-align: center;
+    }
+
+    .el-dialog__title {
+      display: inline-block;
+    }
+
+    .el-dialog__body {
+      padding-top: 16px;
+      padding-bottom: 0;
+    }
+
+    .el-dialog__footer {
+      text-align: center;
+    }
+
+    /* ========== 确认弹框（ElMessageBox） ========== */
+    .el-message-box__header {
+      text-align: center;
+    }
+
+    .el-message-box__title {
+      display: inline-block;
+    }
+
+    .el-message-box__btns {
+      justify-content: center !important;
+    }
+
+    /* ========== 对话框表单 ========== */
+    .dialog-form .el-form-item {
+      margin-bottom: 20px;
+    }
+
+    .dialog-form .el-form-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ========== 图标预览 ========== */
+    .icon-preview {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      padding: 12px;
+      background: #f5f7fa;
+      border-radius: 8px;
+    }
+
+    .icon-preview-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #5a9e8f;
+      background: #ffffff;
+      border: 1.5px solid #a8d8c8;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .icon-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .icon-preview-text {
+      font-size: 12px;
+      color: #909399;
+    }
+
+    /* ========== 左侧锚点导航 ========== */
+    .anchor-nav {
+      position: fixed;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .anchor-nav::-webkit-scrollbar {
+      width: 0;
+      display: none;
+    }
+
+    .anchor-nav-item {
+      padding: 6px 4px;
+      font-size: 14px;
+      color: #909399;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s ease;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .anchor-nav-item:hover {
+      color: #5a9e8f;
+    }
+
+    .anchor-nav-item.active {
+      color: #5a9e8f;
+      font-weight: 600;
+    }
+
+    .anchor-nav-sep {
+      width: 12px;
+      height: 1px;
+      background: #dcdfe6;
+      flex-shrink: 0;
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 768px) {
+      body { padding: 12px 12px 12px 0; }
+
+      .anchor-nav { display: none; }
+
+      .nav-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 12px;
+        padding: 4px 0;
+      }
+
+      .nav-item { padding: 14px 8px; }
+
+      .nav-item-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+      }
+
+      .nav-item-actions {
+        width: 44px;
+      }
+
+      .nav-add-item { padding: 14px 8px; }
+
+      .nav-add-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+      }
+
+      .nav-item-name { font-size: 12px; }
+
+      .category-title { font-size: 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+      }
+    }
+  </style>
+    <script src="../music2/app.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- 左侧分类锚点导航 -->
+    <div v-if="categories.length > 0" class="anchor-nav">
+      <template v-for="(category, index) in categories" :key="category.id">
+        <div
+          class="anchor-nav-item"
+          :class="{ active: activeAnchor === category.id }"
+          @click="scrollToAnchor(category.id)"
+          :title="category.name"
+        >
+          {{ category.name.length > 10 ? category.name.substring(0, 10) + '…' : category.name }}
+        </div>
+        <div v-if="index < categories.length - 1" class="anchor-nav-sep"></div>
+      </template>
+    </div>
+
+    <!-- 分类列表 -->
+    <div v-if="categories.length > 0" id="category-list">
+      <div v-for="(category, cIndex) in categories" :key="category.id" class="category-section" :id="'cat-' + category.id" :data-id="category.id">
+        <div class="category-header">
+          <div class="category-title">
+            {{ category.name }}
+          </div>
+          <div class="category-actions">
+            <button class="action-btn" @click="showEditCategoryDialog(category)" title="修改分类">
+              <el-icon :size="14"><icon-edit /></el-icon>
+              修改
+            </button>
+            <button class="action-btn delete-btn" @click="deleteCategory(category)" title="删除分类">
+              <el-icon :size="14"><icon-delete /></el-icon>
+              删除
+            </button>
+          </div>
+        </div>
+        <div class="nav-grid" :data-category-id="category.id">
+          <div
+            v-for="item in category.items"
+            :key="item.id"
+            class="nav-item"
+            :data-id="item.id"
+            @click="openUrl(item.url)"
+          >
+            <div class="nav-item-icon">
+              <img v-if="isUrlIcon(item.icon)" :src="item.icon" :alt="item.name" />
+              <el-icon v-else :size="26"><component :is="resolveIcon(item.icon)" /></el-icon>
+            </div>
+            <span class="nav-item-name" :title="item.name">{{ item.name }}</span>
+            <div class="nav-item-actions" @click.stop>
+              <span class="action-icon" title="修改" @click="showEditItemDialog(category, item)">
+                <el-icon :size="12"><icon-edit /></el-icon>
+              </span>
+              <span class="action-icon delete-icon" title="删除" @click="deleteItem(category, item)">
+                <el-icon :size="12"><icon-delete /></el-icon>
+              </span>
+            </div>
+          </div>
+          <!-- 添加导航的 + 图标 -->
+          <div class="nav-add-item" @click="showAddItemDialog(category)">
+            <div class="nav-add-icon">
+              <el-icon :size="24"><icon-plus /></el-icon>
+            </div>
+            <span class="nav-add-name">添加</span>
+          </div>
+        </div>
+        <!-- 最后一个分类的分割线上显示新增分类按钮 -->
+        <div v-if="cIndex === categories.length - 1" class="add-category-on-line">
+          <button class="line-btn" @click="showAddCategoryDialog" title="新增分类">
+            <el-icon :size="14"><icon-plus /></el-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-else class="empty-state">
+      <el-icon class="empty-icon"><icon-folder-opened /></el-icon>
+      <p>还没有分类</p>
+      <el-button type="primary" plain @click="showAddCategoryDialog">
+        <el-icon><icon-plus /></el-icon>
+        新增分类
+      </el-button>
+    </div>
+
+    <!-- 回到顶部 -->
+    <div class="back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop">
+      <button class="top-btn" title="回到顶部">
+        <el-icon :size="18"><icon-top /></el-icon>
+      </button>
+    </div>
+
+    <!-- 新增/编辑分类对话框 -->
+    <el-dialog
+      v-model="categoryDialogVisible"
+      :title="isEditCategory ? '修改分类' : '新增分类'"
+      width="440px"
+      :close-on-click-modal="false"
+      destroy-on-close
+    >
+      <el-form class="dialog-form" @submit.prevent>
+        <el-form-item label="分类名称">
+          <el-input
+            v-model="newCategoryName"
+            placeholder="请输入分类名称"
+            maxlength="30"
+            show-word-limit
+            clearable
+            @keyup.enter="submitCategory"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="categoryDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitCategory">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 新增/编辑导航项对话框 -->
+    <el-dialog
+      v-model="itemDialogVisible"
+      :title="isEditItem ? '修改导航页面' : '新增导航页面'"
+      width="500px"
+      :close-on-click-modal="false"
+      destroy-on-close
+    >
+      <el-form class="dialog-form" @submit.prevent>
+        <el-form-item label="页面名称">
+          <el-input
+            v-model="newItem.name"
+            placeholder="请输入页面名称"
+            maxlength="30"
+            show-word-limit
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="页面 URL">
+          <el-input
+            v-model="newItem.url"
+            placeholder="请输入页面 URL，如 https://example.com"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="页面图标">
+          <el-input
+            v-model="newItem.icon"
+            placeholder="Element Plus 图标名（如 Document）或图标 URL"
+            clearable
+          />
+          <div v-if="newItem.icon" class="icon-preview">
+            <div class="icon-preview-box">
+              <img v-if="isUrlIcon(newItem.icon)" :src="newItem.icon" alt="preview" />
+              <el-icon v-else :size="20"><component :is="resolveIcon(newItem.icon)" /></el-icon>
+            </div>
+            <span class="icon-preview-text">
+              {{ isUrlIcon(newItem.icon) ? '自定义图标 URL' : 'Element Plus 图标' }}
+            </span>
+          </div>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="itemDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitItem">确定</el-button>
+      </template>
+    </el-dialog>
+  </div>
+
+  <script>
+    const { createApp, ref, reactive, onMounted, nextTick, markRaw } = Vue;
+    const { ElMessage, ElMessageBox } = ElementPlus;
+
+    // ========== 存储工具 ==========
+    const STORAGE_KEY = 'WM-NAVIGATION';
+
+    function saveToStorage(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+      const value = localStorage.getItem(STORAGE_KEY);
+      if (value) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          console.error('解析存储数据失败:', e);
+          return null;
+        }
+      }
+      return null;
+    }
+
+    // ========== ID 生成 ==========
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+    }
+
+    // ========== SortableJS 实例管理 ==========
+    let sortableInstances = [];
+
+    function destroySortable() {
+      sortableInstances.forEach(s => s.destroy());
+      sortableInstances = [];
+    }
+
+    // ========== 应用 ==========
+    const app = createApp({
+      setup() {
+        // 数据
+        const categories = ref([]);
+        const showBackToTop = ref(false);
+        const activeAnchor = ref('');
+
+        // 分类对话框相关
+        const categoryDialogVisible = ref(false);
+        const newCategoryName = ref('');
+        const isEditCategory = ref(false);
+        const editingCategory = ref(null);
+
+        // 导航项对话框相关
+        const itemDialogVisible = ref(false);
+        const currentCategory = ref(null);
+        const isEditItem = ref(false);
+        const editingItem = ref(null);
+        const newItem = reactive({
+          name: '',
+          url: '',
+          icon: ''
+        });
+
+        // ========== 初始化 ==========
+        onMounted(async () => {
+          const saved = loadFromStorage();
+          if (saved && saved.categories && saved.categories.length > 0) {
+            categories.value = saved.categories;
+          } else {
+            // 从 navigation.json 加载默认配置
+            try {
+              const resp = await fetch('/public/navigation/navigation.json');
+              const data = await resp.json();
+              if (data && data.categories && data.categories.length > 0) {
+                categories.value = data.categories;
+                saveData();
+              }
+            } catch (e) {
+              console.error('加载 navigation.json 失败:', e);
+            }
+          }
+          // 监听滚动，控制回到顶部按钮显隐
+          window.addEventListener('scroll', () => {
+            showBackToTop.value = window.scrollY > 300;
+            // 更新锚点高亮
+            updateActiveAnchor();
+          });
+          // 初始化拖拽排序
+          nextTick(() => initSortable());
+        });
+
+        // ========== 拖拽排序初始化 ==========
+        function initSortable() {
+          destroySortable();
+
+          // 分类拖拽排序
+          const categoryList = document.getElementById('category-list');
+          if (categoryList) {
+            const categorySortable = new Sortable(categoryList, {
+              animation: 200,
+              handle: '.category-header',
+              ghostClass: 'category-sortable-ghost',
+              onEnd: function(evt) {
+                if (evt.oldIndex === evt.newIndex) return;
+                const moved = categories.value.splice(evt.oldIndex, 1)[0];
+                categories.value.splice(evt.newIndex, 0, moved);
+                saveData();
+                nextTick(() => initSortable());
+              }
+            });
+            sortableInstances.push(categorySortable);
+          }
+
+          // 导航项拖拽排序（支持跨分类）
+          document.querySelectorAll('.nav-grid').forEach(grid => {
+            const sortable = new Sortable(grid, {
+              animation: 200,
+              group: 'nav-items',
+              draggable: '.nav-item',
+              filter: '.nav-add-item',
+              ghostClass: 'sortable-ghost',
+              chosenClass: 'sortable-chosen',
+              dragClass: 'sortable-drag',
+              onEnd: function(evt) {
+                if (evt.oldIndex === evt.newIndex && evt.from === evt.to) return;
+
+                const itemId = evt.item.dataset.id;
+                const fromCategoryId = evt.from.dataset.categoryId;
+                const toCategoryId = evt.to.dataset.categoryId;
+
+                const fromCategory = categories.value.find(c => c.id === fromCategoryId);
+                const toCategory = categories.value.find(c => c.id === toCategoryId);
+                if (!fromCategory || !toCategory) return;
+
+                const itemIdx = fromCategory.items.findIndex(i => i.id === itemId);
+                if (itemIdx === -1) return;
+
+                const [movedItem] = fromCategory.items.splice(itemIdx, 1);
+
+                // 计算 nav-item 在目标容器中的实际索引（排除 add 按钮）
+                let insertIdx = 0;
+                const children = evt.to.querySelectorAll('.nav-item');
+                for (let i = 0; i < children.length; i++) {
+                  if (children[i] === evt.item) {
+                    insertIdx = i;
+                    break;
+                  }
+                }
+
+                // 同分类内拖拽，如果原位置在前面，需要调整
+                if (fromCategoryId === toCategoryId && itemIdx < insertIdx) {
+                  // 已经 splice 掉了一个，索引自动对齐
+                }
+
+                toCategory.items.splice(insertIdx, 0, movedItem);
+                saveData();
+                nextTick(() => initSortable());
+              }
+            });
+            sortableInstances.push(sortable);
+          });
+        }
+
+        // ========== 回到顶部 ==========
+        function scrollToTop() {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========== 锚点导航 ==========
+        function scrollToAnchor(categoryId) {
+          const el = document.getElementById('cat-' + categoryId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            activeAnchor.value = categoryId;
+          }
+        }
+
+        function updateActiveAnchor() {
+          const sections = document.querySelectorAll('.category-section');
+          let currentId = '';
+          sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 120) {
+              currentId = section.dataset.id;
+            }
+          });
+          if (currentId) {
+            activeAnchor.value = currentId;
+          }
+        }
+
+        // ========== 保存数据 ==========
+        function saveData() {
+          saveToStorage({ categories: categories.value });
+        }
+
+        // ========== 新增分类 ==========
+        function showAddCategoryDialog() {
+          isEditCategory.value = false;
+          editingCategory.value = null;
+          newCategoryName.value = '';
+          categoryDialogVisible.value = true;
+        }
+
+        // ========== 编辑分类 ==========
+        function showEditCategoryDialog(category) {
+          isEditCategory.value = true;
+          editingCategory.value = category;
+          newCategoryName.value = category.name;
+          categoryDialogVisible.value = true;
+        }
+
+        // ========== 提交分类（新增或编辑） ==========
+        function submitCategory() {
+          const name = newCategoryName.value.trim();
+          if (!name) {
+            ElMessage.warning('请输入分类名称');
+            return;
+          }
+
+          if (isEditCategory.value && editingCategory.value) {
+            editingCategory.value.name = name;
+            saveData();
+            categoryDialogVisible.value = false;
+            ElMessage.success('分类修改成功');
+          } else {
+            categories.value.push({
+              id: generateId(),
+              name: name,
+              items: []
+            });
+            saveData();
+            categoryDialogVisible.value = false;
+            ElMessage.success('分类添加成功');
+          }
+          nextTick(() => initSortable());
+        }
+
+        // ========== 删除分类 ==========
+        function deleteCategory(category) {
+          const itemCount = category.items ? category.items.length : 0;
+          const msg = itemCount > 0
+            ? `确定要删除分类「${category.name}」吗？该分类下有 ${itemCount} 个导航项，将一并删除！`
+            : `确定要删除分类「${category.name}」吗？`;
+
+          ElMessageBox.confirm(msg, '删除确认', {
+            confirmButtonText: '确定删除',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const idx = categories.value.findIndex(c => c.id === category.id);
+            if (idx !== -1) {
+              categories.value.splice(idx, 1);
+              saveData();
+              ElMessage.success('分类已删除');
+              nextTick(() => initSortable());
+            }
+          }).catch(() => {});
+        }
+
+        // ========== 新增导航项 ==========
+        function showAddItemDialog(category) {
+          currentCategory.value = category;
+          isEditItem.value = false;
+          editingItem.value = null;
+          newItem.name = '';
+          newItem.url = '';
+          newItem.icon = '';
+          itemDialogVisible.value = true;
+        }
+
+        // ========== 编辑导航项 ==========
+        function showEditItemDialog(category, item) {
+          currentCategory.value = category;
+          isEditItem.value = true;
+          editingItem.value = item;
+          newItem.name = item.name;
+          newItem.url = item.url;
+          newItem.icon = item.icon || '';
+          itemDialogVisible.value = true;
+        }
+
+        // ========== 提交导航项（新增或编辑） ==========
+        function submitItem() {
+          const name = newItem.name.trim();
+          const url = newItem.url.trim();
+          const icon = newItem.icon.trim();
+
+          if (!name) {
+            ElMessage.warning('请输入页面名称');
+            return;
+          }
+          if (!url) {
+            ElMessage.warning('请输入页面 URL');
+            return;
+          }
+
+          if (isEditItem.value && editingItem.value) {
+            editingItem.value.name = name;
+            editingItem.value.url = url;
+            editingItem.value.icon = icon || 'Document';
+            saveData();
+            itemDialogVisible.value = false;
+            ElMessage.success('导航页面修改成功');
+          } else {
+            const item = {
+              id: generateId(),
+              name: name,
+              url: url,
+              icon: icon || 'Document'
+            };
+
+            if (!currentCategory.value.items) {
+              currentCategory.value.items = [];
+            }
+            currentCategory.value.items.push(item);
+            saveData();
+            itemDialogVisible.value = false;
+            ElMessage.success('导航页面添加成功');
+          }
+          nextTick(() => initSortable());
+        }
+
+        // ========== 删除导航项 ==========
+        function deleteItem(category, item) {
+          ElMessageBox.confirm(
+            `确定要删除导航页面「${item.name}」吗？`,
+            '删除确认',
+            {
+              confirmButtonText: '确定删除',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).then(() => {
+            const idx = category.items.findIndex(i => i.id === item.id);
+            if (idx !== -1) {
+              category.items.splice(idx, 1);
+              saveData();
+              ElMessage.success('导航页面已删除');
+              nextTick(() => initSortable());
+            }
+          }).catch(() => {});
+        }
+
+        // ========== 打开 URL ==========
+        function openUrl(url) {
+          if (url) {
+            window.open(url, '_blank');
+          }
+        }
+
+        // ========== 图标处理 ==========
+        function isUrlIcon(icon) {
+          if (!icon) return false;
+          return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('//');
+        }
+
+        function resolveIcon(icon) {
+          if (!icon || isUrlIcon(icon)) return 'Document';
+          const iconName = icon;
+          if (ElementPlusIconsVue[iconName]) {
+            return markRaw(ElementPlusIconsVue[iconName]);
+          }
+          return 'Document';
+        }
+
+        return {
+          categories,
+          categoryDialogVisible,
+          newCategoryName,
+          isEditCategory,
+          itemDialogVisible,
+          currentCategory,
+          isEditItem,
+          newItem,
+          showAddCategoryDialog,
+          showEditCategoryDialog,
+          submitCategory,
+          deleteCategory,
+          showAddItemDialog,
+          showEditItemDialog,
+          submitItem,
+          deleteItem,
+          openUrl,
+          isUrlIcon,
+          resolveIcon,
+          showBackToTop,
+          scrollToTop,
+          activeAnchor,
+          scrollToAnchor
+        };
+      }
+    });
+
+    // 注册所有 Element Plus 图标为全局组件
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+      app.component('Icon' + key, component);
+    }
+
+    // 使用 Element Plus 和中文语言包
+    app.use(ElementPlus, { locale: ElementPlusLocaleZhCn });
+    app.mount('#app');
+  </script>
+</body>
+</html>

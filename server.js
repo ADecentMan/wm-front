@@ -12,31 +12,27 @@ app.get('/index', function (req, res) {
 });
 
 app.get('/login', function (req, res) {
-    res.sendFile(__dirname + "/" + "login.html");
+    res.sendFile(__dirname + "/public/login/index.html");
 });
 
 app.get('/music-online', function (req, res) {
-    res.sendFile(__dirname + "/" + "music.html");
+    res.sendFile(__dirname + "/public/music-old/index.html");
+});
+
+app.get('/pcMusic', function (req, res) {
+    res.sendFile(__dirname + "/public/music/pc/index.html");
+});
+
+app.get('/wapMusic', function (req, res) {
+    res.sendFile(__dirname + "/public/music/wap/index.html");
 });
 
 app.get('/story-online', function (req, res) {
-    res.sendFile(__dirname + "/" + "story.html");
-});
-
-app.get('/chickenQuestion', function (req, res) {
-    res.sendFile(__dirname + "/" + "chickenQuestion.html");
+    res.sendFile(__dirname + "/public/story/index.html");
 });
 
 app.get('/navigate', function (req, res) {
-    res.sendFile(__dirname + "/public/navigate/navigate.html");
-});
-
-app.get('/test', function (req, res) {
-    res.sendFile(__dirname + "/test.html");
-});
-
-app.get('/test-navigate', function (req, res) {
-    res.sendFile(__dirname + "/test-navigate.html");
+    res.sendFile(__dirname + "/public/navigate/index.html");
 });
 
 // 动态路径代理
