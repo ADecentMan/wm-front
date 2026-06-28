@@ -7,7 +7,14 @@
     <option name="rewriteBookmarkType" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="[author]346129023@qq.com&#10;[description]播放器样式更新" />
+    <list default="true" id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="[author]346129023@qq.com&#10;[description]播放器样式更新">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/music/pc/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/music/pc/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/music/pc/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/music/pc/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/music/pc/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/music/pc/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/navigate/navigate.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/navigate/navigate.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -182,7 +189,7 @@
       <workItem from="1781793832829" duration="2602000" />
       <workItem from="1781802202812" duration="11458000" />
       <workItem from="1782012918367" duration="2653000" />
-      <workItem from="1782612734337" duration="598000" />
+      <workItem from="1782612734337" duration="4833000" />
     </task>
     <task id="LOCAL-00001" summary="[author]346129023@qq.com&#10;[description]前台项目初始化">
       <created>1690379452081</created>
@@ -417,7 +424,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782612905332</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="[author]346129023@qq.com&#10;[description]播放器样式更新">
+      <option name="closed" value="true" />
+      <created>1782613376115</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1782613376115</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

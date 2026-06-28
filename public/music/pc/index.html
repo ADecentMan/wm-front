@@ -81,6 +81,9 @@
             <div class="like-btn" id="likeBtn">
                 <i class="far fa-heart"></i>
             </div>
+            <div class="lyrics-btn" id="lyricsBtn" title="歌词">
+                词
+            </div>
         </div>
 
         <!-- 播放控制 -->
@@ -126,6 +129,24 @@
 
 <!-- 音频元素 -->
 <audio id="audioPlayer"></audio>
+
+<!-- 歌词显示面板 -->
+<div class="lyrics-panel" id="lyricsPanel">
+    <div class="lyrics-panel-header">
+        <button class="lyrics-close-btn" id="closeLyricsPanel">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="lyrics-song-info">
+            <h3 id="lyricsSongTitle">未选择歌曲</h3>
+            <p id="lyricsSongArtist">--</p>
+        </div>
+    </div>
+    <div class="lyrics-panel-content" id="lyricsPanelContent">
+        <div class="lyrics-text" id="lyricsText">
+            <!-- 歌词内容将动态生成 -->
+        </div>
+    </div>
+</div>
 
 <script src="./public/music/pc/app.js"></script>
 </body>

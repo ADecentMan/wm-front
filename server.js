@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 
+app.use('/music', express.static('F:/Audio/Music'));
 app.use('/public', express.static('public'));
 app.use('/css', express.static('public/navigate/css'));
 app.use('/js', express.static('public/navigate/js'));

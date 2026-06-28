@@ -173,6 +173,12 @@
           "icon": "https://flac.music.hi.cn/static/img/logo.png"
         },
         {
+          "id": "m1jt0eidlovk0d",
+          "name": "专辑封面下载",
+          "url": "https://coverbox.henry-hu.com",
+          "icon": "https://coverbox.henry-hu.com/images/coverbox_2x.png"
+        },
+        {
           "id": "mqjtet9jl6y8bx",
           "name": "5ND 音乐网",
           "url": "https://www.5nd.com",
