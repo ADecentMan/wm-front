@@ -2,9 +2,9 @@
 class MusicPlayer {
     constructor() {
         // API配置
-        this.apiBaseUrl = 'http://10.164.152.106:8080/entertainment/music/queryList';
-        this.apiFavouriteUrl = 'http://10.164.152.106:8080/entertainment/music/queryFavouriteList';
-        this.apiCloudRandomUrl = 'http://10.164.152.106:8080/entertainment/music/cloudRandom';
+        this.apiBaseUrl = 'http://192.168.2.40:8080/entertainment/music/queryList';
+        this.apiFavouriteUrl = 'http://192.168.2.40:8080/entertainment/music/queryFavouriteList';
+        this.apiCloudRandomUrl = 'http://192.168.2.40:8080/entertainment/music/cloudRandom';
         
         // 当前菜单状态
         this.currentMenu = 'discover'; // discover, cloudRandom, favourite, history
@@ -240,7 +240,8 @@ class MusicPlayer {
             if (data && data.code === "-2") {
                 console.log('用户未登录，跳转到登录页面');
                 // 跳转到登录页面
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8081/music-online2';
+                let currentUrl = window.location.origin + window.location.pathname;
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
                 window.location.href = loginUrl;
                 return;
             }
@@ -507,7 +508,7 @@ class MusicPlayer {
             try {
                 const musicId = this.currentSong.id;
                 const musicTitle = this.currentSong.title;
-                const apiUrl = `http://10.164.152.106:8080/entertainment/music/extAdd?type=listen&id=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
+                const apiUrl = `http://192.168.2.40:8080/entertainment/music/extAdd?type=listen&id=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
                 
                 await fetch(apiUrl, {
                     method: 'GET',
@@ -621,10 +622,10 @@ class MusicPlayer {
             let apiUrl;
             if (likeBtn.classList.contains('liked')) {
                 // 取消收藏
-                apiUrl = `http://10.164.152.106:8080/entertainment/music/favourite?type=remove&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
+                apiUrl = `http://192.168.2.40:8080/entertainment/music/favourite?type=remove&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
             } else {
                 // 添加收藏
-                apiUrl = `http://10.164.152.106:8080/entertainment/music/favourite?type=add&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
+                apiUrl = `http://192.168.2.40:8080/entertainment/music/favourite?type=add&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
             }
             
             const response = await fetch(apiUrl, {
@@ -939,7 +940,7 @@ class MusicPlayer {
             // 检查是否未登录
             if (song && song.code === "-2") {
                 console.log('用户未登录，跳转到登录页面');
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
                 window.location.href = loginUrl;
                 return;
             }
@@ -1051,7 +1052,7 @@ class MusicPlayer {
             // 检查是否未登录
             if (song && song.code === "-2") {
                 console.log('用户未登录，跳转到登录页面');
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
                 window.location.href = loginUrl;
                 return;
             }

@@ -531,7 +531,6 @@
       }
     }
   </style>
-    <script src="../music2/app.js"></script>
 </head>
 <body>
   <div id="app">
@@ -767,9 +766,9 @@
           if (saved && saved.categories && saved.categories.length > 0) {
             categories.value = saved.categories;
           } else {
-            // 从 navigation.json 加载默认配置
+            // 从 navigate.json 加载默认配置
             try {
-              const resp = await fetch('/public/navigation/navigation.json');
+              const resp = await fetch('/public/navigate/navigate.json');
               const data = await resp.json();
               if (data && data.categories && data.categories.length > 0) {
                 categories.value = data.categories;
@@ -998,7 +997,7 @@
           if (isEditItem.value && editingItem.value) {
             editingItem.value.name = name;
             editingItem.value.url = url;
-            editingItem.value.icon = icon || 'Document';
+            editingItem.value.icon = icon || url + '/favicon.ico';
             saveData();
             itemDialogVisible.value = false;
             ElMessage.success('导航页面修改成功');
@@ -1007,7 +1006,7 @@
               id: generateId(),
               name: name,
               url: url,
-              icon: icon || 'Document'
+              icon: icon || url + '/favicon.ico'
             };
 
             if (!currentCategory.value.items) {

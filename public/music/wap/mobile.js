@@ -2,11 +2,11 @@
 class MobileMusicPlayer {
     constructor() {
         // API配置（复用PC版本）
-        this.apiBaseUrl = 'http://10.164.152.106:8080/entertainment/music/queryList';
-        this.apiFavouriteUrl = 'http://10.164.152.106:8080/entertainment/music/queryFavouriteList';
-        this.apiCloudRandomUrl = 'http://10.164.152.106:8080/entertainment/music/cloudRandom';
-        this.apiFavouriteActionUrl = 'http://10.164.152.106:8080/entertainment/music/favourite';
-        this.apiExtAddUrl = 'http://10.164.152.106:8080/entertainment/music/extAdd';
+        this.apiBaseUrl = 'http://192.168.2.40:8080/entertainment/music/queryList';
+        this.apiFavouriteUrl = 'http://192.168.2.40:8080/entertainment/music/queryFavouriteList';
+        this.apiCloudRandomUrl = 'http://192.168.2.40:8080/entertainment/music/cloudRandom';
+        this.apiFavouriteActionUrl = 'http://192.168.2.40:8080/entertainment/music/favourite';
+        this.apiExtAddUrl = 'http://192.168.2.40:8080/entertainment/music/extAdd';
         
         // 当前Tab状态
         this.currentTab = 'discover'; // discover, cloud, favourite, history
@@ -285,7 +285,8 @@ class MobileMusicPlayer {
             
             // 检查是否未登录
             if (data && data.code === "-2") {
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8001/music-wap';
+                let currentUrl = window.location.origin + window.location.pathname;
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
                 window.location.href = loginUrl;
                 return;
             }
@@ -354,7 +355,7 @@ class MobileMusicPlayer {
             
             // 检查是否未登录
             if (data && data.code === "-2") {
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
                 window.location.href = loginUrl;
                 return;
             }
@@ -1115,7 +1116,7 @@ class MobileMusicPlayer {
             
             // 检查是否未登录
             if (song && song.code === "-2") {
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
                 window.location.href = loginUrl;
                 return;
             }
@@ -1206,7 +1207,7 @@ class MobileMusicPlayer {
             
             // 检查是否未登录
             if (song && song.code === "-2") {
-                const loginUrl = 'http://10.164.152.106:8081/login?targetUrl=http://10.164.152.106:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
                 window.location.href = loginUrl;
                 return;
             }

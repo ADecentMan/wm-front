@@ -1,5 +1,5 @@
 let host = window.location.hostname;
-let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.2" || host == "192.168.2.36")? "dev" : "pro"
+let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.40" || host == "192.168.2.36")? "dev" : "pro"
 let myPlaylist;
 let playlist;
 let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://101.126.83.165:8081";
