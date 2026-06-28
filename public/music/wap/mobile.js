@@ -614,13 +614,18 @@ class MobileMusicPlayer {
         // 全屏播放器按钮
         const fullPlayBtn = document.getElementById('fullPlayPause');
         const fullIcon = fullPlayBtn.querySelector('i');
+
+        // 控制迷你播放器海报旋转
+        const miniPosterImg = document.querySelector('#miniPoster img');
         
         if (this.isPlaying) {
             miniIcon.className = 'fas fa-pause';
             fullIcon.className = 'fas fa-pause';
+            miniPosterImg.classList.add('rotating');
         } else {
             miniIcon.className = 'fas fa-play';
             fullIcon.className = 'fas fa-play';
+            miniPosterImg.classList.remove('rotating');
         }
     }
     
