@@ -41,11 +41,26 @@ class MusicPlayer {
         this.originalTitle = document.title;
         this.originalFavicon = document.querySelector('link[rel="icon"]').href;
 
+        try {
+            this.audioCache = new AudioCache();
+        } catch (e) {
+            console.warn('AudioCache不可用:', e);
+            this.audioCache = null;
+        }
+
         // 初始化
         this.init();
     }
 
     init() {
+        if (this.audioCache) {
+            this.audioCache.init().then(() => {
+                console.log('音频缓存初始化完成');
+            }).catch(err => {
+                console.warn('音频缓存初始化失败，将使用在线播放:', err);
+                this.audioCache = null;
+            });
+        }
         this.bindEvents();
         this.loadMusicList();
         this.setVolume(this.volume);
@@ -347,8 +362,47 @@ class MusicPlayer {
         });
     }
 
+    async loadAudio(song) {
+        if (this.currentBlobUrl) {
+            URL.revokeObjectURL(this.currentBlobUrl);
+            this.currentBlobUrl = null;
+        }
+
+        if (this.audioCache) {
+            try {
+                const cached = await this.audioCache.get(song.id);
+                if (cached) {
+                    console.log('从缓存加载:', song.title);
+                    this.currentBlobUrl = URL.createObjectURL(cached.blob);
+                    this.audioPlayer.src = this.currentBlobUrl;
+                    return;
+                }
+            } catch (e) {
+                console.warn('缓存读取失败:', e);
+            }
+        }
+
+        this.audioPlayer.src = song.mp3;
+
+        if (this.audioCache) {
+            this.cacheAudioInBackground(song);
+        }
+    }
+
+    async cacheAudioInBackground(song) {
+        try {
+            const response = await fetch(song.mp3, { credentials: 'include' });
+            if (!response.ok) return;
+            const blob = await response.blob();
+            await this.audioCache.set(song.id, blob);
+            console.log('音频已缓存:', song.title, this.audioCache.formatSize(blob.size));
+        } catch (e) {
+            console.warn('音频缓存失败:', e);
+        }
+    }
+
     // 播放歌曲
-    playSong(index) {
+    async playSong(index) {
         if (index < 0 || index >= this.playlist.length) return;
 
         const song = this.playlist[index];
@@ -374,7 +428,7 @@ class MusicPlayer {
         }
 
         // 播放音频
-        this.audioPlayer.src = song.mp3;
+        await this.loadAudio(song);
         this.audioPlayer.play().then(() => {
             this.isPlaying = true;
             this.updatePlayButton();
@@ -413,11 +467,6 @@ class MusicPlayer {
 
         this.isPlaying = !this.isPlaying;
         this.updatePlayButton();
-
-        // 如果是随心听模式，更新随心听按钮
-        if (this.currentMenu === 'cloudRandom') {
-            this.updateCloudPlayButton();
-        }
     }
 
     // 更新播放按钮
@@ -828,21 +877,21 @@ class MusicPlayer {
             gap: 10px;
             animation: slideIn 0.3s ease-out;
         `;
-        
+
         document.body.appendChild(errorDiv);
-        
+
         setTimeout(() => {
             errorDiv.style.animation = 'slideOut 0.3s ease-in';
             setTimeout(() => errorDiv.remove(), 300);
         }, 3000);
     }
-    
+
     // 添加到播放历史
     addToPlayHistory(song) {
         try {
             // 从localStorage获取播放历史
             let history = this.getPlayHistory();
-            
+
             // 创建历史记录项
             const historyItem = {
                 id: song.id,
@@ -855,27 +904,27 @@ class MusicPlayer {
                 isFavourite: song.isFavourite,
                 playTime: Date.now() // 添加播放时间戳
             };
-            
+
             // 移除已存在的相同歌曲（避免重复）
             history = history.filter(item => item.id !== song.id);
-            
+
             // 添加到历史记录开头（最新的在前面）
             history.unshift(historyItem);
-            
+
             // 只保留最近500条
             if (history.length > 500) {
                 history = history.slice(0, 500);
             }
-            
+
             // 保存到localStorage
             localStorage.setItem('playHistory', JSON.stringify(history));
-            
+
             console.log('播放历史已更新，当前记录数:', history.length);
         } catch (error) {
             console.error('保存播放历史失败:', error);
         }
     }
-    
+
     // 获取播放历史
     getPlayHistory() {
         try {
@@ -889,17 +938,17 @@ class MusicPlayer {
             return [];
         }
     }
-    
+
     // 清空播放历史
     clearPlayHistory() {
         localStorage.removeItem('playHistory');
         console.log('播放历史已清空');
     }
-    
+
     // 渲染随心听界面
     renderCloudRandomUI() {
         const musicList = document.getElementById('musicList');
-        
+
         // 随心听模式下显示特殊界面（去除图标和控制器）
         musicList.innerHTML = `
             <div class="cloud-random-container">
@@ -929,71 +978,77 @@ class MusicPlayer {
                 </div>
             </div>
         `;
-        
+
         // 隐藏分页控件
         const pagination = document.getElementById('pagination');
         pagination.style.display = 'none';
     }
-    
+
     // 随心听下一曲
     async playCloudRandomNext() {
         try {
             console.log('>>> 随心听下一曲，调用接口');
-            
+
             const url = `${this.apiCloudRandomUrl}?type=next`;
             const response = await fetch(url, {
                 method: 'GET',
                 credentials: 'include'
             });
-            
+
             if (!response.ok) {
                 throw new Error('网络请求失败');
             }
-            
+
             const data = await response.json();
             console.log('随心听下一曲接口原始返回:', data);
             // 返回的是数组，取第一个元素
             const song = Array.isArray(data) ? data[0] : data;
             console.log('随心听下一曲解析后歌曲:', song);
-            
+
             // 检查是否未登录
             if (song && song.code === "-2") {
                 console.log('用户未登录，跳转到登录页面');
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
+                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000:8081/pcMusic';
                 window.location.href = loginUrl;
                 return;
             }
-            
+
             // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 console.log('获取到有效歌曲，开始播放:', song.title);
-                
+
                 // 添加到历史记录
                 this.cloudRandomHistory.push(song);
                 this.cloudRandomHistoryIndex = this.cloudRandomHistory.length - 1;
-                
+
                 // 设置当前歌曲
                 this.currentSong = song;
                 this.playlist = [song]; // 随心听模式下只有一个歌曲
                 this.currentIndex = 0;
-                
+
                 // 更新界面显示当前歌曲
                 this.renderCloudRandomUI();
-                
+
+                // 加载歌词
+                this.loadLyrics(song.lrc);
+                if (this.showLyricsPanel) {
+                    this.updateLyricsPanelInfo();
+                }
+
                 // 播放音频
-                this.audioPlayer.src = song.mp3;
+                await this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-                    
+
                     // 更新底部播放栏
                     document.getElementById('songTitle').textContent = song.title;
                     document.getElementById('songArtist').textContent = song.artist;
                     const posterImg = document.querySelector('#playerPoster img');
                     posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
                     posterImg.classList.add('rotating');
-                    
+
                     // 记录播放历史
                     this.addToPlayHistory(song);
                 }).catch(error => {
@@ -1009,33 +1064,39 @@ class MusicPlayer {
             this.showError('获取歌曲失败，请检查网络连接');
         }
     }
-    
+
     // 随心听上一曲
     async playCloudRandomPrevious() {
         try {
             console.log('>>> 随心听上一曲');
-            
+
             // 如果有历史记录，优先从历史记录中获取
             if (this.cloudRandomHistoryIndex > 0) {
                 this.cloudRandomHistoryIndex--;
                 const song = this.cloudRandomHistory[this.cloudRandomHistoryIndex];
                 console.log('从历史记录获取歌曲:', song.title);
-                
+
                 // 设置当前歌曲
                 this.currentSong = song;
                 this.playlist = [song];
                 this.currentIndex = 0;
-                
+
                 // 更新界面显示当前歌曲
                 this.renderCloudRandomUI();
-                
+
+                // 加载歌词
+                this.loadLyrics(song.lrc);
+                if (this.showLyricsPanel) {
+                    this.updateLyricsPanelInfo();
+                }
+
                 // 播放歌曲
-                this.audioPlayer.src = song.mp3;
+                await this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-                    
+
                     // 更新底部播放栏
                     document.getElementById('songTitle').textContent = song.title;
                     document.getElementById('songArtist').textContent = song.artist;
@@ -1046,10 +1107,10 @@ class MusicPlayer {
                     console.error('播放失败:', error);
                     this.showError('播放失败，请检查音频文件');
                 });
-                
+
                 return;
             }
-            
+
             // 如果没有历史记录，调用接口
             console.log('没有历史记录，调用接口获取上一曲');
             const url = `${this.apiCloudRandomUrl}?type=previous`;
@@ -1057,17 +1118,17 @@ class MusicPlayer {
                 method: 'GET',
                 credentials: 'include'
             });
-            
+
             if (!response.ok) {
                 throw new Error('网络请求失败');
             }
-            
+
             const data = await response.json();
             console.log('随心听上一曲接口原始返回:', data);
             // 返回的是数组，取第一个元素
             const song = Array.isArray(data) ? data[0] : data;
             console.log('随心听上一曲解析后歌曲:', song);
-            
+
             // 检查是否未登录
             if (song && song.code === "-2") {
                 console.log('用户未登录，跳转到登录页面');
@@ -1075,37 +1136,43 @@ class MusicPlayer {
                 window.location.href = loginUrl;
                 return;
             }
-            
+
             // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 console.log('获取到有效歌曲，开始播放:', song.title);
-                
+
                 // 添加到历史记录开头
                 this.cloudRandomHistory.unshift(song);
                 this.cloudRandomHistoryIndex = 0;
-                
+
                 // 设置当前歌曲
                 this.currentSong = song;
                 this.playlist = [song];
                 this.currentIndex = 0;
-                
+
                 // 更新界面显示当前歌曲
                 this.renderCloudRandomUI();
-                
+
+                // 加载歌词
+                this.loadLyrics(song.lrc);
+                if (this.showLyricsPanel) {
+                    this.updateLyricsPanelInfo();
+                }
+
                 // 播放歌曲
-                this.audioPlayer.src = song.mp3;
+                await this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-                    
+
                     // 更新底部播放栏
                     document.getElementById('songTitle').textContent = song.title;
                     document.getElementById('songArtist').textContent = song.artist;
                     const posterImg = document.querySelector('#playerPoster img');
                     posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
                     posterImg.classList.add('rotating');
-                    
+
                     // 记录播放历史
                     this.addToPlayHistory(song);
                 }).catch(error => {
@@ -1121,7 +1188,7 @@ class MusicPlayer {
             this.showError('获取歌曲失败，请检查网络连接');
         }
     }
-    
+
     // 切换隐藏播放器
     toggleHidePlayer() {
         if (this.isHidden) {
@@ -1132,47 +1199,47 @@ class MusicPlayer {
             this.hidePlayer();
         }
     }
-    
+
     // 隐藏播放器
     hidePlayer() {
         this.isHidden = true;
-        
+
         // 隐藏播放器容器
         const container = document.querySelector('.container');
         container.style.display = 'none';
-        
+
         // 显示伪装背景
         this.createFakeBackground();
-        
+
         // 更改favicon
         this.changeFavicon('./public/music2/fake-favicon.png');
-        
+
         // 更改页面标题
         document.title = 'Welcome to W3 Workplace';
-        
+
         console.log('播放器已隐藏，显示伪装页面');
     }
-    
+
     // 显示播放器
     showPlayer() {
         this.isHidden = false;
-        
+
         // 显示播放器容器
         const container = document.querySelector('.container');
         container.style.display = 'flex';
-        
+
         // 移除伪装背景
         this.removeFakeBackground();
-        
+
         // 还原favicon
         this.changeFavicon(this.originalFavicon);
-        
+
         // 还原页面标题
         document.title = this.originalTitle;
-        
+
         console.log('播放器已还原显示');
     }
-    
+
     // 创建伪装背景
     createFakeBackground() {
         // 创建伪装背景元素
@@ -1190,10 +1257,10 @@ class MusicPlayer {
             background-repeat: no-repeat;
             z-index: 9999;
         `;
-        
+
         document.body.appendChild(fakeBg);
     }
-    
+
     // 移除伪装背景
     removeFakeBackground() {
         const fakeBg = document.getElementById('fake-background');
@@ -1201,7 +1268,7 @@ class MusicPlayer {
             fakeBg.remove();
         }
     }
-    
+
     // 更改favicon
     changeFavicon(iconPath) {
         const favicon = document.querySelector('link[rel="icon"]');
@@ -1271,23 +1338,30 @@ class MusicPlayer {
     parseLyrics(lrcText) {
         const lines = lrcText.split('\n');
         const lyrics = [];
+        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
 
         for (const line of lines) {
-            // 匹配时间标签格式 [00:00.00] 或 [00:00]
-            const match = line.match(/\[(\d{2}):(\d{2})\.?(\d{2})?\]/);
-            if (match) {
+            const times = [];
+            let match;
+            while ((match = timeRegex.exec(line)) !== null) {
                 const minutes = parseInt(match[1]);
                 const seconds = parseInt(match[2]);
-                const milliseconds = match[3] ? parseInt(match[3]) : 0;
-                const time = minutes * 60 + seconds + milliseconds / 100;
-                const text = line.replace(/\[\d{2}:\d{2}\.\d{2}\]/, '').trim();
+                const msStr = match[3];
+                const milliseconds = parseInt(msStr) / (msStr.length === 3 ? 1000 : 100);
+                times.push(minutes * 60 + seconds + milliseconds);
+            }
 
-                if (text) {
-                    lyrics.push({ time, text });
-                }
+            if (times.length === 0) continue;
+
+            const text = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
+            if (!text) continue;
+
+            for (const time of times) {
+                lyrics.push({ time, text });
             }
         }
 
+        lyrics.sort((a, b) => a.time - b.time);
         return lyrics;
     }
 
@@ -1314,7 +1388,7 @@ class MusicPlayer {
             });
         });
 
-    // 绑定歌词滑动同步
+        // 绑定歌词滑动同步
         this.bindLyricsScrollSync();
     }
 

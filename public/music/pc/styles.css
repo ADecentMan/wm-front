@@ -778,7 +778,7 @@ body {
     top: 0;
     right: -400px;
     width: 400px;
-    height: 100vh;
+    bottom: 80px;
     background: var(--bg-dark);
     border-left: 1px solid var(--border-color);
     z-index: 1000;
@@ -792,7 +792,7 @@ body {
 }
 
 .lyrics-panel-header {
-    height: 80px;
+    height: 60px;
     background: var(--bg-light);
     border-bottom: 1px solid var(--border-color);
     display: flex;

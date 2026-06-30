@@ -404,12 +404,6 @@ body {
     position: absolute;
     left: 15px;
 }
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-}
 
 .back-btn:hover,
 .like-btn:hover,
@@ -816,16 +810,16 @@ body {
         width: 220px;
         height: 220px;
     }
-    
+
     .cloud-poster {
         width: 200px;
         height: 200px;
     }
-    
+
     .full-title {
         font-size: 18px;
     }
-    
+
     .cloud-title {
         font-size: 16px;
     }
@@ -838,41 +832,41 @@ body {
         flex-direction: row;
         gap: 30px;
     }
-    
+
     .full-poster-container {
         order: 1;
     }
-    
+
     .full-poster {
         width: 150px;
         height: 150px;
     }
-    
+
     .full-song-info {
         order: 2;
         padding: 0;
         flex: 1;
     }
-    
+
     .full-progress {
         order: 3;
         width: auto;
         flex: 1;
     }
-    
+
     .full-controls {
         order: 4;
         width: auto;
         padding: 0;
         gap: 15px;
     }
-    
+
     .full-btn {
         width: 40px;
         height: 40px;
         font-size: 16px;
     }
-    
+
     .full-btn.play {
         width: 50px;
         height: 50px;
