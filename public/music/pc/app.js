@@ -1,12 +1,6 @@
 // 音乐播放器核心功能
 class MusicPlayer {
     constructor() {
-        // API配置
-        this.apiBaseUrl = 'http://192.168.2.40:8080/entertainment/music/queryList';
-        this.apiFavouriteUrl = 'http://192.168.2.40:8080/entertainment/music/queryFavouriteList';
-        this.apiCloudRandomUrl = 'http://192.168.2.40:8080/entertainment/music/cloudRandom';
-
-        // 当前菜单状态
         this.currentMenu = 'discover'; // discover, cloudRandom, favourite, history
 
         // 播放器状态
@@ -76,60 +70,35 @@ class MusicPlayer {
 
         menuItems.forEach((item, index) => {
             item.addEventListener('click', () => {
-                // 更新菜单激活状态
                 menuItems.forEach(mi => mi.classList.remove('active'));
                 item.classList.add('active');
 
-                // 根据菜单切换内容
-                if (index === 0) {
-                    // 发现音乐
-                    this.currentMenu = 'discover';
-                    this.currentPage = 1;
-                    this.searchKeyword = '';
-                    searchInput.value = '';
-                    // 显示搜索图标、恢复placeholder并启用输入
-                    searchIcon.style.display = 'block';
-                    searchInput.placeholder = '搜索音乐、歌手';
-                    searchInput.disabled = false;
-                    this.loadMusicList();
-                } else if (index === 1) {
-                    // 音韵随心
+                this.currentPage = 1;
+                this.searchKeyword = '';
+                searchInput.value = '';
+
+                if (index === 1) {
                     this.currentMenu = 'cloudRandom';
-                    this.currentPage = 1;
-                    this.searchKeyword = '';
-                    searchInput.value = '';
-                    // 隐藏搜索图标、清空placeholder并禁用输入
                     searchIcon.style.display = 'none';
                     searchInput.placeholder = '';
                     searchInput.disabled = true;
-                    // 先渲染界面，然后自动播放一首歌
                     this.loadMusicList().then(() => {
-                        // 如果当前没有播放歌曲，自动播放下一曲
                         if (!this.currentSong) {
                             this.playCloudRandomNext();
                         }
                     });
-                } else if (index === 2) {
-                    // 我的收藏
-                    this.currentMenu = 'favourite';
-                    this.currentPage = 1;
-                    this.searchKeyword = '';
-                    searchInput.value = '';
-                    // 显示搜索图标、恢复placeholder并启用输入
+                } else {
                     searchIcon.style.display = 'block';
                     searchInput.placeholder = '搜索音乐、歌手';
                     searchInput.disabled = false;
-                    this.loadMusicList();
-                } else if (index === 3) {
-                    // 播放历史
-                    this.currentMenu = 'history';
-                    this.currentPage = 1;
-                    this.searchKeyword = '';
-                    searchInput.value = '';
-                    // 显示搜索图标、恢复placeholder并启用输入
-                    searchIcon.style.display = 'block';
-                    searchInput.placeholder = '搜索音乐、歌手';
-                    searchInput.disabled = false;
+
+                    if (index === 0) {
+                        this.currentMenu = 'discover';
+                    } else if (index === 2) {
+                        this.currentMenu = 'favourite';
+                    } else if (index === 3) {
+                        this.currentMenu = 'history';
+                    }
                     this.loadMusicList();
                 }
             });
@@ -237,54 +206,16 @@ class MusicPlayer {
 
             console.log('>>> 不是播放历史菜单，调用API接口');
 
-            // 根据当前菜单选择不同的API
-            let apiUrl;
+            let list;
             if (this.currentMenu === 'favourite') {
-                apiUrl = this.apiFavouriteUrl;
-                console.log('使用收藏列表API:', apiUrl);
+                console.log('使用收藏列表API');
+                list = await MusicApi.queryFavouriteList(this.pageSize, this.currentPage, this.searchKeyword);
             } else {
-                apiUrl = this.apiBaseUrl;
-                console.log('使用发现音乐API:', apiUrl);
+                console.log('使用发现音乐API');
+                list = await MusicApi.queryList(this.pageSize, this.currentPage, this.searchKeyword);
             }
 
-            const url = `${apiUrl}/${this.pageSize}/${this.currentPage}?keyword=${encodeURIComponent(this.searchKeyword)}`;
-            console.log('完整API URL:', url);
-
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include' // 包含cookie
-            });
-
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-            console.log('API返回数据:', data); // 调试日志
-
-            // 检查是否未登录
-            if (data && data.code === "-2") {
-                console.log('用户未登录，跳转到登录页面');
-                // 跳转到登录页面
-                let currentUrl = window.location.origin + window.location.pathname;
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 确保playlist是数组
-            if (Array.isArray(data)) {
-                this.playlist = data;
-            } else if (data && Array.isArray(data.data)) {
-                this.playlist = data.data;
-            } else if (data && Array.isArray(data.list)) {
-                this.playlist = data.list;
-            } else if (data && Array.isArray(data.items)) {
-                this.playlist = data.items;
-            } else {
-                this.playlist = [];
-                console.warn('数据格式不符合预期:', data);
-            }
+            this.playlist = list;
 
             this.renderMusicList();
             this.updatePagination();
@@ -569,19 +500,13 @@ class MusicPlayer {
     }
 
     // 歌曲播放结束
-    // 歌曲播放结束
     async onSongEnded() {
         // 调用播放统计接口
         if (this.currentSong) {
             try {
                 const musicId = this.currentSong.id;
                 const musicTitle = this.currentSong.title;
-                const apiUrl = `http://192.168.2.40:8080/entertainment/music/extAdd?type=listen&id=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-
-                await fetch(apiUrl, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
+                await MusicApi.extAdd('listen', musicId, musicTitle);
 
                 console.log('播放统计已记录');
             } catch (error) {
@@ -677,7 +602,6 @@ class MusicPlayer {
     }
 
     // 切换喜欢状态
-    // 切换喜欢状态
     async toggleLike() {
         if (!this.currentSong) return;
 
@@ -687,21 +611,10 @@ class MusicPlayer {
         const musicTitle = this.currentSong.title;
 
         try {
-            let apiUrl;
-            if (likeBtn.classList.contains('liked')) {
-                // 取消收藏
-                apiUrl = `http://192.168.2.40:8080/entertainment/music/favourite?type=remove&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-            } else {
-                // 添加收藏
-                apiUrl = `http://192.168.2.40:8080/entertainment/music/favourite?type=add&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-            }
+            const action = likeBtn.classList.contains('liked') ? 'remove' : 'add';
+            const response = await MusicApi.favourite(action, musicId, musicTitle);
 
-            const response = await fetch(apiUrl, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
+            if (response) {
                 // 更新UI
                 if (likeBtn.classList.contains('liked')) {
                     likeBtn.classList.remove('liked');
@@ -984,36 +897,19 @@ class MusicPlayer {
         pagination.style.display = 'none';
     }
 
+    updatePlayerBar(song) {
+        document.getElementById('songTitle').textContent = song.title;
+        document.getElementById('songArtist').textContent = song.artist;
+        const posterImg = document.querySelector('#playerPoster img');
+        posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
+        posterImg.classList.add('rotating');
+    }
+
     // 随心听下一曲
     async playCloudRandomNext() {
         try {
-            console.log('>>> 随心听下一曲，调用接口');
+            const song = await MusicApi.cloudRandom('next');
 
-            const url = `${this.apiCloudRandomUrl}?type=next`;
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-            console.log('随心听下一曲接口原始返回:', data);
-            // 返回的是数组，取第一个元素
-            const song = Array.isArray(data) ? data[0] : data;
-            console.log('随心听下一曲解析后歌曲:', song);
-
-            // 检查是否未登录
-            if (song && song.code === "-2") {
-                console.log('用户未登录，跳转到登录页面');
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000:8081/pcMusic';
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 console.log('获取到有效歌曲，开始播放:', song.title);
 
@@ -1041,15 +937,7 @@ class MusicPlayer {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-
-                    // 更新底部播放栏
-                    document.getElementById('songTitle').textContent = song.title;
-                    document.getElementById('songArtist').textContent = song.artist;
-                    const posterImg = document.querySelector('#playerPoster img');
-                    posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
-                    posterImg.classList.add('rotating');
-
-                    // 记录播放历史
+                    this.updatePlayerBar(song);
                     this.addToPlayHistory(song);
                 }).catch(error => {
                     console.error('播放失败:', error);
@@ -1096,13 +984,7 @@ class MusicPlayer {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-
-                    // 更新底部播放栏
-                    document.getElementById('songTitle').textContent = song.title;
-                    document.getElementById('songArtist').textContent = song.artist;
-                    const posterImg = document.querySelector('#playerPoster img');
-                    posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
-                    posterImg.classList.add('rotating');
+                    this.updatePlayerBar(song);
                 }).catch(error => {
                     console.error('播放失败:', error);
                     this.showError('播放失败，请检查音频文件');
@@ -1113,31 +995,8 @@ class MusicPlayer {
 
             // 如果没有历史记录，调用接口
             console.log('没有历史记录，调用接口获取上一曲');
-            const url = `${this.apiCloudRandomUrl}?type=previous`;
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
+            const song = await MusicApi.cloudRandom('previous');
 
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-            console.log('随心听上一曲接口原始返回:', data);
-            // 返回的是数组，取第一个元素
-            const song = Array.isArray(data) ? data[0] : data;
-            console.log('随心听上一曲解析后歌曲:', song);
-
-            // 检查是否未登录
-            if (song && song.code === "-2") {
-                console.log('用户未登录，跳转到登录页面');
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl=http://192.168.2.40:8000/';
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 console.log('获取到有效歌曲，开始播放:', song.title);
 
@@ -1165,15 +1024,7 @@ class MusicPlayer {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
                     this.updatePlayButton();
-
-                    // 更新底部播放栏
-                    document.getElementById('songTitle').textContent = song.title;
-                    document.getElementById('songArtist').textContent = song.artist;
-                    const posterImg = document.querySelector('#playerPoster img');
-                    posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
-                    posterImg.classList.add('rotating');
-
-                    // 记录播放历史
+                    this.updatePlayerBar(song);
                     this.addToPlayHistory(song);
                 }).catch(error => {
                     console.error('播放失败:', error);
@@ -1212,7 +1063,7 @@ class MusicPlayer {
         this.createFakeBackground();
 
         // 更改favicon
-        this.changeFavicon('./public/music2/fake-favicon.png');
+        this.changeFavicon('/public/music2/pc/fake-favicon.png');
 
         // 更改页面标题
         document.title = 'Welcome to W3 Workplace';
@@ -1251,7 +1102,7 @@ class MusicPlayer {
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('./public/music2/fake-bg.png');
+            background-image: url('/public/music2/pc/fake-bg.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

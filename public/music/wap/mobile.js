@@ -1,14 +1,6 @@
 // 移动端音乐播放器核心功能
 class MobileMusicPlayer {
     constructor() {
-        // API配置（复用PC版本）
-        this.apiBaseUrl = 'http://192.168.2.40:8080/entertainment/music/queryList';
-        this.apiFavouriteUrl = 'http://192.168.2.40:8080/entertainment/music/queryFavouriteList';
-        this.apiCloudRandomUrl = 'http://192.168.2.40:8080/entertainment/music/cloudRandom';
-        this.apiFavouriteActionUrl = 'http://192.168.2.40:8080/entertainment/music/favourite';
-        this.apiExtAddUrl = 'http://192.168.2.40:8080/entertainment/music/extAdd';
-        
-        // 当前Tab状态
         this.currentTab = 'discover'; // discover, cloud, favourite, history
 
         // 播放器状态
@@ -284,45 +276,15 @@ class MobileMusicPlayer {
             this.isLoading = true;
             this.showLoadMore('loadMore');
 
-            const url = `${this.apiBaseUrl}/${this.pageSize}/${this.currentPage}?keyword=${encodeURIComponent(this.searchKeyword)}`;
-
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-
-            // 检查是否未登录
-            if (data && data.code === "-2") {
-                let currentUrl = window.location.origin + window.location.pathname;
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 确保playlist是数组
-            if (Array.isArray(data)) {
-                this.playlist = data;
-            } else if (data && Array.isArray(data.data)) {
-                this.playlist = data.data;
-            } else if (data && Array.isArray(data.list)) {
-                this.playlist = data.list;
-            } else if (data && Array.isArray(data.items)) {
-                this.playlist = data.items;
-            } else {
-                this.playlist = [];
-            }
+            const list = await MusicApi.queryList(this.pageSize, this.currentPage, this.searchKeyword);
+            this.playlist = list;
 
             this.renderMusicList('musicList');
             this.hasMoreData = this.playlist.length >= this.pageSize;
 
             return this.playlist.length > 0;
         } catch (error) {
+            if (error.message === 'UNAUTHORIZED') return false;
             console.error('加载音乐列表失败:', error);
             this.showError('加载音乐列表失败，请检查网络连接');
             return false;
@@ -354,45 +316,15 @@ class MobileMusicPlayer {
             this.isLoading = true;
             this.showLoadMore('loadMoreFav');
 
-            const url = `${this.apiFavouriteUrl}/${this.pageSize}/${this.currentPage}?keyword=${encodeURIComponent(this.searchKeyword)}`;
-
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-
-            // 检查是否未登录
-            if (data && data.code === "-2") {
-                let currentUrl = window.location.origin + window.location.pathname;
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 确保playlist是数组
-            if (Array.isArray(data)) {
-                this.playlist = data;
-            } else if (data && Array.isArray(data.data)) {
-                this.playlist = data.data;
-            } else if (data && Array.isArray(data.list)) {
-                this.playlist = data.list;
-            } else if (data && Array.isArray(data.items)) {
-                this.playlist = data.items;
-            } else {
-                this.playlist = [];
-            }
+            const list = await MusicApi.queryFavouriteList(this.pageSize, this.currentPage, this.searchKeyword);
+            this.playlist = list;
 
             this.renderMusicList('favouriteList');
             this.hasMoreData = this.playlist.length >= this.pageSize;
 
             return this.playlist.length > 0;
         } catch (error) {
+            if (error.message === 'UNAUTHORIZED') return false;
             console.error('加载收藏列表失败:', error);
             this.showError('加载收藏列表失败，请检查网络连接');
             return false;
@@ -506,8 +438,6 @@ class MobileMusicPlayer {
             });
         });
     }
-
-    // 播放歌曲
 
     async loadAudio(song) {
         if (this.currentBlobUrl) {
@@ -773,12 +703,7 @@ class MobileMusicPlayer {
             try {
                 const musicId = this.currentSong.id;
                 const musicTitle = this.currentSong.title;
-                const apiUrl = `${this.apiExtAddUrl}?type=listen&id=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-
-                await fetch(apiUrl, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
+                await MusicApi.extAdd('listen', musicId, musicTitle);
 
                 console.log('播放统计已记录');
             } catch (error) {
@@ -1088,21 +1013,10 @@ class MobileMusicPlayer {
         const musicTitle = this.currentSong.title;
 
         try {
-            let apiUrl;
-            if (likeBtn.classList.contains('liked')) {
-                // 取消收藏
-                apiUrl = `${this.apiFavouriteActionUrl}?type=remove&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-            } else {
-                // 添加收藏
-                apiUrl = `${this.apiFavouriteActionUrl}?type=add&musicId=${musicId}&musicTitle=${encodeURIComponent(musicTitle)}`;
-            }
+            const action = likeBtn.classList.contains('liked') ? 'remove' : 'add';
+            const response = await MusicApi.favourite(action, musicId, musicTitle);
 
-            const response = await fetch(apiUrl, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
+            if (response) {
                 // 更新UI
                 if (likeBtn.classList.contains('liked')) {
                     likeBtn.classList.remove('liked');
@@ -1173,28 +1087,8 @@ class MobileMusicPlayer {
         try {
             this.isLoading = true;
 
-            const url = `${this.apiCloudRandomUrl}?type=next`;
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
+            const song = await MusicApi.cloudRandom('next');
 
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-            const song = Array.isArray(data) ? data[0] : data;
-
-            // 检查是否未登录
-            if (song && song.code === "-2") {
-                let currentUrl = window.location.origin + window.location.pathname;
-                const loginUrl = 'http://192.168.2.40:8081/login?targetUrl='+currentUrl;
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 // 添加到历史记录
                 this.cloudRandomHistory.push(song);
@@ -1265,28 +1159,8 @@ class MobileMusicPlayer {
             // 如果没有历史记录，调用接口
             this.isLoading = true;
 
-            const url = `${this.apiCloudRandomUrl}?type=previous`;
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
+            const song = await MusicApi.cloudRandom('previous');
 
-            if (!response.ok) {
-                throw new Error('网络请求失败');
-            }
-
-            const data = await response.json();
-            const song = Array.isArray(data) ? data[0] : data;
-
-            // 检查是否未登录
-            if (song && song.code === "-2") {
-                let currentUrl = window.location.origin + window.location.pathname;
-                const loginUrl = 'http://192.168.2.40:8081/?targetUrl='+currentUrl;
-                window.location.href = loginUrl;
-                return;
-            }
-
-            // 检查返回的歌曲数据是否有效
             if (song && song.id) {
                 // 添加到历史记录开头
                 this.cloudRandomHistory.unshift(song);

@@ -621,18 +621,175 @@ body {
     }
 }
 
-/* 响应式设计 */
-@media (max-width: 1200px) {
+/* 响应式设计 - 平板横屏适配（含小米平板4等1280px设备） */
+@media (min-width: 768px) and (max-width: 1366px) {
     .sidebar {
-        width: 180px;
+        width: 160px;
     }
 
-    .music-list {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    .logo {
+        padding: 0 15px;
+        font-size: 18px;
+    }
+
+    .logo i {
+        font-size: 24px;
+        margin-right: 8px;
+    }
+
+    .menu-item {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .menu-item i {
+        margin-right: 8px;
+        font-size: 14px;
+    }
+
+    .search-bar {
+        padding: 0 20px;
+    }
+
+    .search-bar input {
+        font-size: 16px;
+    }
+
+    .content-area {
+        padding: 15px 20px;
+    }
+
+    .music-item {
+        padding: 10px 15px;
+    }
+
+    .music-poster {
+        width: 36px;
+        height: 36px;
+        margin-right: 12px;
+    }
+
+    .music-stats {
+        gap: 12px;
+        margin-left: 12px;
+    }
+
+    .player-bar {
+        height: 70px;
+        padding: 0 15px;
+        gap: 15px;
+    }
+
+    .player-info {
+        width: 200px;
+        gap: 10px;
+    }
+
+    .player-poster {
+        width: 50px;
+        height: 50px;
+    }
+
+    .player-controls {
+        gap: 6px;
+    }
+
+    .control-buttons {
+        gap: 15px;
+    }
+
+    .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .play-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+    }
+
+    .progress-container {
+        max-width: 100%;
+    }
+
+    .progress-bar {
+        height: 6px;
+    }
+
+    .progress-handle {
+        width: 14px;
+        height: 14px;
+    }
+
+    .player-volume {
+        width: 160px;
+    }
+
+    .volume-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+    }
+
+    .volume-bar {
+        height: 6px;
+    }
+
+    .volume-handle {
+        width: 14px;
+        height: 14px;
+    }
+
+    .page-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .lyrics-panel {
+        width: 320px;
+        right: -320px;
+    }
+
+    .lyrics-panel.active {
+        right: 0;
+    }
+
+    .lyrics-close-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .current-song-card {
+        padding: 25px;
+        gap: 25px;
+    }
+
+    .current-poster {
+        width: 180px;
+        height: 180px;
+    }
+
+    .current-info h2 {
+        font-size: 24px;
+    }
+
+    .current-info p {
+        font-size: 16px;
+    }
+
+    .current-stats {
+        gap: 25px;
+    }
+
+    .pagination {
+        padding: 15px 20px;
     }
 }
 
-@media (max-width: 900px) {
+/* 平板横屏以下 - 竖屏平板和手机 */
+@media (max-width: 768px) {
     .container {
         flex-direction: column;
     }
@@ -641,32 +798,81 @@ body {
         width: 100%;
         height: auto;
         flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .logo {
         width: 150px;
+        height: 50px;
+        border-bottom: none;
+        border-right: 1px solid var(--border-color);
     }
 
     .menu {
         display: flex;
         flex: 1;
+        padding: 0;
     }
 
     .menu-item {
         flex: 1;
         justify-content: center;
+        padding: 12px 10px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
     }
 
-    .music-list {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    .menu-item.active {
+        border-left: none;
+        border-bottom: 3px solid var(--primary-color);
+    }
+
+    .search-bar {
+        height: 50px;
+        padding: 0 15px;
+    }
+
+    .content-area {
+        padding: 10px 15px;
+    }
+
+    .player-bar {
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
     }
 
     .player-info {
-        width: 200px;
+        width: 100%;
+        order: 1;
+    }
+
+    .player-controls {
+        width: 100%;
+        order: 2;
     }
 
     .player-volume {
-        width: 150px;
+        width: 100%;
+        order: 3;
+        justify-content: center;
+    }
+
+    .progress-container {
+        max-width: 100%;
+    }
+
+    .lyrics-panel {
+        width: 100%;
+        right: -100%;
+        bottom: 0;
+    }
+
+    .lyrics-panel.active {
+        right: 0;
     }
 }
 
