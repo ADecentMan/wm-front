@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>云音乐 - 移动版</title>
+    <title>正经音乐 - 移动版</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml"
@@ -116,6 +116,10 @@
             <div class="mini-artist" id="miniArtist">--</div>
         </div>
         <div class="mini-controls">
+            <button class="mini-btn" id="miniTimer">
+                <i class="fas fa-clock"></i>
+                <span class="timer-countdown" id="timerCountdown"></span>
+            </button>
             <button class="mini-btn" id="miniPlayPause">
                 <i class="fas fa-play"></i>
             </button>
@@ -188,7 +192,7 @@
     <!-- 播放控制 -->
     <div class="full-controls">
         <button class="full-btn" id="fullPlayMode">
-            <i class="fas fa-list"></i>
+            <i class="fas fa-redo"></i>
         </button>
         <button class="full-btn" id="fullPrev">
             <i class="fas fa-step-backward"></i>
@@ -212,6 +216,8 @@
 <script src="/public/music/common/config.js"></script>
 <script src="/public/music/common/api.js"></script>
 <script src="/public/music/common/audio-cache.js"></script>
+<script src="/public/music/common/utils.js"></script>
+<script src="/public/music/common/base-player.js"></script>
 <script src="/public/music/wap/mobile.js"></script>
 </body>
 </html>

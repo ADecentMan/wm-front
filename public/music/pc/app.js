@@ -1,48 +1,26 @@
 // 音乐播放器核心功能
-class MusicPlayer {
+class MusicPlayer extends BaseMusicPlayer {
     constructor() {
-        this.currentMenu = 'discover'; // discover, cloudRandom, favourite, history
+        super();
 
-        // 播放器状态
+        this.currentMenu = 'discover';
         this.audioPlayer = document.getElementById('audioPlayer');
-        this.currentSong = null;
-        this.playlist = [];
-        this.currentIndex = -1;
-        this.playMode = 'list'; // list, random, single
-        this.isPlaying = false;
+        this.showLyricsPanel = false;
+        this.pauseLyricsAutoScroll = false;
 
-        // 歌词状态
-        this.currentLyrics = []; // 解析后的歌词数组
-        this.showLyricsPanel = false; // 是否显示歌词面板
-        this.pauseLyricsAutoScroll = false; // 用户滑动歌词时暂停自动滚动
-
-        // 随心听历史记录（用于上一曲）
         this.cloudRandomHistory = [];
         this.cloudRandomHistoryIndex = -1;
 
-        // 分页状态
         this.currentPage = 1;
-        this.pageSize = 20;
+        this.pageSize = 100;
         this.searchKeyword = '';
+        this.isLoading = false;
+        this.hasMoreData = true;
 
-        // 音量状态
-        this.volume = 0.3;
-        this.isMuted = false;
-        this.previousVolume = 0.3;
-
-        // 隐藏播放器状态
         this.isHidden = false;
         this.originalTitle = document.title;
         this.originalFavicon = document.querySelector('link[rel="icon"]').href;
 
-        try {
-            this.audioCache = new AudioCache();
-        } catch (e) {
-            console.warn('AudioCache不可用:', e);
-            this.audioCache = null;
-        }
-
-        // 初始化
         this.init();
     }
 
@@ -120,6 +98,7 @@ class MusicPlayer {
         document.getElementById('prevSong').addEventListener('click', () => this.playPrev());
         document.getElementById('nextSong').addEventListener('click', () => this.playNext());
         document.getElementById('playMode').addEventListener('click', () => this.togglePlayMode());
+        document.getElementById('timerBtn').addEventListener('click', () => this.showTimerOptions());
         document.getElementById('likeBtn').addEventListener('click', () => this.toggleLike());
 
         // 进度条事件
@@ -127,10 +106,25 @@ class MusicPlayer {
         progressBar.addEventListener('click', (e) => this.seekTo(e));
 
         let isDraggingProgress = false;
-        progressBar.addEventListener('mousedown', () => isDraggingProgress = true);
+        progressBar.addEventListener('mousedown', (e) => {
+            isDraggingProgress = true;
+            this.seekTo(e);
+        });
         document.addEventListener('mouseup', () => isDraggingProgress = false);
-        progressBar.addEventListener('mousemove', (e) => {
+        document.addEventListener('mousemove', (e) => {
             if (isDraggingProgress) this.seekTo(e);
+        });
+
+        progressBar.addEventListener('touchstart', (e) => {
+            isDraggingProgress = true;
+            this.seekTo(e.touches[0]);
+        });
+        document.addEventListener('touchend', () => isDraggingProgress = false);
+        progressBar.addEventListener('touchmove', (e) => {
+            if (isDraggingProgress) {
+                e.preventDefault();
+                this.seekTo(e.touches[0]);
+            }
         });
 
         // 音量控制事件
@@ -144,11 +138,33 @@ class MusicPlayer {
             if (isDraggingVolume) this.setVolumeByClick(e);
         });
 
+        // 触摸事件支持
+        volumeBar.addEventListener('touchstart', (e) => {
+            isDraggingVolume = true;
+            this.setVolumeByClick(e.touches[0]);
+        });
+        document.addEventListener('touchend', () => isDraggingVolume = false);
+        volumeBar.addEventListener('touchmove', (e) => {
+            if (isDraggingVolume) {
+                e.preventDefault();
+                this.setVolumeByClick(e.touches[0]);
+            }
+        });
+
         document.getElementById('volumeBtn').addEventListener('click', () => this.toggleMute());
 
-        // 分页事件
-        document.getElementById('prevPage').addEventListener('click', () => this.goToPage(this.currentPage - 1));
-        document.getElementById('nextPage').addEventListener('click', () => this.goToPage(this.currentPage + 1));
+        // 滚动懒加载事件
+        const contentArea = document.querySelector('.content-area');
+        contentArea.addEventListener('scroll', () => {
+            const scrollTop = contentArea.scrollTop;
+            const scrollHeight = contentArea.scrollHeight;
+            const clientHeight = contentArea.clientHeight;
+            if (scrollTop + clientHeight >= scrollHeight - 50) {
+                if (!this.isLoading && this.hasMoreData && this.currentMenu !== 'cloudRandom' && this.currentMenu !== 'history') {
+                    this.loadMoreMusic();
+                }
+            }
+        });
 
         // 歌词面板事件
         document.getElementById('playerPoster').addEventListener('click', () => this.toggleLyricsPanel());
@@ -167,73 +183,81 @@ class MusicPlayer {
     }
 
     // 加载音乐列表
-    async loadMusicList() {
-        console.log('=== loadMusicList 开始 ===');
-        console.log('当前菜单:', this.currentMenu);
-        console.log('搜索关键词:', this.searchKeyword);
-
+    async loadMusicList(append = false) {
         try {
-            // 如果是随心听模式，显示特殊界面
             if (this.currentMenu === 'cloudRandom') {
-                console.log('>>> 随心听模式，显示特殊界面');
                 this.renderCloudRandomUI();
-                // 随心听模式下不调用loadMusicList，而是直接调用playCloudRandomNext
                 return true;
             }
 
-            // 如果是播放历史菜单，从localStorage读取
             if (this.currentMenu === 'history') {
-                console.log('>>> 检测到播放历史菜单，从localStorage读取');
                 const history = this.getPlayHistory();
-                console.log('播放历史记录数:', history.length);
 
-                // 如果有搜索关键词，过滤历史记录
                 if (this.searchKeyword) {
                     this.playlist = history.filter(song =>
                         song.title.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
                         song.artist.toLowerCase().includes(this.searchKeyword.toLowerCase())
                     );
-                    console.log('过滤后的历史记录数:', this.playlist.length);
                 } else {
                     this.playlist = history;
                 }
 
                 this.renderMusicList();
-                this.updatePagination();
-                console.log('=== 播放历史加载完成，不调用API ===');
                 return this.playlist.length > 0;
             }
 
-            console.log('>>> 不是播放历史菜单，调用API接口');
+            this.isLoading = true;
+            this.showLoadMore();
 
             let list;
             if (this.currentMenu === 'favourite') {
-                console.log('使用收藏列表API');
                 list = await MusicApi.queryFavouriteList(this.pageSize, this.currentPage, this.searchKeyword);
             } else {
-                console.log('使用发现音乐API');
                 list = await MusicApi.queryList(this.pageSize, this.currentPage, this.searchKeyword);
             }
 
-            this.playlist = list;
+            if (append) {
+                this.playlist = [...this.playlist, ...list];
+            } else {
+                this.playlist = list;
+            }
 
-            this.renderMusicList();
-            this.updatePagination();
+            this.lastLoadedCount = list.length;
+            this.hasMoreData = list.length >= this.pageSize;
+            this.renderMusicList(append);
 
-            // 返回是否有数据
-            return this.playlist.length > 0;
+            return list.length > 0;
         } catch (error) {
+            if (error.message === 'UNAUTHORIZED') return false;
             console.error('加载音乐列表失败:', error);
             this.showError('加载音乐列表失败，请检查网络连接');
             return false;
+        } finally {
+            this.isLoading = false;
+            this.hideLoadMore();
         }
     }
 
+    async loadMoreMusic() {
+        if (this.isLoading || !this.hasMoreData) return;
+        this.currentPage++;
+        await this.loadMusicList(true);
+    }
+
+    showLoadMore() {
+        const loader = document.getElementById('loadMore');
+        if (loader) loader.classList.add('active');
+    }
+
+    hideLoadMore() {
+        const loader = document.getElementById('loadMore');
+        if (loader) loader.classList.remove('active');
+    }
+
     // 渲染音乐列表
-    renderMusicList() {
+    renderMusicList(append = false) {
         const musicList = document.getElementById('musicList');
 
-        // 确保playlist是数组
         if (!Array.isArray(this.playlist)) {
             this.playlist = [];
         }
@@ -248,23 +272,24 @@ class MusicPlayer {
             return;
         }
 
-        musicList.innerHTML = this.playlist.map((song, index) => {
-            // 如果是播放历史，显示播放时间
+        const startIndex = append ? this.playlist.length - this.lastLoadedCount : 0;
+        const itemsHtml = this.playlist.slice(startIndex).map((song, index) => {
+            const globalIndex = startIndex + index;
             let statsHtml;
             if (this.currentMenu === 'history' && song.playTime) {
                 const playTimeStr = this.formatPlayTime(song.playTime);
                 statsHtml = `<span class="stat-icon"><i class="fas fa-clock"></i> ${playTimeStr}</span>`;
             } else {
                 statsHtml = `
-                    <span class="stat-icon"><i class="fas fa-play-circle"></i> ${this.formatNumber(song.listenCount || 0)}</span>
-                    <span class="stat-icon"><i class="fas fa-heart"></i> ${this.formatNumber(song.likeCount || 0)}</span>
+                    <span class="stat-icon"><i class="fas fa-play-circle"></i> ${MusicUtils.formatNumber(song.listenCount || 0)}</span>
+                    <span class="stat-icon"><i class="fas fa-heart"></i> ${MusicUtils.formatNumber(song.likeCount || 0)}</span>
                 `;
             }
 
             return `
                 <div class="music-item ${this.currentSong && this.currentSong.id === song.id ? 'playing' : ''}" 
-                     data-index="${index}">
-                    <div class="music-number">${(this.currentPage - 1) * this.pageSize + index + 1}</div>
+                     data-index="${globalIndex}">
+                    <div class="music-number">${globalIndex + 1}</div>
                     <div class="music-poster">
                         <img src="${song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E'}" 
                              alt="${song.title}"
@@ -284,8 +309,14 @@ class MusicPlayer {
             `;
         }).join('');
 
-        // 绑定点击事件
-        musicList.querySelectorAll('.music-item').forEach(item => {
+        if (append) {
+            musicList.insertAdjacentHTML('beforeend', itemsHtml);
+        } else {
+            musicList.innerHTML = itemsHtml;
+        }
+
+        musicList.querySelectorAll('.music-item:not([data-bound])').forEach(item => {
+            item.setAttribute('data-bound', 'true');
             item.addEventListener('click', () => {
                 const index = parseInt(item.dataset.index);
                 this.playSong(index);
@@ -293,44 +324,6 @@ class MusicPlayer {
         });
     }
 
-    async loadAudio(song) {
-        if (this.currentBlobUrl) {
-            URL.revokeObjectURL(this.currentBlobUrl);
-            this.currentBlobUrl = null;
-        }
-
-        if (this.audioCache) {
-            try {
-                const cached = await this.audioCache.get(song.id);
-                if (cached) {
-                    console.log('从缓存加载:', song.title);
-                    this.currentBlobUrl = URL.createObjectURL(cached.blob);
-                    this.audioPlayer.src = this.currentBlobUrl;
-                    return;
-                }
-            } catch (e) {
-                console.warn('缓存读取失败:', e);
-            }
-        }
-
-        this.audioPlayer.src = song.mp3;
-
-        if (this.audioCache) {
-            this.cacheAudioInBackground(song);
-        }
-    }
-
-    async cacheAudioInBackground(song) {
-        try {
-            const response = await fetch(song.mp3, { credentials: 'include' });
-            if (!response.ok) return;
-            const blob = await response.blob();
-            await this.audioCache.set(song.id, blob);
-            console.log('音频已缓存:', song.title, this.audioCache.formatSize(blob.size));
-        } catch (e) {
-            console.warn('音频缓存失败:', e);
-        }
-    }
 
     // 播放歌曲
     async playSong(index) {
@@ -342,7 +335,6 @@ class MusicPlayer {
 
         // 更新底部播放栏UI
         document.getElementById('songTitle').textContent = song.title;
-        document.getElementById('songArtist').textContent = song.artist;
 
         const posterImg = document.querySelector('#playerPoster img');
         posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
@@ -452,22 +444,17 @@ class MusicPlayer {
         } else {
             newIndex = this.currentIndex + 1;
 
-            // 如果播放到最后一首，自动翻页
             if (newIndex >= this.playlist.length) {
-                // 尝试加载下一页
-                const nextPage = this.currentPage + 1;
-                const hasNextData = await this.goToPage(nextPage);
-
-                // 如果下一页没有数据，跳转到第一页
-                if (!hasNextData) {
-                    await this.goToPage(1);
+                if (this.hasMoreData && this.currentMenu !== 'history') {
+                    await this.loadMoreMusic();
+                    newIndex = this.currentIndex + 1;
                 }
 
-                // 从新列表的第一首开始播放
-                newIndex = 0;
+                if (newIndex >= this.playlist.length) {
+                    newIndex = 0;
+                }
             }
 
-            // 确保新列表有数据才播放
             if (this.playlist.length > 0) {
                 this.playSong(newIndex);
             }
@@ -482,10 +469,11 @@ class MusicPlayer {
 
         const modeBtn = document.getElementById('playMode');
         const icon = modeBtn.querySelector('i');
+        icon.innerHTML = '';
 
         switch (this.playMode) {
             case 'list':
-                icon.className = 'fas fa-list';
+                icon.className = 'fas fa-redo';
                 modeBtn.title = '列表循环';
                 break;
             case 'random':
@@ -493,7 +481,8 @@ class MusicPlayer {
                 modeBtn.title = '随机播放';
                 break;
             case 'single':
-                icon.className = 'fas fa-redo';
+                icon.className = '';
+                icon.innerHTML = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><text x="12" y="15" text-anchor="middle" font-size="10" font-weight="bold" fill="currentColor" stroke="none">1</text></svg>';
                 modeBtn.title = '单曲循环';
                 break;
         }
@@ -531,14 +520,13 @@ class MusicPlayer {
         const progress = (currentTime / duration) * 100;
 
         document.getElementById('progress').style.width = `${progress}%`;
-        document.getElementById('progressHandle').style.left = `calc(${progress}% - 6px)`;
-        document.getElementById('currentTime').textContent = this.formatTime(currentTime);
+        document.getElementById('currentTime').textContent = MusicUtils.formatTime(currentTime);
     }
 
     // 更新总时长
     updateTotalTime() {
         const duration = this.audioPlayer.duration;
-        document.getElementById('totalTime').textContent = this.formatTime(duration);
+        document.getElementById('totalTime').textContent = MusicUtils.formatTime(duration);
     }
 
     // 跳转到指定位置
@@ -651,31 +639,6 @@ class MusicPlayer {
         }
     }
 
-    // 分页功能
-    async goToPage(page) {
-        if (page < 1) return;
-
-        this.currentPage = page;
-        await this.loadMusicList();
-    }
-
-    // 更新分页状态
-    updatePagination() {
-        const pagination = document.getElementById('pagination');
-
-        // 播放历史不需要分页，隐藏分页控件
-        if (this.currentMenu === 'history') {
-            pagination.style.display = 'none';
-            return;
-        }
-
-        // 其他菜单显示分页控件
-        pagination.style.display = 'flex';
-        document.getElementById('currentPage').textContent = this.currentPage;
-        document.getElementById('prevPage').disabled = this.currentPage <= 1;
-        document.getElementById('nextPage').disabled = this.playlist.length < this.pageSize;
-    }
-
     // 键盘快捷键
     handleKeyboard(e) {
         switch (e.code) {
@@ -710,23 +673,6 @@ class MusicPlayer {
     }
 
     // 格式化时间
-    formatTime(seconds) {
-        if (isNaN(seconds)) return '00:00';
-
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    // 格式化数字
-    formatNumber(num) {
-        if (num >= 10000) {
-            return (num / 10000).toFixed(1) + '万';
-        }
-        return num.toString();
-    }
-
-    // 格式化播放时间（相对时间）
     formatPlayTime(timestamp) {
         const now = Date.now();
         const diff = now - timestamp;
@@ -801,55 +747,11 @@ class MusicPlayer {
 
     // 添加到播放历史
     addToPlayHistory(song) {
-        try {
-            // 从localStorage获取播放历史
-            let history = this.getPlayHistory();
-
-            // 创建历史记录项
-            const historyItem = {
-                id: song.id,
-                title: song.title,
-                artist: song.artist,
-                mp3: song.mp3,
-                poster: song.poster,
-                listenCount: song.listenCount,
-                likeCount: song.likeCount,
-                isFavourite: song.isFavourite,
-                playTime: Date.now() // 添加播放时间戳
-            };
-
-            // 移除已存在的相同歌曲（避免重复）
-            history = history.filter(item => item.id !== song.id);
-
-            // 添加到历史记录开头（最新的在前面）
-            history.unshift(historyItem);
-
-            // 只保留最近500条
-            if (history.length > 500) {
-                history = history.slice(0, 500);
-            }
-
-            // 保存到localStorage
-            localStorage.setItem('playHistory', JSON.stringify(history));
-
-            console.log('播放历史已更新，当前记录数:', history.length);
-        } catch (error) {
-            console.error('保存播放历史失败:', error);
-        }
+        this.playHistory.add(song);
     }
 
-    // 获取播放历史
     getPlayHistory() {
-        try {
-            const historyStr = localStorage.getItem('playHistory');
-            if (historyStr) {
-                return JSON.parse(historyStr);
-            }
-            return [];
-        } catch (error) {
-            console.error('读取播放历史失败:', error);
-            return [];
-        }
+        return this.playHistory.getAll();
     }
 
     // 清空播放历史
@@ -877,8 +779,8 @@ class MusicPlayer {
                                 <h2>${this.currentSong.title}</h2>
                                 <p>${this.currentSong.artist}</p>
                                 <div class="current-stats">
-                                    <span><i class="fas fa-play-circle"></i> ${this.formatNumber(this.currentSong.listenCount || 0)}</span>
-                                    <span><i class="fas fa-heart"></i> ${this.formatNumber(this.currentSong.likeCount || 0)}</span>
+                                    <span><i class="fas fa-play-circle"></i> ${MusicUtils.formatNumber(this.currentSong.listenCount || 0)}</span>
+                                    <span><i class="fas fa-heart"></i> ${MusicUtils.formatNumber(this.currentSong.likeCount || 0)}</span>
                                 </div>
                             </div>
                         </div>
@@ -892,14 +794,11 @@ class MusicPlayer {
             </div>
         `;
 
-        // 隐藏分页控件
-        const pagination = document.getElementById('pagination');
-        pagination.style.display = 'none';
+        this.hideLoadMore();
     }
 
     updatePlayerBar(song) {
         document.getElementById('songTitle').textContent = song.title;
-        document.getElementById('songArtist').textContent = song.artist;
         const posterImg = document.querySelector('#playerPoster img');
         posterImg.src = song.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23ddd\' width=\'60\' height=\'60\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\'%3E🎵%3C/text%3E%3C/svg%3E';
         posterImg.classList.add('rotating');
@@ -1063,7 +962,7 @@ class MusicPlayer {
         this.createFakeBackground();
 
         // 更改favicon
-        this.changeFavicon('/public/music2/pc/fake-favicon.png');
+        this.changeFavicon('/public/music/pc/fake-favicon.png');
 
         // 更改页面标题
         document.title = 'Welcome to W3 Workplace';
@@ -1102,7 +1001,7 @@ class MusicPlayer {
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/public/music2/pc/fake-bg.png');
+            background-image: url('/public/music/pc/fake-bg.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -1176,7 +1075,7 @@ class MusicPlayer {
             }
 
             const lrcText = await response.text();
-            this.currentLyrics = this.parseLyrics(lrcText);
+            this.currentLyrics = MusicUtils.parseLyrics(lrcText);
             this.renderLyrics();
         } catch (error) {
             console.error('加载歌词失败:', error);
@@ -1186,35 +1085,6 @@ class MusicPlayer {
     }
 
     // 解析歌词文本
-    parseLyrics(lrcText) {
-        const lines = lrcText.split('\n');
-        const lyrics = [];
-        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
-
-        for (const line of lines) {
-            const times = [];
-            let match;
-            while ((match = timeRegex.exec(line)) !== null) {
-                const minutes = parseInt(match[1]);
-                const seconds = parseInt(match[2]);
-                const msStr = match[3];
-                const milliseconds = parseInt(msStr) / (msStr.length === 3 ? 1000 : 100);
-                times.push(minutes * 60 + seconds + milliseconds);
-            }
-
-            if (times.length === 0) continue;
-
-            const text = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
-            if (!text) continue;
-
-            for (const time of times) {
-                lyrics.push({ time, text });
-            }
-        }
-
-        lyrics.sort((a, b) => a.time - b.time);
-        return lyrics;
-    }
 
     // 渲染歌词
     renderLyrics() {
@@ -1241,6 +1111,190 @@ class MusicPlayer {
 
         // 绑定歌词滑动同步
         this.bindLyricsScrollSync();
+    }
+
+    // 显示定时器选择对话框
+    onShowTimerDialog(options) {
+        const existingDialog = document.getElementById('timerDialog');
+        if (existingDialog) {
+            existingDialog.remove();
+        }
+
+        const ITEM_HEIGHT = 40;
+        const VISIBLE_COUNT = 5;
+        const COPIES = 3;
+        const PADDING = (VISIBLE_COUNT - 1) / 2 * ITEM_HEIGHT;
+
+        function generateItems(count, pad) {
+            let html = '';
+            for (let c = 0; c < COPIES; c++) {
+                for (let i = 0; i < count; i++) {
+                    const display = pad && i < 10 ? '0' + i : '' + i;
+                    html += `<div class="timer-picker-item" data-value="${i}">${display}</div>`;
+                }
+            }
+            return html;
+        }
+
+        const dialog = document.createElement('div');
+        dialog.id = 'timerDialog';
+        dialog.className = 'timer-dialog';
+        dialog.innerHTML = `
+            <div class="timer-dialog-content">
+                <h3>定时关闭</h3>
+                <div class="timer-picker">
+                    <div class="timer-picker-column">
+                        <div class="timer-picker-label">小时</div>
+                        <div class="timer-picker-scroll-wrapper">
+                            <div class="timer-picker-indicator"></div>
+                            <div class="timer-picker-scroll" id="timerHourScroll" data-count="24">
+                                ${generateItems(24, false)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timer-picker-separator">:</div>
+                    <div class="timer-picker-column">
+                        <div class="timer-picker-label">分钟</div>
+                        <div class="timer-picker-scroll-wrapper">
+                            <div class="timer-picker-indicator"></div>
+                            <div class="timer-picker-scroll" id="timerMinuteScroll" data-count="60">
+                                ${generateItems(60, true)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timer-dialog-buttons">
+                    <button class="timer-close-btn">取消</button>
+                    <button class="timer-confirm-btn">确定</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dialog);
+
+        const hourScroll = dialog.querySelector('#timerHourScroll');
+        const minuteScroll = dialog.querySelector('#timerMinuteScroll');
+
+        function initScroll(scrollEl, defaultVal) {
+            const count = parseInt(scrollEl.dataset.count);
+            const oneSetHeight = count * ITEM_HEIGHT;
+
+            scrollEl.scrollTop = oneSetHeight + defaultVal * ITEM_HEIGHT;
+
+            const items = scrollEl.querySelectorAll('.timer-picker-item');
+            items.forEach((item, i) => {
+                item.classList.toggle('active', (i % count) === defaultVal);
+                item.addEventListener('click', () => {
+                    const val = i % count;
+                    scrollEl.scrollTop = oneSetHeight + val * ITEM_HEIGHT;
+                });
+            });
+
+            let scrollTimer = null;
+            let isDragging = false;
+            let startY = 0;
+            let startScrollTop = 0;
+
+            scrollEl.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = scrollEl.scrollTop;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaY = e.clientY - startY;
+                scrollEl.scrollTop = startScrollTop - deltaY;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            scrollEl.addEventListener('scroll', () => {
+                clearTimeout(scrollTimer);
+
+                const index = Math.round(scrollEl.scrollTop / ITEM_HEIGHT) % count;
+                const items = scrollEl.querySelectorAll('.timer-picker-item');
+                items.forEach((item, i) => {
+                    item.classList.toggle('active', (i % count) === index);
+                });
+
+                scrollTimer = setTimeout(() => {
+                    const rawIndex = Math.round(scrollEl.scrollTop / ITEM_HEIGHT);
+                    const realIndex = ((rawIndex % count) + count) % count;
+
+                    if (scrollEl.scrollTop < oneSetHeight || scrollEl.scrollTop >= oneSetHeight * 2) {
+                        scrollEl.scrollTop = oneSetHeight + realIndex * ITEM_HEIGHT;
+                    }
+                }, 100);
+            });
+        }
+
+        function getSelectedValue(scrollEl) {
+            const count = parseInt(scrollEl.dataset.count);
+            const rawIndex = Math.round(scrollEl.scrollTop / ITEM_HEIGHT);
+            return ((rawIndex % count) + count) % count;
+        }
+
+        initScroll(hourScroll, 0);
+        initScroll(minuteScroll, 30);
+
+        dialog.querySelector('.timer-confirm-btn').addEventListener('click', () => {
+            const selectedHours = getSelectedValue(hourScroll);
+            const selectedMinutes = getSelectedValue(minuteScroll);
+            const totalMinutes = selectedHours * 60 + selectedMinutes;
+
+            if (totalMinutes === 0) {
+                this.stopTimer();
+            } else {
+                this.setTimer(totalMinutes);
+            }
+            dialog.remove();
+        });
+
+        dialog.querySelector('.timer-close-btn').addEventListener('click', () => {
+            dialog.remove();
+        });
+
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                dialog.remove();
+            }
+        });
+    }
+
+    // 更新定时器状态显示
+    onTimerUpdate(minutes, endTime) {
+        const timerBtn = document.getElementById('timerBtn');
+        const icon = timerBtn.querySelector('i');
+        const countdown = document.getElementById('timerCountdown');
+
+        if (minutes > 0) {
+            timerBtn.classList.add('active');
+            timerBtn.title = `定时关闭：${Math.ceil(minutes / 60)}分钟后`;
+            icon.className = 'fas fa-clock';
+            const h = Math.floor(minutes / 3600);
+            const m = Math.floor((minutes % 3600) / 60);
+            const s = minutes % 60;
+            const mm = m.toString().padStart(2, '0');
+            const ss = s.toString().padStart(2, '0');
+            countdown.textContent = h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+        } else {
+            timerBtn.classList.remove('active');
+            timerBtn.title = '定时关闭';
+            icon.className = 'fas fa-clock';
+            countdown.textContent = '';
+        }
+    }
+
+    // 定时器结束
+    onTimerEnd() {
+        this.isPlaying = false;
+        this.updatePlayButton();
+        document.querySelector('.player-poster img').classList.remove('rotating');
+        this.showError('定时关闭已生效，播放已停止');
     }
 
     // 绑定歌词滑动同步

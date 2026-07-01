@@ -1,48 +1,24 @@
 // 移动端音乐播放器核心功能
-class MobileMusicPlayer {
+class MobileMusicPlayer extends BaseMusicPlayer {
     constructor() {
-        this.currentTab = 'discover'; // discover, cloud, favourite, history
+        super();
 
-        // 播放器状态
+        this.currentTab = 'discover';
         this.audioPlayer = document.getElementById('audioPlayer');
-        this.currentSong = null;
-        this.playlist = [];
-        this.currentIndex = -1;
-        this.playMode = 'list'; // list, random, single
-        this.isPlaying = false;
+        this.showLyrics = false;
+        this.pauseLyricsAutoScroll = false;
 
-        // 歌词状态
-        this.currentLyrics = []; // 解析后的歌词数组 [{time, text}]
-        this.showLyrics = false; // 是否显示歌词
-        this.pauseLyricsAutoScroll = false; // 用户滑动歌词时暂停自动滚动
-
-        // 随心听历史记录（用于上一曲）
         this.cloudRandomHistory = [];
         this.cloudRandomHistoryIndex = -1;
 
-        // 分页状态
         this.currentPage = 1;
-        this.pageSize = 20;
+        this.pageSize = 100;
         this.searchKeyword = '';
         this.isLoading = false;
         this.hasMoreData = true;
 
-        // 音量状态
-        this.volume = 0.3;
-        this.isMuted = false;
-        this.previousVolume = 0.3;
-
-        // 全屏播放器状态
         this.isFullScreen = false;
 
-        try {
-            this.audioCache = new AudioCache();
-        } catch (e) {
-            console.warn('AudioCache不可用:', e);
-            this.audioCache = null;
-        }
-
-        // 初始化
         this.init();
     }
 
@@ -84,6 +60,7 @@ class MobileMusicPlayer {
             this.openFullScreenPlayer();
         });
 
+        document.getElementById('miniTimer').addEventListener('click', () => this.showTimerOptions());
         document.getElementById('miniPlayPause').addEventListener('click', () => this.togglePlay());
         document.getElementById('miniNext').addEventListener('click', () => this.playNext());
 
@@ -403,8 +380,8 @@ class MobileMusicPlayer {
                 statsHtml = `<span class="stat-icon"><i class="fas fa-clock"></i> ${playTimeStr}</span>`;
             } else {
                 statsHtml = `
-                    <span class="stat-icon"><i class="fas fa-play-circle"></i> ${this.formatNumber(song.listenCount || 0)}</span>
-                    <span class="stat-icon"><i class="fas fa-heart"></i> ${this.formatNumber(song.likeCount || 0)}</span>
+                    <span class="stat-icon"><i class="fas fa-play-circle"></i> ${MusicUtils.formatNumber(song.listenCount || 0)}</span>
+                    <span class="stat-icon"><i class="fas fa-heart"></i> ${MusicUtils.formatNumber(song.likeCount || 0)}</span>
                 `;
             }
 
@@ -439,44 +416,6 @@ class MobileMusicPlayer {
         });
     }
 
-    async loadAudio(song) {
-        if (this.currentBlobUrl) {
-            URL.revokeObjectURL(this.currentBlobUrl);
-            this.currentBlobUrl = null;
-        }
-
-        if (this.audioCache) {
-            try {
-                const cached = await this.audioCache.get(song.id);
-                if (cached) {
-                    console.log('从缓存加载:', song.title);
-                    this.currentBlobUrl = URL.createObjectURL(cached.blob);
-                    this.audioPlayer.src = this.currentBlobUrl;
-                    return;
-                }
-            } catch (e) {
-                console.warn('缓存读取失败:', e);
-            }
-        }
-
-        this.audioPlayer.src = song.mp3;
-
-        if (this.audioCache) {
-            this.cacheAudioInBackground(song);
-        }
-    }
-
-    async cacheAudioInBackground(song) {
-        try {
-            const response = await fetch(song.mp3, { credentials: 'include' });
-            if (!response.ok) return;
-            const blob = await response.blob();
-            await this.audioCache.set(song.id, blob);
-            console.log('音频已缓存:', song.title, this.audioCache.formatSize(blob.size));
-        } catch (e) {
-            console.warn('音频缓存失败:', e);
-        }
-    }
 
     async playSong(index) {
         if (index < 0 || index >= this.playlist.length) return;
@@ -485,12 +424,16 @@ class MobileMusicPlayer {
         this.currentSong = song;
         this.currentIndex = index;
 
-        // 重置歌词显示状态
-        this.showLyrics = false;
+        // 保持歌词显示状态
         const poster = document.getElementById('fullPoster');
         const lyrics = document.getElementById('fullLyrics');
-        poster.style.display = 'block';
-        lyrics.style.display = 'none';
+        if (this.showLyrics) {
+            poster.style.display = 'none';
+            lyrics.style.display = 'block';
+        } else {
+            poster.style.display = 'block';
+            lyrics.style.display = 'none';
+        }
 
         // 加载歌词
         this.loadLyrics(song.lrc);
@@ -541,12 +484,18 @@ class MobileMusicPlayer {
 
     // 更新全屏播放器
     updateFullScreenPlayer() {
-        if (!this.currentSong) return;
+        const posterImg = document.querySelector('#fullPoster img');
+
+        if (!this.currentSong) {
+            posterImg.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E%3Crect fill=\'%23ddd\' width=\'300\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'80\'%3E🎵%3C/text%3E%3C/svg%3E';
+            document.getElementById('fullTitle').textContent = '未选择歌曲';
+            document.getElementById('fullArtist').textContent = '--';
+            return;
+        }
 
         document.getElementById('fullTitle').textContent = this.currentSong.title;
         document.getElementById('fullArtist').textContent = this.currentSong.artist;
 
-        const posterImg = document.querySelector('#fullPoster img');
         posterImg.src = this.currentSong.poster || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E%3Crect fill=\'%23ddd\' width=\'300\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'80\'%3E🎵%3C/text%3E%3C/svg%3E';
     }
 
@@ -679,10 +628,11 @@ class MobileMusicPlayer {
 
         const modeBtn = document.getElementById('fullPlayMode');
         const icon = modeBtn.querySelector('i');
+        icon.innerHTML = '';
 
         switch (this.playMode) {
             case 'list':
-                icon.className = 'fas fa-list';
+                icon.className = 'fas fa-redo';
                 modeBtn.title = '列表循环';
                 break;
             case 'random':
@@ -690,7 +640,8 @@ class MobileMusicPlayer {
                 modeBtn.title = '随机播放';
                 break;
             case 'single':
-                icon.className = 'fas fa-redo';
+                icon.className = '';
+                icon.innerHTML = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><text x="12" y="15" text-anchor="middle" font-size="10" font-weight="bold" fill="currentColor" stroke="none">1</text></svg>';
                 modeBtn.title = '单曲循环';
                 break;
         }
@@ -728,13 +679,13 @@ class MobileMusicPlayer {
         const progress = (currentTime / duration) * 100;
 
         document.getElementById('fullProgress').style.width = `${progress}%`;
-        document.getElementById('fullCurrentTime').textContent = this.formatTime(currentTime);
+        document.getElementById('fullCurrentTime').textContent = MusicUtils.formatTime(currentTime);
     }
 
     // 更新总时长
     updateTotalTime() {
         const duration = this.audioPlayer.duration;
-        document.getElementById('fullTotalTime').textContent = this.formatTime(duration);
+        document.getElementById('fullTotalTime').textContent = MusicUtils.formatTime(duration);
     }
 
     // 跳转到指定位置
@@ -894,7 +845,7 @@ class MobileMusicPlayer {
             }
 
             const lrcText = await response.text();
-            this.currentLyrics = this.parseLyrics(lrcText);
+            this.currentLyrics = MusicUtils.parseLyrics(lrcText);
             this.renderLyrics();
         } catch (error) {
             console.error('加载歌词失败:', error);
@@ -904,35 +855,6 @@ class MobileMusicPlayer {
     }
 
     // 解析歌词文本
-    parseLyrics(lrcText) {
-        const lines = lrcText.split('\n');
-        const lyrics = [];
-        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
-
-        for (const line of lines) {
-            const times = [];
-            let match;
-            while ((match = timeRegex.exec(line)) !== null) {
-                const minutes = parseInt(match[1]);
-                const seconds = parseInt(match[2]);
-                const msStr = match[3];
-                const milliseconds = parseInt(msStr) / (msStr.length === 3 ? 1000 : 100);
-                times.push(minutes * 60 + seconds + milliseconds);
-            }
-
-            if (times.length === 0) continue;
-
-            const text = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
-            if (!text) continue;
-
-            for (const time of times) {
-                lyrics.push({ time, text });
-            }
-        }
-
-        lyrics.sort((a, b) => a.time - b.time);
-        return lyrics;
-    }
 
     // 渲染歌词
     renderLyrics() {
@@ -1099,6 +1021,9 @@ class MobileMusicPlayer {
                 this.playlist = [song];
                 this.currentIndex = 0;
 
+                // 加载歌词
+                this.loadLyrics(song.lrc);
+
                 // 播放音频
                 await this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
@@ -1140,6 +1065,9 @@ class MobileMusicPlayer {
                 this.playlist = [song];
                 this.currentIndex = 0;
 
+                // 加载歌词
+                this.loadLyrics(song.lrc);
+
                 // 播放歌曲
                 await this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
@@ -1170,6 +1098,9 @@ class MobileMusicPlayer {
                 this.currentSong = song;
                 this.playlist = [song];
                 this.currentIndex = 0;
+
+                // 加载歌词
+                this.loadLyrics(song.lrc);
 
                 // 播放歌曲
                 await this.loadAudio(song);
@@ -1210,21 +1141,6 @@ class MobileMusicPlayer {
     }
 
     // 格式化时间
-    formatTime(seconds) {
-        if (isNaN(seconds)) return '00:00';
-
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    // 格式化数字
-    formatNumber(num) {
-        if (num >= 10000) {
-            return (num / 10000).toFixed(1) + '万';
-        }
-        return num.toString();
-    }
 
     // 格式化播放时间（相对时间）
     formatPlayTime(timestamp) {
@@ -1284,57 +1200,172 @@ class MobileMusicPlayer {
         }, 3000);
     }
 
+    // 显示定时器选择对话框
+    onShowTimerDialog(options) {
+        const existingDialog = document.getElementById('timerDialog');
+        if (existingDialog) {
+            existingDialog.remove();
+        }
+
+        const ITEM_HEIGHT = 40;
+        const VISIBLE_COUNT = 5;
+        const COPIES = 3;
+        const PADDING = (VISIBLE_COUNT - 1) / 2 * ITEM_HEIGHT;
+
+        function generateItems(count, pad) {
+            let html = '';
+            for (let c = 0; c < COPIES; c++) {
+                for (let i = 0; i < count; i++) {
+                    const display = pad && i < 10 ? '0' + i : '' + i;
+                    html += `<div class="timer-picker-item" data-value="${i}">${display}</div>`;
+                }
+            }
+            return html;
+        }
+
+        const dialog = document.createElement('div');
+        dialog.id = 'timerDialog';
+        dialog.className = 'timer-dialog';
+        dialog.innerHTML = `
+            <div class="timer-dialog-content">
+                <h3>定时关闭</h3>
+                <div class="timer-picker">
+                    <div class="timer-picker-column">
+                        <div class="timer-picker-label">小时</div>
+                        <div class="timer-picker-scroll-wrapper">
+                            <div class="timer-picker-indicator"></div>
+                            <div class="timer-picker-scroll" id="timerHourScroll" data-count="24">
+                                ${generateItems(24, false)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timer-picker-separator">:</div>
+                    <div class="timer-picker-column">
+                        <div class="timer-picker-label">分钟</div>
+                        <div class="timer-picker-scroll-wrapper">
+                            <div class="timer-picker-indicator"></div>
+                            <div class="timer-picker-scroll" id="timerMinuteScroll" data-count="60">
+                                ${generateItems(60, true)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timer-dialog-buttons">
+                    <button class="timer-close-btn">取消</button>
+                    <button class="timer-confirm-btn">确定</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dialog);
+
+        const hourScroll = dialog.querySelector('#timerHourScroll');
+        const minuteScroll = dialog.querySelector('#timerMinuteScroll');
+
+        function initScroll(scrollEl, defaultVal) {
+            const count = parseInt(scrollEl.dataset.count);
+            const oneSetHeight = count * ITEM_HEIGHT;
+
+            scrollEl.scrollTop = oneSetHeight + defaultVal * ITEM_HEIGHT;
+
+            const items = scrollEl.querySelectorAll('.timer-picker-item');
+            items.forEach((item, i) => {
+                item.classList.toggle('active', (i % count) === defaultVal);
+            });
+
+            let scrollTimer = null;
+
+            scrollEl.addEventListener('scroll', () => {
+                clearTimeout(scrollTimer);
+
+                const index = Math.round(scrollEl.scrollTop / ITEM_HEIGHT) % count;
+                const items = scrollEl.querySelectorAll('.timer-picker-item');
+                items.forEach((item, i) => {
+                    item.classList.toggle('active', (i % count) === index);
+                });
+
+                scrollTimer = setTimeout(() => {
+                    const rawIndex = Math.round(scrollEl.scrollTop / ITEM_HEIGHT);
+                    const realIndex = ((rawIndex % count) + count) % count;
+
+                    if (scrollEl.scrollTop < oneSetHeight || scrollEl.scrollTop >= oneSetHeight * 2) {
+                        scrollEl.scrollTop = oneSetHeight + realIndex * ITEM_HEIGHT;
+                    }
+                }, 100);
+            });
+        }
+
+        function getSelectedValue(scrollEl) {
+            const count = parseInt(scrollEl.dataset.count);
+            const rawIndex = Math.round(scrollEl.scrollTop / ITEM_HEIGHT);
+            return ((rawIndex % count) + count) % count;
+        }
+
+        initScroll(hourScroll, 0);
+        initScroll(minuteScroll, 30);
+
+        dialog.querySelector('.timer-confirm-btn').addEventListener('click', () => {
+            const selectedHours = getSelectedValue(hourScroll);
+            const selectedMinutes = getSelectedValue(minuteScroll);
+            const totalMinutes = selectedHours * 60 + selectedMinutes;
+
+            if (totalMinutes === 0) {
+                this.stopTimer();
+            } else {
+                this.setTimer(totalMinutes);
+            }
+            dialog.remove();
+        });
+
+        dialog.querySelector('.timer-close-btn').addEventListener('click', () => {
+            dialog.remove();
+        });
+
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                dialog.remove();
+            }
+        });
+    }
+
+    // 更新定时器状态显示
+    onTimerUpdate(minutes, endTime) {
+        const miniTimer = document.getElementById('miniTimer');
+        const icon = miniTimer.querySelector('i');
+        const countdown = document.getElementById('timerCountdown');
+
+        if (minutes > 0) {
+            miniTimer.classList.add('active');
+            icon.className = 'fas fa-clock';
+            const h = Math.floor(minutes / 3600);
+            const m = Math.floor((minutes % 3600) / 60);
+            const s = minutes % 60;
+            const mm = m.toString().padStart(2, '0');
+            const ss = s.toString().padStart(2, '0');
+            countdown.textContent = h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+        } else {
+            miniTimer.classList.remove('active');
+            icon.className = 'fas fa-clock';
+            countdown.textContent = '';
+        }
+    }
+
+    // 定时器结束
+    onTimerEnd() {
+        this.isPlaying = false;
+        this.updatePlayButton();
+        this.updateMiniPlayer();
+        this.showError('定时关闭已生效，播放已停止');
+    }
+
     // 添加到播放历史
     addToPlayHistory(song) {
-        try {
-            // 从localStorage获取播放历史（复用PC版本的存储）
-            let history = this.getPlayHistory();
-
-            // 创建历史记录项
-            const historyItem = {
-                id: song.id,
-                title: song.title,
-                artist: song.artist,
-                mp3: song.mp3,
-                poster: song.poster,
-                listenCount: song.listenCount,
-                likeCount: song.likeCount,
-                isFavourite: song.isFavourite,
-                playTime: Date.now()
-            };
-
-            // 移除已存在的相同歌曲（避免重复）
-            history = history.filter(item => item.id !== song.id);
-
-            // 添加到历史记录开头（最新的在前面）
-            history.unshift(historyItem);
-
-            // 只保留最近500条
-            if (history.length > 500) {
-                history = history.slice(0, 500);
-            }
-
-            // 保存到localStorage
-            localStorage.setItem('playHistory', JSON.stringify(history));
-
-            console.log('播放历史已更新，当前记录数:', history.length);
-        } catch (error) {
-            console.error('保存播放历史失败:', error);
-        }
+        this.playHistory.add(song);
     }
 
     // 获取播放历史
     getPlayHistory() {
-        try {
-            const historyStr = localStorage.getItem('playHistory');
-            if (historyStr) {
-                return JSON.parse(historyStr);
-            }
-            return [];
-        } catch (error) {
-            console.error('读取播放历史失败:', error);
-            return [];
-        }
+        return this.playHistory.getAll();
     }
 }
 

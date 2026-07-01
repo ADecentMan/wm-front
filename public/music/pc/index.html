@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>云音乐播放器</title>
+    <meta name="screen-orientation" content="landscape">
+    <meta name="x5-orientation" content="landscape">
+    <meta name="full-screen" content="yes">
+    <title>正经音乐播放器</title>
 
     <!-- Favicon - 与页面左上角图标一致 -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23c62f2f'/%3E%3Cpath d='M50 20 L50 65 C50 75 35 75 35 65 C35 55 50 55 50 65 L50 35 C65 35 65 50 65 50' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -19,7 +22,7 @@
         <div class="sidebar">
             <div class="logo">
                 <i class="fas fa-music"></i>
-                <span>云音乐</span>
+                <span>正经音乐</span>
             </div>
 
             <!-- 菜单导航 -->
@@ -57,11 +60,10 @@
                     <!-- 音乐列表项将通过JavaScript动态生成 -->
                 </div>
 
-                <!-- 分页 -->
-                <div class="pagination" id="pagination">
-                    <button class="page-btn" id="prevPage"><i class="fas fa-chevron-left"></i></button>
-                    <span class="page-info">第 <span id="currentPage">1</span> 页</span>
-                    <button class="page-btn" id="nextPage"><i class="fas fa-chevron-right"></i></button>
+                <!-- 加载更多 -->
+                <div class="load-more" id="loadMore">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>加载中...</span>
                 </div>
             </div>
         </div>
@@ -69,6 +71,9 @@
 
     <!-- 播放器控制栏 -->
     <div class="player-bar">
+        <div class="player-progress-bar" id="progressBar">
+            <div class="player-progress" id="progress"></div>
+        </div>
         <!-- 当前播放信息 -->
         <div class="player-info">
             <div class="player-poster" id="playerPoster">
@@ -76,10 +81,15 @@
             </div>
             <div class="player-song-info">
                 <div class="song-title" id="songTitle">未选择歌曲</div>
-                <div class="song-artist" id="songArtist">--</div>
+                <div class="song-time">
+                    <span id="currentTime">00:00</span>
+                    <span>/</span>
+                    <span id="totalTime">00:00</span>
+                </div>
             </div>
-            <div class="like-btn" id="likeBtn">
-                <i class="far fa-heart"></i>
+            <div class="timer-btn" id="timerBtn" title="定时关闭">
+                <i class="fas fa-clock"></i>
+                <div class="timer-countdown" id="timerCountdown"></div>
             </div>
             <div class="lyrics-btn" id="lyricsBtn" title="歌词">
                 词
@@ -90,7 +100,7 @@
         <div class="player-controls">
             <div class="control-buttons">
                 <button class="control-btn" id="playMode" title="播放模式">
-                    <i class="fas fa-random"></i>
+                    <i class="fas fa-redo"></i>
                 </button>
                 <button class="control-btn" id="prevSong" title="上一首">
                     <i class="fas fa-step-backward"></i>
@@ -102,14 +112,11 @@
                     <i class="fas fa-step-forward"></i>
                 </button>
             </div>
-            <div class="progress-container">
-                <span class="time-current" id="currentTime">00:00</span>
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress" id="progress"></div>
-                    <div class="progress-handle" id="progressHandle"></div>
-                </div>
-                <span class="time-total" id="totalTime">00:00</span>
-            </div>
+        </div>
+
+        <!-- 收藏按钮 -->
+        <div class="like-btn" id="likeBtn" title="收藏">
+            <i class="far fa-heart"></i>
         </div>
 
         <!-- 音量控制 -->
@@ -152,6 +159,8 @@
 <script src="/public/music/common/config.js"></script>
 <script src="/public/music/common/api.js"></script>
 <script src="/public/music/common/audio-cache.js"></script>
+<script src="/public/music/common/utils.js"></script>
+<script src="/public/music/common/base-player.js"></script>
 <script src="/public/music/pc/app.js"></script>
 </body>
 </html>

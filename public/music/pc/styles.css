@@ -2,6 +2,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button, .btn, .control-btn {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus, .btn:focus, .control-btn:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 :root {
@@ -23,6 +34,145 @@ body {
     color: var(--text-primary);
     height: 100vh;
     overflow: hidden;
+}
+
+@media screen and (orientation: portrait) and (min-width: 600px) {
+    html {
+        width: 100vh !important;
+        height: 100vw !important;
+        overflow: hidden !important;
+    }
+
+    body {
+        width: 100vh !important;
+        height: 100vw !important;
+        transform: rotate(90deg) translateY(-100vw);
+        transform-origin: 0 0;
+        overflow: hidden !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .container {
+        width: 100vh !important;
+        height: 100vw !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .top-section {
+        flex: 1 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+
+    .sidebar {
+        width: 200px !important;
+        height: auto !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        border-right: 1px solid var(--border-color) !important;
+        border-bottom: none !important;
+    }
+
+    .logo {
+        height: 60px !important;
+        width: auto !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        border-right: none !important;
+        flex-direction: row !important;
+    }
+
+    .menu {
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 0 0 auto !important;
+        padding: 20px 0 !important;
+    }
+
+    .menu-item {
+        flex: 0 0 auto !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        padding: 12px 20px !important;
+        border-left: none !important;
+        border-left: 3px solid transparent !important;
+        border-bottom: none !important;
+        height: auto !important;
+    }
+
+    .menu-item.active {
+        border-left: 3px solid var(--primary-color) !important;
+        border-bottom: none !important;
+    }
+
+    .menu-item i {
+        margin-right: 12px !important;
+    }
+
+    .main-content {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .search-bar {
+        height: 60px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .content-area {
+        flex: 1 !important;
+        overflow-y: auto !important;
+    }
+
+    .player-bar {
+        height: 80px !important;
+        min-height: 80px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 20px !important;
+        gap: 20px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .player-info {
+        width: 250px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        order: unset !important;
+    }
+
+    .player-controls {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 10px !important;
+        order: unset !important;
+    }
+
+    .control-buttons {
+        display: flex !important;
+        align-items: center !important;
+        gap: 20px !important;
+    }
+
+    .player-volume {
+        width: 150px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        order: unset !important;
+    }
 }
 
 .container {
@@ -76,6 +226,12 @@ body {
     display: flex;
     align-items: center;
     color: var(--text-secondary);
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.menu-item:active {
+    box-shadow: none;
 }
 
 .menu-item:hover {
@@ -169,6 +325,12 @@ body {
     transition: all 0.3s;
     border-bottom: 1px solid var(--border-color);
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.music-item:active {
+    box-shadow: none;
 }
 
 .music-item:hover {
@@ -282,50 +444,69 @@ body {
     color: var(--primary-color);
 }
 
-/* 分页 */
-.pagination {
-    padding: 20px 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    border-top: 1px solid var(--border-color);
-    background: var(--bg-light);
-}
-
-.page-btn {
-    background: var(--bg-lighter);
-    border: none;
+/* 加载更多 */
+.load-more {
+    padding: 20px;
+    text-align: center;
     color: var(--text-secondary);
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    cursor: pointer;
+    font-size: 12px;
+    display: none;
+}
+
+.load-more.active {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
+    gap: 8px;
 }
 
-.page-btn:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.page-info {
+.load-more i {
     font-size: 14px;
-    color: var(--text-secondary);
 }
 
 /* 播放器控制栏 */
 .player-bar {
     height: 80px;
     background: var(--bg-light);
-    border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     padding: 0 20px;
     gap: 20px;
+    position: relative;
+}
+
+.player-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--bg-lighter);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    z-index: 1;
+    transition: height 0.2s;
+}
+
+.player-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 0;
+    right: 0;
+    height: 18px;
+}
+
+.player-progress-bar:hover {
+    height: 5px;
+}
+
+.player-progress {
+    height: 100%;
+    background: var(--primary-color);
+    width: 0%;
+    transition: width 0.1s;
 }
 
 /* 当前播放信息 */
@@ -368,6 +549,14 @@ body {
     text-overflow: ellipsis;
 }
 
+.song-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .song-artist {
     font-size: 12px;
     color: var(--text-secondary);
@@ -381,6 +570,12 @@ body {
     font-size: 18px;
     color: var(--text-secondary);
     transition: color 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.like-btn:active {
+    box-shadow: none;
 }
 
 .like-btn:hover {
@@ -391,6 +586,187 @@ body {
     color: var(--primary-color);
 }
 
+.timer-btn {
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+    margin-left: auto;
+    margin-right: 5px;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.timer-btn:active {
+    box-shadow: none;
+}
+
+.timer-btn:hover {
+    color: var(--primary-color);
+}
+
+.timer-btn.active {
+    color: var(--primary-color);
+}
+
+.timer-countdown {
+    font-size: 10px;
+    color: var(--primary-color);
+    font-weight: bold;
+    line-height: 1;
+}
+
+.timer-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.timer-dialog-content {
+    background: var(--bg-light);
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 300px;
+    text-align: center;
+}
+
+.timer-dialog-content h3 {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.timer-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.timer-picker-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timer-picker-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.timer-picker-scroll-wrapper {
+    position: relative;
+    height: 200px;
+    width: 80px;
+}
+
+.timer-picker-indicator {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.timer-picker-scroll {
+    height: 200px;
+    width: 80px;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 80px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    position: relative;
+}
+
+.timer-picker-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.timer-picker-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.timer-picker-item {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--text-secondary);
+    scroll-snap-align: start;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.timer-picker-item.active {
+    color: var(--primary-color);
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.timer-picker-separator {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-top: 20px;
+}
+
+.timer-dialog-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.timer-close-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.timer-close-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+.timer-confirm-btn {
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.timer-confirm-btn:hover {
+    background: var(--primary-hover);
+}
+
 .lyrics-btn {
     cursor: pointer;
     font-size: 16px;
@@ -399,6 +775,12 @@ body {
     transition: color 0.3s;
     margin-left: 15px;
     line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.lyrics-btn:active {
+    box-shadow: none;
 }
 
 .lyrics-btn:hover {
@@ -413,9 +795,8 @@ body {
 .player-controls {
     flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
 }
 
 .control-buttons {
@@ -437,6 +818,13 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.control-btn:active {
+    background: transparent;
+    box-shadow: none;
 }
 
 .control-btn:hover {
@@ -455,54 +843,6 @@ body {
     background: var(--primary-hover);
     color: white;
     transform: scale(1.05);
-}
-
-.progress-container {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.time-current,
-.time-total {
-    font-size: 12px;
-    color: var(--text-secondary);
-    min-width: 40px;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--bg-lighter);
-    border-radius: 2px;
-    cursor: pointer;
-    position: relative;
-}
-
-.progress {
-    height: 100%;
-    background: var(--primary-color);
-    border-radius: 2px;
-    width: 0%;
-}
-
-.progress-handle {
-    position: absolute;
-    top: 50%;
-    left: -6px;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    background: var(--primary-color);
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s, left 0.1s;
-}
-
-.progress-bar:hover .progress-handle {
-    opacity: 1;
 }
 
 /* 音量控制 */
@@ -526,6 +866,13 @@ body {
     align-items: center;
     justify-content: center;
     transition: color 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.volume-btn:active {
+    background: transparent;
+    box-shadow: none;
 }
 
 .volume-btn:hover {
@@ -542,6 +889,8 @@ body {
     border-radius: 2px;
     cursor: pointer;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 .volume-level {
@@ -710,19 +1059,6 @@ body {
         font-size: 20px;
     }
 
-    .progress-container {
-        max-width: 100%;
-    }
-
-    .progress-bar {
-        height: 6px;
-    }
-
-    .progress-handle {
-        width: 14px;
-        height: 14px;
-    }
-
     .player-volume {
         width: 160px;
     }
@@ -740,11 +1076,6 @@ body {
     .volume-handle {
         width: 14px;
         height: 14px;
-    }
-
-    .page-btn {
-        width: 40px;
-        height: 40px;
     }
 
     .lyrics-panel {
@@ -781,10 +1112,6 @@ body {
 
     .current-stats {
         gap: 25px;
-    }
-
-    .pagination {
-        padding: 15px 20px;
     }
 }
 
@@ -859,10 +1186,6 @@ body {
         width: 100%;
         order: 3;
         justify-content: center;
-    }
-
-    .progress-container {
-        max-width: 100%;
     }
 
     .lyrics-panel {
@@ -1020,6 +1343,12 @@ body {
     justify-content: center;
     border-radius: 50%;
     transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.lyrics-close-btn:active {
+    box-shadow: none;
 }
 
 .lyrics-close-btn:hover {
