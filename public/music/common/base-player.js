@@ -209,16 +209,7 @@ class BaseMusicPlayer {
     }
 
     showTimerOptions() {
-        const options = [
-            { label: '关闭定时', value: 0 },
-            { label: '15分钟', value: 15 },
-            { label: '30分钟', value: 30 },
-            { label: '45分钟', value: 45 },
-            { label: '60分钟', value: 60 },
-            { label: '90分钟', value: 90 }
-        ];
-
-        this.onShowTimerDialog(options);
+        this.onShowTimerDialog();
     }
 
     onPlayStateChange(isPlaying) {}
@@ -228,9 +219,9 @@ class BaseMusicPlayer {
     onHistoryUpdate(history) {}
     onFavouriteUpdate(songId, isFavourite) {}
     onError(message) {}
-    onTimerUpdate(minutes, endTime) {}
+    onTimerUpdate(seconds, endTime) {}
     onTimerEnd() {}
-    onShowTimerDialog(options) {}
+    onShowTimerDialog() {}
 }
 
 if (typeof module !== 'undefined' && module.exports) {

@@ -557,14 +557,6 @@ body {
     gap: 4px;
 }
 
-.song-artist {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .like-btn {
     cursor: pointer;
     font-size: 18px;
@@ -783,8 +775,10 @@ body {
     box-shadow: none;
 }
 
-.lyrics-btn:hover {
-    color: var(--primary-color);
+@media (hover: hover) {
+    .lyrics-btn:hover {
+        color: var(--primary-color);
+    }
 }
 
 .lyrics-btn.active {

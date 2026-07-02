@@ -169,7 +169,10 @@ class MusicPlayer extends BaseMusicPlayer {
         // 歌词面板事件
         document.getElementById('playerPoster').addEventListener('click', () => this.toggleLyricsPanel());
         document.getElementById('closeLyricsPanel').addEventListener('click', () => this.closeLyricsPanel());
-        document.getElementById('lyricsBtn').addEventListener('click', () => this.toggleLyricsPanel());
+        document.getElementById('lyricsBtn').addEventListener('click', (e) => {
+            this.toggleLyricsPanel();
+            e.currentTarget.blur();
+        });
 
         // 音频播放器事件
         this.audioPlayer.addEventListener('timeupdate', () => this.updateProgress());
@@ -1114,7 +1117,7 @@ class MusicPlayer extends BaseMusicPlayer {
     }
 
     // 显示定时器选择对话框
-    onShowTimerDialog(options) {
+    onShowTimerDialog() {
         const existingDialog = document.getElementById('timerDialog');
         if (existingDialog) {
             existingDialog.remove();

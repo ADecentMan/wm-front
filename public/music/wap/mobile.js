@@ -1201,7 +1201,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
     }
 
     // 显示定时器选择对话框
-    onShowTimerDialog(options) {
+    onShowTimerDialog() {
         const existingDialog = document.getElementById('timerDialog');
         if (existingDialog) {
             existingDialog.remove();
