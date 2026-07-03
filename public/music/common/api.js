@@ -9,7 +9,7 @@ const MusicApi = {
         }
         const data = await response.json();
         if (data && data.code === '-2') {
-            MusicConfig.redirectToLogin();
+            CommonConfig.redirectToLogin();
             throw new Error('UNAUTHORIZED');
         }
         return data;
@@ -40,7 +40,7 @@ const MusicApi = {
         const data = await this.request(url);
         const song = Array.isArray(data) ? data[0] : data;
         if (song && song.code === '-2') {
-            MusicConfig.redirectToLogin();
+            CommonConfig.redirectToLogin();
             throw new Error('UNAUTHORIZED');
         }
         return song;

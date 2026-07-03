@@ -1,9 +1,6 @@
-let host = window.location.hostname;
-let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.40" || host == "192.168.2.36")? "dev" : "pro"
 let myPlaylist;
 let playlist;
-let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://101.126.83.165:8081";
-let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://101.126.83.165:8080";
+let serverHost = CommonConfig.API_HOST;
 let searchType = "all";
 let current = 0;
 let keyword = "";
@@ -24,7 +21,7 @@ $.ajax({
     xhrFields: { withCredentials: true },
     success: function (data) {
         if ('-2' == data.code) {
-            jumpToLogin();
+            CommonConfig.redirectToLogin();
         } else {
             playlist = data;
         }
@@ -159,7 +156,7 @@ function resetList() {
             xhrFields: { withCredentials: true },
             success: function (data) {
                 if ('-2' == data.code) {
-                    jumpToLogin();
+                    CommonConfig.redirectToLogin();
                 } else if ('-1' == data.code) {
                     notice("温馨提示", data.msg);
                     $("#search").val("");
@@ -192,7 +189,7 @@ function cloudRandom(type) {
         xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
-                jumpToLogin();
+                CommonConfig.redirectToLogin();
             } else if ('-1' == data.code) {
                 notice("温馨提示", data.msg);
             } else {
@@ -225,7 +222,7 @@ function resetFavouriteList() {
         xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
-                jumpToLogin();
+                CommonConfig.redirectToLogin();
             } else if ('-1' == data.code) {
                 notice("温馨提示", data.msg);
             } else {
@@ -291,7 +288,7 @@ function submitMusic() {
                 }),
                 success: function (data) {
                     if ('-2' == data.code) {
-                        jumpToLogin();
+                        CommonConfig.redirectToLogin();
                     } else if ("0" == data.code) {
                         clearAddForm();
                         notice("温馨提示", "你的请愿，朕收到了，退下吧！");
@@ -398,7 +395,7 @@ function favourite() {
                 xhrFields: { withCredentials: true },
                 success: function (data) {
                     if ('-2' == data.code) {
-                        jumpToLogin();
+                        CommonConfig.redirectToLogin();
                     }
                     console.log(data);
                 },
@@ -416,7 +413,7 @@ function favourite() {
                 xhrFields: { withCredentials: true },
                 success: function (data) {
                     if ('-2' == data.code) {
-                        jumpToLogin();
+                        CommonConfig.redirectToLogin();
                     }
                     console.log(data);
                 },
@@ -441,7 +438,7 @@ function like() {
             xhrFields: { withCredentials: true },
             success: function (data) {
                 if ('-2' == data.code) {
-                    jumpToLogin();
+                    CommonConfig.redirectToLogin();
                 }
                 console.log(data);
             },
@@ -463,7 +460,7 @@ function listen(id) {
         xhrFields: { withCredentials: true },
         success: function (data) {
             if ('-2' == data.code) {
-                jumpToLogin();
+                CommonConfig.redirectToLogin();
             }
             console.log(data);
         },
@@ -596,9 +593,4 @@ function addAnimation($selector) {
             return (classNames.match(/pogoSlider-animation-[a-zA-Z1-9]+/ig) || []).join(' ');
         });
     }, 1050);
-}
-
-function jumpToLogin() {
-    let currentUrl = window.location.origin + window.location.pathname;
-    window.location.href = frontHost + "/login?targetUrl=" + currentUrl;
 }

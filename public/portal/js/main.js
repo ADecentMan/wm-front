@@ -1,7 +1,5 @@
-let host = window.location.hostname;
-let env = (host == "localhost" || host == "127.0.0.1" || host == "192.168.2.40" || host == "192.168.2.36") ? "dev" : "pro"
-let frontHost = env == "dev" ? "http://" + host + ":8081" : "http://101.126.83.165:8081";
-let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://101.126.83.165:8080";
+let frontHost = CommonConfig.PORTAL_HOST;
+let serverHost = CommonConfig.API_HOST;
 
 $.ajax({
     type: "POST",

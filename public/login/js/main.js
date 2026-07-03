@@ -1,7 +1,3 @@
-let host = window.location.hostname;
-let env = ( host == "localhost" || host == "127.0.0.1" || host == "192.168.2.40" || host == "192.168.2.36")? "dev" : "pro"
-let serverHost = env == "dev" ? "http://" + host + ":8080" : "http://101.126.83.165:8080";
-
 let width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
 
 $(document).ready(function () {
@@ -51,7 +47,7 @@ function submit() {
     }
     $.ajax({
         type: "post",
-        url: serverHost + "/entertainment/user/login",
+        url: CommonConfig.API_HOST + "/entertainment/user/login",
         contentType: "application/json",
         dataType: "json",
         async: true,
