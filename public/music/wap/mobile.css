@@ -796,53 +796,20 @@ body {
     }
 }
 
-/* 横屏适配 */
-@media (orientation: landscape) and (max-height: 500px) {
-    .full-player-content {
-        padding: 20px 40px;
-        flex-direction: row;
-        gap: 30px;
-    }
+html.force-portrait {
+    transform: rotate(90deg);
+    transform-origin: top left;
+    width: 100vh;
+    height: 100vw;
+    position: absolute;
+    top: 0;
+    left: 100vw;
+    overflow: hidden;
+}
 
-    .full-poster-container {
-        order: 1;
-    }
-
-    .full-poster {
-        width: 150px;
-        height: 150px;
-    }
-
-    .full-song-info {
-        order: 2;
-        padding: 0;
-        flex: 1;
-    }
-
-    .full-progress {
-        order: 3;
-        width: auto;
-        flex: 1;
-    }
-
-    .full-controls {
-        order: 4;
-        width: auto;
-        padding: 0;
-        gap: 15px;
-    }
-
-    .full-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-
-    .full-btn.play {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-    }
+html.force-portrait body,
+html.force-portrait .mobile-container {
+    height: 100%;
 }
 
 /* 定时器对话框 */

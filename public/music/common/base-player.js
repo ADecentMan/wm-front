@@ -25,6 +25,17 @@ class BaseMusicPlayer {
             console.warn('AudioCache不可用:', e);
             this.audioCache = null;
         }
+
+        this._historyIntercepted = false;
+        this._audioUnlocked = false;
+    }
+
+    unlockAudio() {
+        if (this._audioUnlocked || !this.audioPlayer) return;
+        this._audioUnlocked = true;
+        this.audioPlayer.play().then(() => {
+            this.audioPlayer.pause();
+        }).catch(() => {});
     }
 
     async loadAudio(song) {
@@ -159,6 +170,15 @@ class BaseMusicPlayer {
 
     isFavourite(songId) {
         return this.favourites.exists(songId);
+    }
+
+    interceptGoBack() {
+        if (this._historyIntercepted) return;
+        this._historyIntercepted = true;
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', () => {
+            history.pushState(null, '', location.href);
+        });
     }
 
     setTimer(minutes) {

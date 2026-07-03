@@ -228,6 +228,7 @@ class MusicPlayer extends BaseMusicPlayer {
             this.lastLoadedCount = list.length;
             this.hasMoreData = list.length >= this.pageSize;
             this.renderMusicList(append);
+            this.interceptGoBack();
 
             return list.length > 0;
         } catch (error) {
@@ -321,6 +322,7 @@ class MusicPlayer extends BaseMusicPlayer {
         musicList.querySelectorAll('.music-item:not([data-bound])').forEach(item => {
             item.setAttribute('data-bound', 'true');
             item.addEventListener('click', () => {
+                this.unlockAudio();
                 const index = parseInt(item.dataset.index);
                 this.playSong(index);
             });

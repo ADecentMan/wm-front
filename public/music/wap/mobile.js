@@ -96,6 +96,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
 
         // 下滑手势关闭全屏播放器
         this.bindSwipeGesture();
+        this.lockPortrait();
     }
 
     // 绑定下滑手势
@@ -115,12 +116,12 @@ class MobileMusicPlayer extends BaseMusicPlayer {
         fullPlayer.addEventListener('touchmove', (e) => {
             if (!isSwiping || !this.isFullScreen) return;
 
+            if (this.showLyrics && e.target.closest('#lyricsContent')) return;
+
             currentY = e.touches[0].clientY;
             const deltaY = currentY - startY;
 
-            // 只有向下滑动才处理
             if (deltaY > 0) {
-                // 移动播放器位置
                 fullPlayer.style.transform = `translateY(${deltaY}px)`;
             }
         });
@@ -130,11 +131,9 @@ class MobileMusicPlayer extends BaseMusicPlayer {
 
             const deltaY = currentY - startY;
 
-            // 如果滑动距离超过100px，关闭播放器
             if (deltaY > 100) {
                 this.closeFullScreenPlayer();
             } else {
-                // 否则恢复位置
                 fullPlayer.style.transform = '';
             }
 
@@ -142,6 +141,24 @@ class MobileMusicPlayer extends BaseMusicPlayer {
             startY = 0;
             currentY = 0;
         });
+    }
+
+    lockPortrait() {
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('portrait').catch(() => {});
+        }
+
+        const check = () => {
+            if (window.innerWidth > window.innerHeight) {
+                document.documentElement.classList.add('force-portrait');
+            } else {
+                document.documentElement.classList.remove('force-portrait');
+            }
+        };
+
+        window.addEventListener('resize', check);
+        window.addEventListener('orientationchange', check);
+        check();
     }
 
     // 绑定搜索事件
@@ -258,6 +275,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
 
             this.renderMusicList('musicList');
             this.hasMoreData = this.playlist.length >= this.pageSize;
+            this.interceptGoBack();
 
             return this.playlist.length > 0;
         } catch (error) {
@@ -410,6 +428,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
         // 绑定点击事件
         container.querySelectorAll('.music-item').forEach(item => {
             item.addEventListener('click', () => {
+                this.unlockAudio();
                 const index = parseInt(item.dataset.index);
                 this.playSong(index);
             });
