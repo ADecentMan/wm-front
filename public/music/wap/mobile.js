@@ -428,7 +428,6 @@ class MobileMusicPlayer extends BaseMusicPlayer {
         // 绑定点击事件
         container.querySelectorAll('.music-item').forEach(item => {
             item.addEventListener('click', () => {
-                this.unlockAudio();
                 const index = parseInt(item.dataset.index);
                 this.playSong(index);
             });
@@ -470,7 +469,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
         this.updateLikeButton();
 
         // 播放音频
-        await this.loadAudio(song);
+        this.loadAudio(song);
         this.audioPlayer.play().then(() => {
             this.isPlaying = true;
             this.updatePlayButton();
@@ -1044,7 +1043,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
                 this.loadLyrics(song.lrc);
 
                 // 播放音频
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     this.isPlaying = true;
                     this.updatePlayButton();
@@ -1088,7 +1087,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
                 this.loadLyrics(song.lrc);
 
                 // 播放歌曲
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     this.isPlaying = true;
                     this.updatePlayButton();
@@ -1122,7 +1121,7 @@ class MobileMusicPlayer extends BaseMusicPlayer {
                 this.loadLyrics(song.lrc);
 
                 // 播放歌曲
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     this.isPlaying = true;
                     this.updatePlayButton();

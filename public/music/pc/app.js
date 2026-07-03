@@ -322,7 +322,6 @@ class MusicPlayer extends BaseMusicPlayer {
         musicList.querySelectorAll('.music-item:not([data-bound])').forEach(item => {
             item.setAttribute('data-bound', 'true');
             item.addEventListener('click', () => {
-                this.unlockAudio();
                 const index = parseInt(item.dataset.index);
                 this.playSong(index);
             });
@@ -356,7 +355,7 @@ class MusicPlayer extends BaseMusicPlayer {
         }
 
         // 播放音频
-        await this.loadAudio(song);
+        this.loadAudio(song);
         this.audioPlayer.play().then(() => {
             this.isPlaying = true;
             this.updatePlayButton();
@@ -836,7 +835,7 @@ class MusicPlayer extends BaseMusicPlayer {
                 }
 
                 // 播放音频
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
@@ -883,7 +882,7 @@ class MusicPlayer extends BaseMusicPlayer {
                 }
 
                 // 播放歌曲
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;
@@ -923,7 +922,7 @@ class MusicPlayer extends BaseMusicPlayer {
                 }
 
                 // 播放歌曲
-                await this.loadAudio(song);
+                this.loadAudio(song);
                 this.audioPlayer.play().then(() => {
                     console.log('歌曲播放成功:', song.title);
                     this.isPlaying = true;

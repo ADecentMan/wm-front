@@ -27,41 +27,34 @@ class BaseMusicPlayer {
         }
 
         this._historyIntercepted = false;
-        this._audioUnlocked = false;
     }
 
-    unlockAudio() {
-        if (this._audioUnlocked || !this.audioPlayer) return;
-        this._audioUnlocked = true;
-        this.audioPlayer.play().then(() => {
-            this.audioPlayer.pause();
-        }).catch(() => {});
-    }
-
-    async loadAudio(song) {
+    loadAudio(song) {
         if (this.currentBlobUrl) {
             URL.revokeObjectURL(this.currentBlobUrl);
             this.currentBlobUrl = null;
         }
 
-        if (this.audioCache) {
-            try {
-                const cached = await this.audioCache.get(song.id);
-                if (cached) {
-                    console.log('从缓存加载:', song.title);
-                    this.currentBlobUrl = URL.createObjectURL(cached.blob);
-                    this.audioPlayer.src = this.currentBlobUrl;
-                    return;
-                }
-            } catch (e) {
-                console.warn('缓存读取失败:', e);
-            }
+        if (this.audioCache && this._cachedBlobs && this._cachedBlobs[song.id]) {
+            this.currentBlobUrl = this._cachedBlobs[song.id];
+            delete this._cachedBlobs[song.id];
+            this.audioPlayer.src = this.currentBlobUrl;
+            return;
         }
 
         this.audioPlayer.src = song.mp3;
 
         if (this.audioCache) {
-            this.cacheAudioInBackground(song);
+            this.audioCache.get(song.id).then(cached => {
+                if (cached) {
+                    if (!this._cachedBlobs) this._cachedBlobs = {};
+                    this._cachedBlobs[song.id] = URL.createObjectURL(cached.blob);
+                } else {
+                    this.cacheAudioInBackground(song);
+                }
+            }).catch(() => {
+                this.cacheAudioInBackground(song);
+            });
         }
     }
 
