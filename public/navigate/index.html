@@ -911,16 +911,16 @@
         if (saved && saved.categories && saved.categories.length > 0) {
           categories.value = saved.categories;
         } else {
-          // 从 navigation.json 加载默认配置
+          // 从 navigate.json 加载默认配置
           try {
-            const resp = await fetch('/public/navigation/navigation.json');
+            const resp = await fetch('/public/navigate/navigate.json');
             const data = await resp.json();
             if (data && data.categories && data.categories.length > 0) {
               categories.value = data.categories;
               saveData();
             }
           } catch (e) {
-            console.error('加载 navigation.json 失败:', e);
+            console.error('加载 navigate.json 失败:', e);
           }
         }
         // 监听滚动，控制回到顶部按钮显隐
