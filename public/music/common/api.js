@@ -1,8 +1,26 @@
+function getCookieValue(cookieName) {
+    let name = cookieName + "=";
+    let cookieArray = document.cookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        let currentCookie = cookieArray[i].trim();
+        if (currentCookie.indexOf(name) === 0) {
+            return currentCookie.substring(name.length, currentCookie.length);
+        }
+    }
+    return "";
+}
+
 const MusicApi = {
     async request(url) {
+        const token = getCookieValue("WM-ENTERTAINMENT-TOKEN");
+        const headers = {};
+        if (token) {
+            headers['WM-ENTERTAINMENT-TOKEN'] = token;
+        }
         const response = await fetch(url, {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
+            headers: headers
         });
         if (!response.ok) {
             throw new Error('网络请求失败');

@@ -7,8 +7,9 @@
     <option name="rewriteBookmarkType" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="[author]346129023@qq.com&#10;[description]配置提取">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="a2dce0fc-a549-4aee-be8e-d29678245479" name="Changes" comment="[author]346129023@qq.com&#10;[description]配置更新">
+      <change afterPath="$PROJECT_DIR$/entertainment-0.0.1-SNAPSHOT-old.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entertainment-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/entertainment-0.0.1-SNAPSHOT.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,6 +199,7 @@
       <workItem from="1782652870738" duration="285000" />
       <workItem from="1782751151960" duration="7602000" />
       <workItem from="1783006134056" duration="16973000" />
+      <workItem from="1783258600016" duration="1018000" />
     </task>
     <task id="LOCAL-00001" summary="[author]346129023@qq.com&#10;[description]前台项目初始化">
       <created>1690379452081</created>
@@ -536,7 +538,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783170565752</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="[author]346129023@qq.com&#10;[description]配置更新">
+      <option name="closed" value="true" />
+      <created>1783258693526</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1783258693526</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,6 +618,7 @@
     <MESSAGE value="[author]346129023@qq.com&#10;[description]更新歌词隐藏时候按钮状态" />
     <MESSAGE value="[author]346129023@qq.com&#10;[description]初始化报错问题" />
     <MESSAGE value="[author]346129023@qq.com&#10;[description]配置提取" />
-    <option name="LAST_COMMIT_MESSAGE" value="[author]346129023@qq.com&#10;[description]配置提取" />
+    <MESSAGE value="[author]346129023@qq.com&#10;[description]配置更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="[author]346129023@qq.com&#10;[description]配置更新" />
   </component>
 </project>
