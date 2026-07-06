@@ -1,13 +1,13 @@
 const CommonConfig = {
     // 中台HOST
-    REMOTE_API_HOST: 'http://8.134.162.189:40254',
+    REMOTE_API_HOST: 'https://my.r95674245.nyat.app:38973',
     // 前台HOST
-    REMOTE_FRONT_HOST: 'http://8.134.162.189:36816',
+    REMOTE_FRONT_HOST: 'https://www.r95674245.nyat.app:46195',
 
     get API_HOST() {
         const hostname = window.location.hostname;
         if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '192.168.2.30' || hostname === '192.168.2.40') {
-            return 'http://192.168.2.40:8080';
+            return 'http://' + hostname + ':8080';
         }
         return this.REMOTE_API_HOST;
     },

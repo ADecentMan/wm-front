@@ -1302,7 +1302,8 @@ body {
     right: -400px;
     width: 400px;
     bottom: 80px;
-    background: var(--bg-dark);
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(10px);
     border-left: 1px solid var(--border-color);
     z-index: 1000;
     display: flex;

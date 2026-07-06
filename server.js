@@ -4,12 +4,9 @@ const app = express();
 
 app.use('/music', express.static('F:/Audio/Music'));
 app.use('/public', express.static('public'));
-app.use('/css', express.static('public/navigate/css'));
-app.use('/js', express.static('public/navigate/js'));
-app.use('/lib', express.static('public/navigate/lib'));
 
 app.get('/index', function (req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+    res.sendFile(__dirname + "/public/portal/index.html");
 });
 
 app.get('/login', function (req, res) {
