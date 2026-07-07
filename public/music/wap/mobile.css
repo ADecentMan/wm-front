@@ -311,8 +311,13 @@ body {
     position: relative;
 }
 
-.mini-btn:hover,
-.mini-btn:active {
+@media (hover: hover) {
+    .mini-btn:hover {
+        color: var(--primary-color);
+    }
+}
+
+.mini-btn.pressed {
     color: var(--primary-color);
 }
 
@@ -352,8 +357,13 @@ body {
     flex: 1;
 }
 
-.tab-item:hover,
-.tab-item:active {
+@media (hover: hover) {
+    .tab-item:hover {
+        color: var(--text-primary);
+    }
+}
+
+.tab-item.pressed {
     color: var(--text-primary);
 }
 
@@ -420,8 +430,13 @@ body {
     transition: color 0.2s;
 }
 
-.back-btn:hover,
-.back-btn:active {
+@media (hover: hover) {
+    .back-btn:hover {
+        color: var(--primary-color);
+    }
+}
+
+.back-btn.pressed {
     color: var(--primary-color);
 }
 
@@ -599,8 +614,13 @@ body {
     transition: color 0.2s;
 }
 
-.full-btn:hover,
-.full-btn:active {
+@media (hover: hover) {
+    .full-btn:hover {
+        color: var(--primary-color);
+    }
+}
+
+.full-btn.pressed {
     color: var(--primary-color);
 }
 
@@ -612,8 +632,14 @@ body {
     font-size: 24px;
 }
 
-.full-btn.play:hover,
-.full-btn.play:active {
+@media (hover: hover) {
+    .full-btn.play:hover {
+        background: var(--primary-hover);
+        color: white;
+    }
+}
+
+.full-btn.play.pressed {
     background: var(--primary-hover);
     color: white;
 }

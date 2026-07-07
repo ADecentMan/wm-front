@@ -101,6 +101,12 @@ class MusicPlayer extends BaseMusicPlayer {
         document.getElementById('timerBtn').addEventListener('click', () => this.showTimerOptions());
         document.getElementById('likeBtn').addEventListener('click', () => this.toggleLike());
 
+        document.querySelectorAll('.control-btn, .play-btn').forEach(btn => {
+            btn.addEventListener('touchstart', () => btn.classList.add('pressed'), { passive: true });
+            btn.addEventListener('touchend', () => setTimeout(() => btn.classList.remove('pressed'), 150));
+            btn.addEventListener('touchcancel', () => btn.classList.remove('pressed'));
+        });
+
         // 进度条事件
         const progressBar = document.getElementById('progressBar');
         progressBar.addEventListener('click', (e) => this.seekTo(e));

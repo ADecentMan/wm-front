@@ -64,6 +64,18 @@ class MobileMusicPlayer extends BaseMusicPlayer {
         document.getElementById('miniPlayPause').addEventListener('click', () => this.togglePlay());
         document.getElementById('miniNext').addEventListener('click', () => this.playNext());
 
+        document.querySelectorAll('.mini-btn').forEach(btn => {
+            btn.addEventListener('touchstart', () => btn.classList.add('pressed'), { passive: true });
+            btn.addEventListener('touchend', () => setTimeout(() => btn.classList.remove('pressed'), 150));
+            btn.addEventListener('touchcancel', () => btn.classList.remove('pressed'));
+        });
+
+        document.querySelectorAll('.full-btn, .back-btn, .tab-item').forEach(btn => {
+            btn.addEventListener('touchstart', () => btn.classList.add('pressed'), { passive: true });
+            btn.addEventListener('touchend', () => setTimeout(() => btn.classList.remove('pressed'), 150));
+            btn.addEventListener('touchcancel', () => btn.classList.remove('pressed'));
+        });
+
         // 全屏播放器事件
         document.getElementById('closeFullPlayer').addEventListener('click', () => this.closeFullScreenPlayer());
         document.getElementById('fullPlayPause').addEventListener('click', () => this.togglePlay());

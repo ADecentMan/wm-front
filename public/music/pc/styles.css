@@ -821,7 +821,13 @@ body {
     box-shadow: none;
 }
 
-.control-btn:hover {
+@media (hover: hover) {
+    .control-btn:hover {
+        color: var(--primary-color);
+    }
+}
+
+.control-btn.pressed {
     color: var(--primary-color);
 }
 
@@ -833,7 +839,15 @@ body {
     font-size: 18px;
 }
 
-.play-btn:hover {
+@media (hover: hover) {
+    .play-btn:hover {
+        background: var(--primary-hover);
+        color: white;
+        transform: scale(1.05);
+    }
+}
+
+.play-btn.pressed {
     background: var(--primary-hover);
     color: white;
     transform: scale(1.05);
