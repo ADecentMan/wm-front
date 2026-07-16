@@ -32,7 +32,19 @@
                     "id": "mqjn9nsp8g18n9",
                     "name": "智谱AI",
                     "url": "https://open.bigmodel.cn/",
-                    "icon": "https://open.bigmodel.cn/img/icons/favicon-32x32.png"
+                    "icon": "https://static.bigmodel.cn/wd-paas-front/static/images/favicon.png"
+                },
+                {
+                    "id": "mrh997h2jxgnbj",
+                    "name": "硅基流动",
+                    "url": "https://cloud.siliconflow.cn/",
+                    "icon": "https://cloud.siliconflow.cn/favicon.ico"
+                },
+                {
+                    "id": "mrhaqmtb857m3n",
+                    "name": "阿里云百炼",
+                    "url": "https://bailian.console.aliyun.com/cn-beijing?spm=5176.28103460.0.0.96a02988o3mQze&tab=home#/home",
+                    "icon": "https://gw.alicdn.com/imgextra/i4/O1CN01vVn7g32134zNZEeAR_!!6000000006928-55-tps-24-24.svg"
                 }
             ]
         },
@@ -135,6 +147,30 @@
                     "name": "5ND 音乐网",
                     "url": "https://www.5nd.com",
                     "icon": "https://www.5nd.com/favicon.ico"
+                },
+                {
+                    "id": "mrdp8p5it8uhlz",
+                    "name": "音乐磁场",
+                    "url": "https://www.hifiii.com/",
+                    "icon": "https://www.hifiii.com/view/img/favicon.ico"
+                },
+                {
+                    "id": "mrdpaiy801ggeo",
+                    "name": "myfreemp3",
+                    "url": "https://myfreemp3online.com/",
+                    "icon": "https://myfreemp3online.com/favicon.ico"
+                },
+                {
+                    "id": "mrdpeygd0n7cdt",
+                    "name": "百灵无损",
+                    "url": "https://www.blmp3.cn/",
+                    "icon": "https://www.blmp3.cn/favicon.ico"
+                },
+                {
+                    "id": "mrdpgbe0no5tu2",
+                    "name": "凤梨音乐",
+                    "url": "https://www.flmp3.com/",
+                    "icon": "https://www.flmp3.com/template/cn/images/favicon.ico"
                 }
             ]
         },
@@ -155,6 +191,12 @@
                     "icon": "https://res.oplist.org/logo/logo.svg"
                 },
                 {
+                    "id": "mr9dy9l42ja8i0",
+                    "name": "SakuraFrp",
+                    "url": "https://192.168.2.30:7102/",
+                    "icon": "https://www.natfrp.com/favicon.ico"
+                },
+                {
                     "id": "mqklou7qbf7wox",
                     "name": "路由管理",
                     "url": "http://192.168.2.1/html/index.html#/devicecontrol",
@@ -163,31 +205,31 @@
                 {
                     "id": "mqkljm5dmpp6d1",
                     "name": "正经门户",
-                    "url": "http://192.168.2.40:8081/index",
-                    "icon": "http://192.168.2.40:8081/public/portal/css/svg/home.svg"
+                    "url": "http://192.168.2.30:8081/index",
+                    "icon": "http://192.168.2.30:8081/public/portal/css/svg/home.svg"
                 },
                 {
                     "id": "mqjwccxngn0gtz",
                     "name": "PC音乐",
-                    "url": "http://192.168.2.40:8081/pcMusic",
+                    "url": "http://192.168.2.30:8081/pcMusic",
                     "icon": "Headset"
                 },
                 {
                     "id": "mqjwd6guix84cs",
                     "name": "wap音乐",
-                    "url": "http://192.168.2.40:8081/wapMusic",
+                    "url": "http://192.168.2.30:8081/wapMusic",
                     "icon": "Headset"
                 },
                 {
                     "id": "mr6uliock1i289",
                     "name": "PC音乐-外网",
-                    "url": "http://8.134.162.189:36816/pcMusic",
+                    "url": "https://www.r95674245.nyat.app:46195/pcMusic",
                     "icon": "Headset"
                 },
                 {
                     "id": "mr6umdkei9gcxw",
                     "name": "wap音乐-外网",
-                    "url": "http://8.134.162.189:36816/wapMusic",
+                    "url": "https://www.r95674245.nyat.app:46195/wapMusic",
                     "icon": "Headset"
                 }
             ]
@@ -285,6 +327,12 @@
                     "name": "星空内网穿透",
                     "url": "https://frp.starryfrp.com/console/",
                     "icon": "https://frp.starryfrp.com/favicon.ico"
+                },
+                {
+                    "id": "mr81wyjhzda931",
+                    "name": "SkuraFrp",
+                    "url": "https://www.natfrp.com",
+                    "icon": "https://www.natfrp.com/favicon.ico"
                 }
             ]
         },
@@ -349,7 +397,7 @@
                 {
                     "id": "mqkm9mxhta0x0z",
                     "name": "黑料正能量",
-                    "url": "https://hl718.net",
+                    "url": "https://www.hl718.com/",
                     "icon": "https://hl718.net/favicon.ico"
                 },
                 {

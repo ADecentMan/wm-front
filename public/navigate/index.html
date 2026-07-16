@@ -661,7 +661,7 @@
 <div id="app">
   <!-- 左侧分类锚点导航 -->
   <div v-if="categories.length > 0" class="anchor-nav">
-    <template v-for="(category, index) in categories" :key="category.id">
+    <template v-for="(category, index) in visibleCategories" :key="category.id">
       <div
               class="anchor-nav-item"
               :class="{ active: activeAnchor === category.id }"
@@ -670,18 +670,22 @@
       >
         {{ category.name.length > 10 ? category.name.substring(0, 10) + '…' : category.name }}
       </div>
-      <div v-if="index < categories.length - 1" class="anchor-nav-sep"></div>
+      <div v-if="index < visibleCategories.length - 1" class="anchor-nav-sep"></div>
     </template>
   </div>
 
   <!-- 分类列表 -->
   <div v-if="categories.length > 0" id="category-list" :class="{ 'edit-mode': editMode }">
-    <div v-for="(category, cIndex) in categories" :key="category.id" class="category-section" :id="'cat-' + category.id" :data-id="category.id">
+    <div v-for="(category, cIndex) in categories" :key="category.id" class="category-section" :id="'cat-' + category.id" :data-id="category.id" v-show="editMode || category.visible !== false">
       <div class="category-header" :class="{ 'edit-mode': editMode }">
         <div class="category-title">
           {{ category.name }}
         </div>
         <div v-if="editMode" class="category-actions">
+          <span class="action-btn" style="display:flex;align-items:center;gap:4px;">
+            显示
+            <el-switch v-model="category.visible" :active-value="true" :inactive-value="false" size="small" @change="onVisibleChange(category, $event)" style="--el-switch-on-color: #a8d8c8;" />
+          </span>
           <button class="action-btn" @click="showEditCategoryDialog(category)" title="修改分类">
             <el-icon :size="14"><icon-edit /></el-icon>
             修改
@@ -832,7 +836,7 @@
 </div>
 
 <script>
-  const { createApp, ref, reactive, onMounted, nextTick, markRaw } = Vue;
+  const { createApp, ref, reactive, computed, onMounted, nextTick, markRaw } = Vue;
   const { ElMessage, ElMessageBox } = ElementPlus;
 
   // ========== 存储工具 ==========
@@ -877,6 +881,11 @@
       const activeAnchor = ref('');
       const editMode = ref(false);
 
+      const visibleCategories = computed(() => {
+        if (editMode.value) return categories.value;
+        return categories.value.filter(c => c.visible !== false);
+      });
+
       // 分类对话框相关
       const categoryDialogVisible = ref(false);
       const newCategoryName = ref('');
@@ -909,14 +918,13 @@
       onMounted(async () => {
         const saved = loadFromStorage();
         if (saved && saved.categories && saved.categories.length > 0) {
-          categories.value = saved.categories;
+          categories.value = saved.categories.map(c => ({ ...c, visible: c.visible !== false }));
         } else {
-          // 从 navigate.json 加载默认配置
           try {
             const resp = await fetch('/public/navigate/navigate.json');
             const data = await resp.json();
             if (data && data.categories && data.categories.length > 0) {
-              categories.value = data.categories;
+              categories.value = data.categories.map(c => ({ ...c, visible: c.visible !== false }));
               saveData();
             }
           } catch (e) {
@@ -1034,7 +1042,14 @@
 
       // ========== 保存数据 ==========
       function saveData() {
-        saveToStorage({ categories: categories.value });
+        const raw = JSON.parse(JSON.stringify(categories.value));
+        saveToStorage({ categories: raw });
+      }
+
+      // ========== 分类显示切换 ==========
+      function onVisibleChange(category, val) {
+        category.visible = val;
+        saveData();
       }
 
       // ========== 新增分类 ==========
@@ -1070,7 +1085,8 @@
           categories.value.push({
             id: generateId(),
             name: name,
-            items: []
+            items: [],
+            visible: true
           });
           saveData();
           categoryDialogVisible.value = false;
@@ -1138,10 +1154,12 @@
           return;
         }
 
+        const finalIcon = icon || (url.endsWith('/') ? url + 'favicon.ico' : url + '/favicon.ico');
+
         if (isEditItem.value && editingItem.value) {
           editingItem.value.name = name;
           editingItem.value.url = url;
-          editingItem.value.icon = icon || 'Document';
+          editingItem.value.icon = finalIcon;
           saveData();
           itemDialogVisible.value = false;
           ElMessage.success('导航页面修改成功');
@@ -1150,7 +1168,7 @@
             id: generateId(),
             name: name,
             url: url,
-            icon: icon || 'Document'
+            icon: finalIcon
           };
 
           if (!currentCategory.value.items) {
@@ -1209,6 +1227,7 @@
 
       return {
         categories,
+        visibleCategories,
         editMode,
         onEditModeChange,
         categoryDialogVisible,
@@ -1222,6 +1241,7 @@
         showEditCategoryDialog,
         submitCategory,
         deleteCategory,
+        onVisibleChange,
         showAddItemDialog,
         showEditItemDialog,
         submitItem,
