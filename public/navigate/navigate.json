@@ -46,7 +46,8 @@
                     "url": "https://bailian.console.aliyun.com/cn-beijing?spm=5176.28103460.0.0.96a02988o3mQze&tab=home#/home",
                     "icon": "https://gw.alicdn.com/imgextra/i4/O1CN01vVn7g32134zNZEeAR_!!6000000006928-55-tps-24-24.svg"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqkm0im77almxr",
@@ -100,7 +101,8 @@
                     "url": "http://www.docuchina.cn",
                     "icon": "http://www.docuchina.cn/favicon.ico"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqknkdxipqi0f5",
@@ -172,7 +174,8 @@
                     "url": "https://www.flmp3.com/",
                     "icon": "https://www.flmp3.com/template/cn/images/favicon.ico"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqjw64f65wq0wt",
@@ -189,6 +192,12 @@
                     "name": "OpenList",
                     "url": "http://192.168.2.30:5244/",
                     "icon": "https://res.oplist.org/logo/logo.svg"
+                },
+                {
+                    "id": "mrkuanopupxfms",
+                    "name": "青龙面板",
+                    "url": "http://192.168.2.30:5700/dashboard",
+                    "icon": "https://cdn.jsdelivr.net/gh/Cp0204/CasaOS-AppStore-Play@main/Apps/qinglong/icon.png"
                 },
                 {
                     "id": "mr9dy9l42ja8i0",
@@ -232,7 +241,8 @@
                     "url": "https://www.r95674245.nyat.app:46195/wapMusic",
                     "icon": "Headset"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqjjb2syjoah0i",
@@ -268,7 +278,8 @@
                     "url": "https://element-plus.org/zh-CN/component/overview",
                     "icon": "https://element-plus.org/images/element-plus-logo-small.svg"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqjzjdy69ponhh",
@@ -298,7 +309,8 @@
                     "url": "https://www.suning.com",
                     "icon": "https://www.suning.com/favicon.ico"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqklpomu5r6d3e",
@@ -334,7 +346,8 @@
                     "url": "https://www.natfrp.com",
                     "icon": "https://www.natfrp.com/favicon.ico"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqkno40hac79uf",
@@ -370,7 +383,8 @@
                     "url": "http://www.12348.gov.cn",
                     "icon": "http://www.12348.gov.cn/resources/images/favicon.png"
                 }
-            ]
+            ],
+            "visible": true
         },
         {
             "id": "mqkm6rwy24xcc6",
@@ -380,7 +394,7 @@
                     "id": "mqkm7avinexuku",
                     "name": "javxspot",
                     "url": "https://javxspot.com",
-                    "icon": "https://javxspot.com/favicon.ico"
+                    "icon": "https://javxspot.com/wp-content/uploads/2022/03/favicon.png"
                 },
                 {
                     "id": "mqkm8iypk8ihhw",
@@ -398,7 +412,7 @@
                     "id": "mqkm9mxhta0x0z",
                     "name": "黑料正能量",
                     "url": "https://www.hl718.com/",
-                    "icon": "https://hl718.net/favicon.ico"
+                    "icon": "https://www.hl718.com/favicon.ico"
                 },
                 {
                     "id": "mqkmb9tmhu0r1c",
@@ -424,7 +438,8 @@
                     "url": "https://bihubx.xyz",
                     "icon": "https://bihubx.xyz/favicon.ico"
                 }
-            ]
+            ],
+            "visible": true
         }
     ]
 }
